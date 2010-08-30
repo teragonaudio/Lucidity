@@ -38,6 +38,15 @@ __author__ = 'nik'
 # also some status indication icons.
 # </ul>
 #
+# @subsection Playing Music
+# When Lucidity first starts up, it will ask you for a location where you store your
+# digital music.  Your music directory will be scanned, and automatically rescanned
+# on startup.  Likewise, Lucidity will scan your system audio plug-ins when starting
+# up.  These scans are always performed in the background, and their status can be
+# seen in the music browser panel and the effects panel in the browser bar.
+#
+# After Lucidity has scanned your files, it's ready to go.
+#
 # @subsection Navigation
 # The first group of buttons in the button bar manipulate the cursor, which is the
 # empty rectangle visible in the channel grid.  These buttons move the cursor around
@@ -61,7 +70,7 @@ __author__ = 'nik'
 # remember any MIDI mappings for extra channels you have added, even if they are removed
 # from the screen during playback.
 #
-# @subsection Playing Music
+# @subsection Editing Music
 # @subsection Editing Operations
 # @subsection Filtering and Mixing
 # @subsection Applying Effects
