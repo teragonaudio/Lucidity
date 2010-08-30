@@ -40,6 +40,28 @@ __author__ = 'nik'
 #
 # @subsection Interface Controls
 # @subsection Navigation
+# The first group of buttons in the button bar manipulate the cursor, which is the
+# empty rectangle visible in the channel grid.  These buttons move the cursor around
+# the current channel grid and to preview playback at the cursor point.  When the cursor
+# is at the far right-hand side of the screen, moving it further to the right will zoom
+# the channel grid out, allowing you to see and plan ahead further into the future.
+# Lucidity doesn't limit how far out you can zoom in terms of time, but rather in terms
+# of screen size.  However, even modestly-sized laptops with lower screen resolutions
+# can zoom out several minutes in advance.
+#
+# If you move the cursor back to the left after zooming out, then Lucidity will zoom back
+# in.  But, if you inserted more music to the right, then Lucidity will slowly zoom back
+# in as the music reaches the playhead.  Basically, Lucidity keeps everything you've placed
+# on the screen in plain view.  However, Lucidity does not shrink to zero if all music has
+# been played -- it keeps you zoomed out far enough to at least
+#
+# Likewise, moving the cursor down past the last channel will insert a new channel into
+# the grid.  As with zooming to the right, channels are automatically removed when the music
+# placed there has finished playing.  Lucidity keeps at least eight channels in the grid
+# at all times, but this value can be configured in the preferences.  Also, Lucidity will
+# remember any MIDI mappings for extra channels you have added, even if they are removed
+# from the screen during playback.
+#
 # @subsection Playing Music
 # @subsection Editing Operations
 # @subsection Filtering and Mixing
