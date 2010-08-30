@@ -21,6 +21,17 @@ __author__ = 'nik'
 # possibilities.
 #
 # @section Main Window
+# Lucidity has only one window, and does not have tabs, hidden views, or any unseen
+# user interface elements.  What you see on the main screen is what you get.  Other
+# windows, such as those used for configuring channels or browsing for music, appear
+# as pop-up overlays which are dismissed with the escape key (ESC).
+#
+# The main window has three sections: a toolbar, the channel grid, and the browser bar.
+#
+# @subsection The Toolbar
+# @subsection The Channel Grid
+# @subsection The Browser Bar
+#
 # @subsection Interface Controls
 # @subsection Navigation
 # @subsection Playing Music
