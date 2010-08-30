@@ -38,7 +38,6 @@ __author__ = 'nik'
 # also some status indication icons.
 # </ul>
 #
-# @subsection Interface Controls
 # @subsection Navigation
 # The first group of buttons in the button bar manipulate the cursor, which is the
 # empty rectangle visible in the channel grid.  These buttons move the cursor around
