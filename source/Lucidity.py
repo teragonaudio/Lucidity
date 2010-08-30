@@ -77,6 +77,8 @@ __author__ = 'nik'
 # @section Browsing for Music
 # @section MIDI Mapping
 # @section Key Commands
+# @include KeyCommands.py
+#
 # @section Configuring Lucidity
 # @subsection Main Preferences
 # @subsection Sound Card Configuration
