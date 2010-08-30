@@ -28,9 +28,15 @@ __author__ = 'nik'
 #
 # The main window has three sections: a toolbar, the channel grid, and the browser bar.
 #
-# @subsection The Toolbar
-# @subsection The Channel Grid
-# @subsection The Browser Bar
+# <ul>
+# <li><b>The Toolbar</b> contains buttons used for navigating around the software
+# and editing operations.  It also contains buttons used for accessing the preferences
+# and the current playback state.</li>
+# <li><b>The Channel Grid</b> takes up most of the space in the main window, and is
+# where music is placed to be played.</li>
+# <li><b>The Browser Bar</b> contains panels used to browse for music and effects, and
+# also some status indication icons.
+# </ul>
 #
 # @subsection Interface Controls
 # @subsection Navigation
