@@ -21,10 +21,10 @@ __author__ = 'nik'
 # <tr><td>Ctrl+8</td><td>Inserts the search selection at the cursor position in track 8</td></tr>
 # <tr><td>Ctrl+9</td><td>Inserts the search selection at the cursor position in track 9</td></tr>
 # <tr><td>Ctrl+F</td><td>Fullscreen mode</td></tr>
-# <tr><td>Up arrow</td><td>Moves cursor up, automatically deleting any tracks below the cursor without music or mappings</td></tr>
-# <tr><td>Down arrow</td><td>Moves cursor down, automatically adding a new track if at the bottom of the screen</td></tr>
-# <tr><td>Left arrow</td><td>Moves cursor left, automatically zooming in if at the far right of the screen</td></tr>
-# <tr><td>Right arrow</td><td>Moves cursor right, automatically zooming out if at the far right of the screen</td></tr>
+# <tr><td>Up Arrow</td><td>Moves cursor up, automatically deleting any tracks below the cursor without music or mappings</td></tr>
+# <tr><td>Down Arrow</td><td>Moves cursor down, automatically adding a new track if at the bottom of the screen</td></tr>
+# <tr><td>Left Arrow</td><td>Moves cursor left, automatically zooming in if at the far right of the screen</td></tr>
+# <tr><td>Right Arrow</td><td>Moves cursor right, automatically zooming out if at the far right of the screen</td></tr>
 # </table>
 #
 # Note that the "Ctrl" key listed above also refers to the "Control" key on Mac
