@@ -123,6 +123,54 @@ __author__ = 'nik'
 # from the screen during playback.
 #
 # @subsection Editing Music
+# Lucidity has only a few editing operations, which are all visible in the toolbar to
+# the right of the navigation controls.  Immediately to the right of the navigation
+# controls are the old favorites undo/redo, and to the right of these are the block
+# operations.
+#
+# All of the editing operations apply to the space selected by the cursor, or if no
+# selection is made, then the cursor itself.  The cursor represents a space as wide as
+# global quantization, which is set in the lower right-hand corner of the software in
+# the browser bar, next to the tempo.  By default, this value is one bar of music.
+#
+# The first button in this panel allows one to make a selection.  When pressed (either
+# by clicking, pressing the shift key, or pressing a MIDI-assigned key) and held down,
+# move the cursor to select a given area of audio.  The selected area will appear with
+# a transparently colored overlay until an operation is performed on the selection, or
+# until another selection is made.  You can also quickly press and release the select
+# button again to deselect the current selection.
+#
+# To the right of select is delete, which removes the current selection.  If no selection
+# has been made, then delete will remove the entire track underneath the cursor.  But
+# fear not!  If you press delete by mistake on top of a currently playing track, it will
+# continue to play the last block of audio currently at the playhead.  The amount of
+# audio played here is determined by the value of the global quantize, which is also the
+# width of the cursor.  At the default setting of one bar, this gives you enough time to
+# quickly hit undo and restore the track.  If you don't manage to undo the delete by the
+# time the last block of audio is finished playing, then there will be silence.  However,
+# you can still press undo, which will insert the track back into the channel set starting
+# exactly at the point where the last block finished playing.
+#
+# Next to the delete button is the copy/clone button.  When pressed, it will first copy
+# the area under the selection to the copy buffer, and move the cursor one block past
+# the end of the selection.  Now when pressed again, it will paste the contents of the
+# copy buffer at the cursor point.  In this manner, you can easily cut a loop out of a
+# track and make several copies of it, building up entire sequences by copying and
+# repasting.
+#
+# Finally, there is the bounce button to the right of copy/clone.  This button allows you
+# to export selections of audio to disk for future playback.  While Lucidity itself has
+# no concept of saving or opening documents, you can save small chunks of audio in an
+# arrangement for future use by bouncing them down as loops.  The default save location
+# and format options for bounced items can be set in Lucidity's preferences.  When pressed,
+# the bounce button will display a small popup window underneath it where you can enter
+# a filename, which has by default a suggested filename based on the current selection.
+# As the suggested filename is selected, you can simply start typing if you would like
+# something else, or you can press the escape key or bounce key again to cancel the bounce.
+#
+# To save the bounce, either press the return key after choosing a filename, or click the
+# OK button in the filename popup window.
+#
 # @subsection Editing Operations
 # @subsection Filtering and Mixing
 # @subsection Applying Effects
