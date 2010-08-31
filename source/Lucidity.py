@@ -45,7 +45,39 @@ __author__ = 'nik'
 # up.  These scans are always performed in the background, and their status can be
 # seen in the music browser panel and the effects panel in the browser bar.
 #
-# After Lucidity has scanned your files, it's ready to go.
+# After Lucidity has scanned your files, it's ready to go.  Now you can browse for
+# music by clicking on the music browser panel, which is also accessible by pressing
+# the spacebar for quick access.  The browser popup shows all of your music, and you
+# can filter the results by simply starting to type a search term.  The browser panel
+# considers both the filename and metadata when searching, and songs which you play
+# more often will be shown nearer to the top.  If you decide that you want a fresh
+# start, you can reset Lucidity's search history in the preferences.
+#
+# When the music browser popup is open, the up/down buttons in the toolbar can be
+# used to select tracks.  The right arrow button selects a track and closes the music
+# browser, and the cue button previews the song, and you would expect. Likewise, the
+# same keystrokes and assigned MIDI mappings of the navigation buttons work in the
+# music browser.
+#
+# Once you have selected a track, you can now insert it into the channel grid by doing
+# any of the following:
+#
+# <ul>
+# <li>Clicking the insert button in the upper right-hand corner of the music panel</li>
+# <li>Dragging the music panel into the channel grid with the mouse</li>
+# <li>Pressing the "enter" key to place the track at the cursor point</li>
+# <li>Pressing a MIDI key which you have assigned to the insert button</li>
+# </ul>
+#
+# You can insert tracks on top of each other in the channel grid, and they will appear
+# stacked.  Stacking tracks provides a convenient way to add loops on top of a track,
+# or to quickly drop a new track on an old one.  However, the stacked tracks will simply
+# play back together when they reach the playhead, so you lose the ability to filter
+# or mix them separately.  Similarly, editing operations are applied to all items in
+# the stack, so be careful about placing items on top of each other.  If you accidentally
+# place something on the grid where you didn't mean to, you can move it either by dragging
+# it with the mouse, or you can undo the operation by pressing the undo button in the
+# toolbar.
 #
 # @subsection Navigation
 # The first group of buttons in the button bar manipulate the cursor, which is the
