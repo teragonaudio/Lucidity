@@ -65,6 +65,13 @@ __author__ = 'nik'
 # press ctrl+p instead.
 #
 # @subsection Browsing For Music
+# After Lucidity has scanned your files, you can browse for music by clicking on the
+# music browser panel, which is also accessible by pressing the spacebar for quick
+# access.  The browser popup shows all of your music, and you can filter the results
+# by simply starting to type a search term.  The browser panel considers both the
+# filename and metadata when searching, and songs which you play more often will be
+# shown nearer to the top.  If you decide that you want a fresh start, you can reset
+# Lucidity's search history in the preferences.
 #
 # When the music browser popup is open, the up/down buttons in the toolbar can be
 # used to select tracks.  The right arrow button selects a track and closes the music
