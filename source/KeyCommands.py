@@ -10,6 +10,7 @@ __author__ = 'nik'
 # <tr><td>Esc</td><td>Closes any current pop-up window</td></tr>
 # <tr><td>Ctrl+P</td><td>Start/Stop playback</td></tr>
 # <tr><td>Enter</td><td>Inserts the search selection at the cursor position</td></tr>
+# <tr><td>Shift+Enter</td><td>Preview playing at the cursor position</td></tr>
 # <tr><td>Ctrl+1</td><td>Inserts the search selection at the cursor position in track 1</td></tr>
 # <tr><td>Ctrl+2</td><td>Inserts the search selection at the cursor position in track 2</td></tr>
 # <tr><td>Ctrl+3</td><td>Inserts the search selection at the cursor position in track 3</td></tr>
