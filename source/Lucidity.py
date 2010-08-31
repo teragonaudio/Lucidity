@@ -45,13 +45,25 @@ __author__ = 'nik'
 # up.  These scans are always performed in the background, and their status can be
 # seen in the music browser panel and the effects panel in the browser bar.
 #
-# After Lucidity has scanned your files, it's ready to go.  Now you can browse for
-# music by clicking on the music browser panel, which is also accessible by pressing
-# the spacebar for quick access.  The browser popup shows all of your music, and you
-# can filter the results by simply starting to type a search term.  The browser panel
-# considers both the filename and metadata when searching, and songs which you play
-# more often will be shown nearer to the top.  If you decide that you want a fresh
-# start, you can reset Lucidity's search history in the preferences.
+# Lucidity is a bit different than other DJ software when it comes to playback.  When
+# you start up Lucidity, you will notice that the channel grid is already moving and
+# that playback has begun.  Lucidity is designed to always be playing, and it treats
+# the act of stopping playback more seriously than other software.
+#
+# If you want to pause Lucidity for a moment, you can double-click the play/pause
+# button in the upper right-hand corner of the screen.  If you click it once, this
+# button lights up briefly to let you know that it's listening, but that you must
+# really mean it before you ask it to stop.  Likewise, playback can be restarted by
+# double-clicking this button.
+#
+# Lucidity also has a key command for playing and pausing as well, but it's not what
+# you would expect.  Rather than using the largest key on the entire keyboard for an
+# action that is usually performed only twice during one performance, and in the worst
+# case pressed by accident during a performance, Lucidity uses the space bar for
+# something more useful: searching.  Pressing the space bar brings up the music browser
+# and allows you to find music to insert into the set.  To pause or resume playback,
+# press ctrl+p instead.
+#
 # @subsection Browsing For Music
 #
 # When the music browser popup is open, the up/down buttons in the toolbar can be
