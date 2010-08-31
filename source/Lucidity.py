@@ -52,6 +52,7 @@ __author__ = 'nik'
 # considers both the filename and metadata when searching, and songs which you play
 # more often will be shown nearer to the top.  If you decide that you want a fresh
 # start, you can reset Lucidity's search history in the preferences.
+# @subsection Browsing For Music
 #
 # When the music browser popup is open, the up/down buttons in the toolbar can be
 # used to select tracks.  The right arrow button selects a track and closes the music
@@ -106,7 +107,6 @@ __author__ = 'nik'
 # @subsection Editing Operations
 # @subsection Filtering and Mixing
 # @subsection Applying Effects
-# @section Browsing for Music
 # @section MIDI Mapping
 # @section Key Commands
 # @include KeyCommands.py
