@@ -171,7 +171,6 @@ __author__ = 'nik'
 # To save the bounce, either press the return key after choosing a filename, or click the
 # OK button in the filename popup window.
 #
-# @subsection Editing Operations
 # @subsection Filtering and Mixing
 # @subsection Applying Effects
 # @section MIDI Mapping
