@@ -99,6 +99,17 @@ __author__ = 'nik'
 # it with the mouse, or you can undo the operation by pressing the undo button in the
 # toolbar.
 #
+# When inserting music into the channel grid, the tempo of the track is automatically
+# matched to the global tempo by repitching.  When Lucidity scans your music library,
+# it performs BPM detection on all tracks, saving this information into an internal
+# library, along with the start and stop points.  Lucidity can also save this
+# information to the digital metadata, but this is not enabled by default and must be
+# switched on in the preferences.
+#
+# If you notice that Lucidity has mis-detected the tempo or starting/stopping time
+# of a song, you should correct this by editing the song's metadata in a media player
+# such as iTunes.
+#
 # @subsection Navigation
 # The first group of buttons in the button bar manipulate the cursor, which is the
 # empty rectangle visible in the channel grid.  These buttons move the cursor around
