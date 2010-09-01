@@ -173,12 +173,20 @@ __author__ = 'nik'
 #
 # @subsection Filtering and Mixing
 # @subsection Applying Effects
+#
 # @section MIDI Mapping
+#
 # @section Key Commands
 # @include KeyCommands.py
 #
 # @section Configuring Lucidity
+#
 # @subsection Main Preferences
+#
 # @subsection Sound Card Configuration
+#
 # @subsection MIDI Device Configuration
+#
 # @subsection Plug-In Configuration
+#
+
