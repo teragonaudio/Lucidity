@@ -172,6 +172,43 @@ __author__ = 'nik'
 # OK button in the filename popup window.
 #
 # @subsection Filtering and Mixing
+# Lucidity allows one to mix tracks either in realtime or in advance, but one should
+# keep in mind that these actions are performed differently.  Mixing actions applied
+# in advance actually work the same way as applying effects, but the actual effects
+# applied are simply mixing preset scripts.  For more information, please refer to the
+# "Applying Effects" section.  This section refers only to mixing in realtime.
+#
+# In Lucidity, each channel is equipped with a basic mixer and volume control.  These
+# controls can be seen to the left of the playhead.  Each channel has a small equalizer
+# display which shows a preview of the current mixer settings, and beneath it a volume
+# slider which also shows the current track volume.  The volume slider can be manipulated
+# with the mouse, but to access the mixer controls, one must click on the equalizer's
+# preview image.  When doing this, then a small popup is displayed with a larger version
+# of the volume slider, and each of the equalizer knobs.
+#
+# While it is possible to mix using only the mouse, Lucidity was designed with the idea
+# that laptop DJ's perform with at least one MIDI device, as knobs are a much more
+# comfortable way to mix than the keyboard/mouse.  So, the mixer panel is primarily an
+# interface for one to access the various mixing controls to map them to a controller
+# (see the section about MIDI Mapping for more information).
+#
+# The mixer in each channel is not configurable, but offers a complete selection of
+# familiar filters.  The largest four knobs in the middle of the panel configure a
+# four-band equalizer, with configurable frequency cutoffs, which are accessible with
+# a set of smaller knobs directly above each respective frequency band.
+#
+# To the right and left ends of the four-band equalizer sit two slightly smaller knobs,
+# which are for high-pass and low-pass filtering, respectively.  The high-pass and
+# low-pass filter also have a smaller knob above them, which controls the sidechain
+# signal gain.  By default, this knob is disabled and set to -Infinity dB.  When
+# enabled, this knob determines the strength of the sidechain subtracted signal which
+# is re-added to the input signal.
+#
+# This filter allows one to play the lower or upper parts of a track but to subtract
+# out frequencies present on all other tracks.  The end result allows for a very clean
+# and precise method for filtering out basslines, kickdrums, or hat lines by playing
+# through only the parts of a track which are not present in all other tracks.
+#
 # @subsection Applying Effects
 #
 # @section MIDI Mapping
