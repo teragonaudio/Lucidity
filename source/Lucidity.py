@@ -113,7 +113,7 @@ __author__ = 'nik'
 # in.  But, if you inserted more music to the right, then Lucidity will slowly zoom back
 # in as the music reaches the playhead.  Basically, Lucidity keeps everything you've placed
 # on the screen in plain view.  However, Lucidity does not shrink to zero if all music has
-# been played -- it keeps you zoomed out far enough to at least
+# been played -- it keeps you zoomed out far enough to at least see a few minutes of music.
 #
 # Likewise, moving the cursor down past the last channel will insert a new channel into
 # the grid.  As with zooming to the right, channels are automatically removed when the music
