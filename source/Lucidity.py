@@ -120,6 +120,12 @@ __author__ = 'nik'
 # of screen size.  However, even modestly-sized laptops with lower screen resolutions
 # can zoom out several minutes in advance.
 #
+# When looming out, Lucidity uses a logarithmic zooming algorithm which allows you to see
+# the tracks on the left hand side of the screen more clearly while still zoomed out.
+# This allows you to continue planning your set in advance while easily seeing what is
+# currently playing.  However, at the default resolution, the logarithmic zoom is not
+# noticeable.
+#
 # If you move the cursor back to the left after zooming out, then Lucidity will zoom back
 # in.  But, if you inserted more music to the right, then Lucidity will slowly zoom back
 # in as the music reaches the playhead.  Basically, Lucidity keeps everything you've placed
