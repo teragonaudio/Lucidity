@@ -26,6 +26,7 @@ __author__ = 'nik'
 # <tr><td>Left Arrow</td><td>Moves cursor left, automatically zooming in if at the far right of the screen</td></tr>
 # <tr><td>Right Arrow</td><td>Moves cursor right, automatically zooming out if at the far right of the screen</td></tr>
 # <tr><td>Shift+Arrow</td><td>Select a region of audio</td></tr>
+# <tr><td>Ctrl+Arrow</td><td>Moves the cursor 4x in the given direction</td></tr>
 # </table>
 #
 # Note that the "Ctrl" key listed above also refers to the "Control" key on Mac
