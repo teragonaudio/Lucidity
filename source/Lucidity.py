@@ -139,6 +139,16 @@ __author__ = 'nik'
 # remember any MIDI mappings for extra channels you have added, even if they are removed
 # from the screen during playback.
 #
+# The cursor can also be moved with the mouse simply by clicking on the spot in the grid
+# where you want to move it.
+#
+# You will notice that the grid has a slight gradient fade at the left and right edges.
+# The cursor is actually not able to go all the way to the edge of the screen, but only
+# right to these edges.  You can click on the left or right edge to move the cursor all
+# the way to this side of the screen.  The cursor can be moved quickly around the grid
+# by holding the control key and either pressing an arrow key or the MIDI key mapped to
+# the cursor navigation, which moves the cursor four times farther than a single move.
+#
 # @subsection Editing Music
 # Lucidity has only a few editing operations, which are all visible in the toolbar to
 # the right of the navigation controls.  Immediately to the right of the navigation
