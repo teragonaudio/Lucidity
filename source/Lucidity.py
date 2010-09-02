@@ -239,6 +239,54 @@ __author__ = 'nik'
 # @subsection Applying Effects
 #
 # @section MIDI Mapping
+# Lucidity features a very flexible and powerful MIDI mapping system.  The fundamental
+# philosophy of the software is that any user interface element which can be clicked on
+# with the mouse is also able to be MIDI mapped.  To enter MIDI mapping mode, press the
+# caps lock key on the keyboard.  All controls which can be MIDI mapped will appear with
+# a semi-transparent colored overlay.  The controls which have already have mapping
+# assignments will have a different color.  To leave MIDI mapping mode, simply press caps
+# lock again.
+#
+# Almost everything in Lucidity can be MIDI mapped, which includes:
+#
+# <ul>
+# <li>All of the buttons in the toolbar</li>
+# <li>The channel mixer/equalizer panel buttons</li>
+# <li>The controls in the channel equalizer popup</li>
+# <li>The left and right edges of the grid</li>
+# <li>The bottom panel of the screen</li>
+# </ul>
+#
+# There are, however, some things which cannot be mapped:
+#
+# <ul>
+# <li>Buttons in system dialogs, such as the save dialog shown when bouncing</li>
+# <li>Individual spaces within the grid</li>
+# <li>Anything in the music browser popup or effects popup windows, although the MIDI
+# controls assigned to navigation apply to movement within these windows.</li>
+# <li>Controls within the preferences window</li>
+# </ul>
+#
+# To create a new MIDI mapping, press the caps lock key, and then click on the control
+# which you wish to map.  A small dialog will appear nearby the control, and any MIDI
+# controllers pressed while the window is open are automatically added into the window's
+# list.  If you accidentally move a MIDI controller which you did not want assigned,
+# click the "X" button on the right-hand side of the row for this controller.
+#
+# Each row in the table shows you the MIDI channel and controller/note number for the
+# assigned device, and the ranges for the user interface element.  While all MIDI
+# controllers themselves have a range of 0-127, the interface elements which they control
+# may be mapped to arbitrary ranges.  For instance, one may wish that the maximum position
+# on a vertical fader represent the 0.0 dB mark for a channel mixer; to accomplish this,
+# simply set the range to -INF dB in the "minimum" column, and "0.0 dB" in the maximum
+# column.
+#
+# Within the preferences, there are a few mapping-related options to note.  First is the
+# "clear all" button, which removes all MIDI assignments.  You will be asked to confirm
+# this action by the software.  Next to "clear all", there is also a "test" button.  When
+# pressed, you can move any MIDI controller, and all of the actively mapped interface
+# elements for this control will be lit up.  To cancel the test, press the "escape" key
+# or click on the "test" button again.
 #
 # @section Key Commands
 # @include KeyCommands.py
