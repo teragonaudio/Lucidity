@@ -237,6 +237,18 @@ __author__ = 'nik'
 # through only the parts of a track which are not present in all other tracks.
 #
 # @subsection Applying Effects
+# In Lucidity, effects can be applied to a single track or a series of tracks.  Inserting
+# effects works much like inserting tracks into the channel grid; one selects the effect
+# program of their choice in the effect chooser panel, and then inserts it into the grid
+# at the cursor position.  Holding down the insert key while moving the cursor with the
+# navigation controls will apply the given effect to that entire region of audio.  To
+# delete an effect, simply move the cursor over the effect and press the delete key.
+#
+# The effect browser shows all of your system plug-ins and their saved programs, similar
+# to how the music browser organizes tracks sorted by album/artist.  Lucidity does not
+# support creating plug-in programs, but you can set a path to search for plug-in program
+# files in the preferences.  To create or edit plug-in programs, use your favorite
+# sequencer and save the program data in this directory.
 #
 # @section MIDI Mapping
 # Lucidity features a very flexible and powerful MIDI mapping system.  The fundamental
