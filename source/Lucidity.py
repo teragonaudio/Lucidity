@@ -302,15 +302,10 @@ __author__ = 'nik'
 #
 # @section Key Commands
 # @include KeyCommands.py
-#
-# @section Configuring Lucidity
-#
-# @subsection Main Preferences
-#
-# @subsection Sound Card Configuration
-#
-# @subsection MIDI Device Configuration
-#
-# @subsection Plug-In Configuration
-#
 
+# TODO: Fill in this documentation later
+# @section Configuring Lucidity
+# @subsection Main Preferences
+# @subsection Sound Card Configuration
+# @subsection MIDI Device Configuration
+# @subsection Plug-In Configuration
