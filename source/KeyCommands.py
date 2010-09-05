@@ -3,7 +3,7 @@ __author__ = 'nik'
 ##+
 # Lucidity recognizes the following key commands:
 #
-# <table>
+# <table border="1">
 # <tr><td><b>Key</b><td><b>Operation</b></td></tr>
 # <tr><td>Spacebar</td><td>Opens the search window</td></tr>
 # <tr><td>Caps Lock</td><td>Turns on/off MIDI mapping mode</td></tr>
