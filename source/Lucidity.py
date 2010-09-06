@@ -1,3 +1,8 @@
+import sys
+
+from PyQt4 import QtGui
+from MainWindow import MainWindow
+
 __author__ = 'nik'
 
 ##+
@@ -309,3 +314,9 @@ __author__ = 'nik'
 # @subsection Sound Card Configuration
 # @subsection MIDI Device Configuration
 # @subsection Plug-In Configuration
+
+if __name__ == '__main__':
+    app = QtGui.QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())

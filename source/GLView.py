@@ -4,13 +4,13 @@ import math
 
 __author__ = 'nik'
 
-class GLWidget(QtOpenGL.QGLWidget):
+class GLView(QtOpenGL.QGLWidget):
     xRotationChanged = QtCore.pyqtSignal(int)
     yRotationChanged = QtCore.pyqtSignal(int)
     zRotationChanged = QtCore.pyqtSignal(int)
 
     def __init__(self, parent=None):
-        super(GLWidget, self).__init__(parent)
+        super(GLView, self).__init__(parent)
 
         self.object = 0
         self.xRot = 0
