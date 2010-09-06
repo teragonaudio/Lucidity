@@ -1,6 +1,6 @@
 import sys
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, uic
 from MainWindow import MainWindow
 
 __author__ = 'nik'
@@ -317,6 +317,6 @@ __author__ = 'nik'
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
+    widget = uic.loadUi('../resources/layout/MainWindow.ui')
+    widget.show()
     sys.exit(app.exec_())
