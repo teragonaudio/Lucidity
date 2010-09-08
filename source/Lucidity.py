@@ -313,4 +313,5 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     widget = uic.loadUi('../resources/layout/MainWindow.ui')
     widget.show()
+    widget.raise_()
     sys.exit(app.exec_())
