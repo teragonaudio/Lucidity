@@ -92,7 +92,7 @@ __author__ = 'nik'
 #
 # You can insert tracks on top of each other in the channel grid, and they will appear
 # stacked.  Stacking tracks provides a convenient way to add loops on top of a track,
-# or to quickly drop a new track on an old one.  However, the stacked tracks will simply
+# or to quickly drop a new track on an old one.  However, the stacked tracks will 
 # play back together when they reach the playhead, so you lose the ability to filter
 # or mix them separately.  Similarly, editing operations are applied to all items in
 # the stack, with the exception of the delete operation, which deletes from the top of
@@ -192,8 +192,8 @@ __author__ = 'nik'
 # format options for bounced items can be set in Lucidity's preferences.  When pressed,
 # the bounce button will display a small popup window underneath it where you can enter
 # a filename, which has by default a suggested filename based on the current selection.
-# As the suggested filename is selected, you can simply start typing if you would like
-# something else, or you can press the escape key or bounce key to cancel the bounce.
+# As the suggested filename is selected, you can start typing if you would like something
+# else, or you can press the escape key or bounce key to cancel the bounce.
 #
 # To save the bounce, either press the return key after choosing a filename, or click the
 # OK button in the filename popup window.
@@ -241,7 +241,7 @@ __author__ = 'nik'
 # program of your choice in the effect chooser panel, and then insert it into the grid
 # at the cursor position.  Holding down the insert key while moving the cursor with the
 # navigation controls will apply the given effect to that entire region of audio.  To
-# delete an effect, simply move the cursor over the effect and press the delete key.
+# delete an effect, move the cursor over the effect and press the delete key.
 #
 # The effect browser shows all of your system plug-ins and their saved programs, similar
 # to how the music browser organizes tracks sorted by album/artist.  Lucidity does not
@@ -255,7 +255,7 @@ __author__ = 'nik'
 # with the mouse is also able to be MIDI mapped.  To enter MIDI mapping mode, press the
 # caps lock key on the keyboard.  All controls which can be MIDI mapped will appear with
 # a semi-transparent colored overlay.  The controls which have already have mapping
-# assignments will have a different color.  To exit MIDI mapping mode, simply press caps
+# assignments will have a different color.  To exit MIDI mapping mode, press caps
 # lock again.
 #
 # Almost everything in Lucidity can be MIDI mapped, which includes:
@@ -289,8 +289,7 @@ __author__ = 'nik'
 # controllers themselves have a range of 0-127, the interface elements which they control
 # may be mapped to arbitrary ranges.  For instance, one may wish that the maximum position
 # on a vertical fader represent the 0.0 dB mark for a channel mixer; to accomplish this,
-# simply set the range to -INF dB in the "minimum" column, and "0.0 dB" in the maximum
-# column.
+# set the range to -INF dB in the "minimum" column, and "0.0 dB" in the maximum column.
 #
 # Within the preferences, there are a few mapping-related options to note.  First is the
 # "clear all" button, which removes all MIDI assignments.  You will be asked to confirm
