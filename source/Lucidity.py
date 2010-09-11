@@ -249,6 +249,47 @@ __author__ = 'nik'
 # files in the preferences.  To create or edit plug-in programs, use your favorite
 # sequencer and save the program data in this directory.
 #
+# Effects can also be applied on the fly to a given track using Lucidity's built-in
+# effect rack.  Up to four effects may be inserted into the rack, and audio from any
+# channel may be routed to the effects using the "Effect 1-4" knobs visible in the
+# channel mixer popup.  When the position of these knobs is at zero, then the channel
+# will be routed directly to the master output.  When at the maximum position, then
+# the signal will be routed completely through the given effect, and then to the master
+# output.  That is to say, the send knobs act more as dry/wet knobs for each effect,
+# and each effect in the effect rack acts like an insert rather than a bus track.
+#
+# The effects rack can be accessed by clicking the small rack icon in the lower right
+# corner of the effect panel.
+#
+# You can also map any MIDI control to parameters for plugins in the effects rack.  When
+# caps lock is pressed, open the effects rack popup by clicking on the icon in the lower
+# right-hand corner of the effect panel.  The spots in the rack which have active plugins
+# will be highlighted like other mappable controls.  When you click on the given effect,
+# a separate popup window will be shown with all of the plugin's parameters, each one
+# highlighted as a mappable control.  Find the parameter you wish to map, click on it,
+# and assign a control in the normal manner.
+#
+# Note that Lucidity uses these MIDI mappings for all instances of the given effect, so
+# when the effect is applied in the channel grid, these same MIDI mappings can be used
+# to manipulate the effect's settings.  Be careful, though, since if there are multiple
+# instances of the same effect in your set (ie, via multiple spots in the channel grid
+# or multiple places in the effect rack), this will set the given value for all instances.
+#
+# Likewise, Lucidity remembers these mappings for plugins even when they are not inserted
+# in your set.  So you can map MIDI assignments for plugins which you don't necessarily
+# want in your effects rack, remove them from the rack, and then use those mappings later
+# when you apply the effect in the channel grid.
+#
+# Lucidity runs each plugin in its own progress, routing audio between the given track
+# (or set of tracks) to the plugin and back.  If a plugin crashes during playback, then
+# you will see a small alert notification in the effect panel for a few seconds.  You
+# can then choose to double-click the effect panel and re-instantiate the plugin into
+# the set, and Lucidity will attempt to continue processing through the plugin with the
+# same settings before the plugin crashed.  If no action is taken, then the plugin will
+# be removed.  In the case of applied effects, the effect layer will be removed from
+# the channel grid.  For plugins in the effect rack, the plugin will be deactivated, but
+# can be re-instantiated by double clicking it.
+#
 # @section MIDI Mapping
 # Lucidity features a very flexible and powerful MIDI mapping system.  The fundamental
 # philosophy of the software is that any user interface element which can be clicked on
