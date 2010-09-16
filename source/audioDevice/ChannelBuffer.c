@@ -1,48 +1,44 @@
+#include <Python.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ChannelBuffer.h"
 
-typedef unsigned short Sample;
-typedef unsigned long BufferIndex;
+static PyObject*
+ChannelBuffer_new(PyTypeObject *type, PyObject *args, PyObject *keywords) {
+    ChannelBuffer* self = (ChannelBuffer*)type->tp_alloc(type, 0);
 
-/** Buffer representing one channel, 16-bit PCM data */
-typedef struct _ChannelBuffer {
-    Sample *left;
-    Sample *right;
-    BufferIndex length;
-    unsigned long sizeInBytes;
-    BufferIndex readPosition;
-    BufferIndex writePosition;
+    self->length = 0;
+    self->sizeInBytes = self->length * sizeof(Sample);
 
-    // TODO: This MUST be made atomic
-    short isWriting;
-} ChannelBuffer;
+    self->readPosition = 0;
+    self->writePosition = 0;
 
-ChannelBuffer* createChannelBuffer(const unsigned long length) {
-    ChannelBuffer* result = NULL;
-
-    if(length > 0) {
-        result = (ChannelBuffer*)malloc(sizeof(ChannelBuffer));
-        result->length = length;
-        result->sizeInBytes = length * sizeof(Sample);
-
-        result->left = (Sample*)malloc(result->sizeInBytes);
-        memset(result->left, 0, result->sizeInBytes);
-        result->right = (Sample*)malloc(result->sizeInBytes);
-        memset(result->right, 0, result->sizeInBytes);
-
-        result->readPosition = 0;
-        result->writePosition = 0;
-    }
-
-    return result;
+    return (PyObject*)self;
 }
 
-void releaseChannelBuffer(ChannelBuffer *buffer) {
-    if(buffer != NULL) {
-        free(buffer->left);
-        free(buffer->right);
-        free(buffer);
+static int
+ChannelBuffer_init(ChannelBuffer *self, PyObject *args, PyObject *keywords) {
+    static char *keywordList[] = {"length", NULL};
+    if(!PyArg_ParseTupleAndKeywords(args, keywords, "i", keywordList, &self->length)) {
+        return -1;
     }
+
+    if(self->length > 0) {
+        Py_INCREF(self->left);
+        Py_INCREF(self->right);
+        self->sizeInBytes = self->length * sizeof(Sample);
+        self->left = (Sample*)malloc(self->sizeInBytes);
+        memset(self->left, 0, self->sizeInBytes);
+        self->right = (Sample*)malloc(self->sizeInBytes);
+        memset(self->right, 0, self->sizeInBytes);
+    }
+}
+
+static void
+ChannelBuffer_dealloc(ChannelBuffer *self) {
+    Py_XDECREF(self->left);
+    Py_XDECREF(self->right);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 BufferIndex advanceReadPosition(ChannelBuffer *buffer, BufferIndex numSamples) {
