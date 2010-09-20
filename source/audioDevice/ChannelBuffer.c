@@ -99,5 +99,4 @@ ChannelBuffer_writeData(ChannelBuffer *self, PyObject *args, void *closure) {
 
     buffer->writePosition += numSamples;
     buffer->isWriting = 0;
-    */
 }
