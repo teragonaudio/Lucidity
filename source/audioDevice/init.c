@@ -8,9 +8,9 @@ PyMethodDef audioDeviceModuleMethods[] = {
 static struct PyModuleDef audioDeviceModule = {
     PyModuleDef_HEAD_INIT,
     "audioDevice",
-    NULL,
+    "Documentation",
     -1,
-    audioDeviceModuleMethods
+    NULL, NULL, NULL, NULL, NULL
 };
 
 PyMODINIT_FUNC
