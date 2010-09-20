@@ -21,6 +21,16 @@ typedef struct {
     short isWriting;
 } ChannelBuffer;
 
+static PyObject*
+ChannelBuffer_new(PyTypeObject *type, PyObject *args, PyObject *keywords);
+static int
+ChannelBuffer_init(ChannelBuffer *self, PyObject *args, PyObject *keywords);
+static void
+ChannelBuffer_dealloc(ChannelBuffer *self);
+
+static void
+ChannelBuffer_writeData(ChannelBuffer *self, PyObject *data, void *closure);
+
 static PyMemberDef ChannelBuffer_members[] = {
     {"left", T_OBJECT_EX, offsetof(ChannelBuffer, left), 0, "Left Channel"},
     {"right", T_OBJECT_EX, offsetof(ChannelBuffer, right), 0, "Right Channel"},
@@ -29,20 +39,11 @@ static PyMemberDef ChannelBuffer_members[] = {
 };
 
 static PyMethodDef ChannelBuffer_methods[] = {
-/*
-    {"writeData", (PyCFunction)ChannelBuffer_writeData, METH_NOARGS,
+    {"writeData", (PyCFunction)ChannelBuffer_writeData, METH_VARARGS | METH_KEYWORDS,
      "Description"
     },
-    */
-    {NULL}  /* Sentinel */
+    {NULL, NULL, 0, NULL}  /* Sentinel */
 };
-
-static PyObject*
-ChannelBuffer_new(PyTypeObject *type, PyObject *args, PyObject *keywords);
-static int
-ChannelBuffer_init(ChannelBuffer *self, PyObject *args, PyObject *keywords);
-static void
-ChannelBuffer_dealloc(ChannelBuffer *self);
 
 static PyTypeObject ChannelBufferType = {
     PyVarObject_HEAD_INIT(NULL, 0)
@@ -64,7 +65,7 @@ static PyTypeObject ChannelBufferType = {
     0,                          /* tp_getattro */
     0,                          /* tp_setattro */
     0,                          /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,         /* tp_flags */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,         /* tp_flags */
     "ChannelBuffer",            /* tp_doc */
     0,		               /* tp_traverse */
     0,		               /* tp_clear */
