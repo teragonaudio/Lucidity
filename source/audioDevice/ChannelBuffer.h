@@ -10,8 +10,7 @@ typedef unsigned long BufferIndex;
 /** Buffer representing one channel, 16-bit PCM data */
 typedef struct {
     PyObject_HEAD
-    Sample *left;
-    Sample *right;
+    Sample *data[2];
     BufferIndex length;
     unsigned long sizeInBytes;
     BufferIndex readPosition;
@@ -32,20 +31,26 @@ static void
 ChannelBuffer_writeData(ChannelBuffer *self, PyObject *data, void *closure);
 
 static PyMemberDef ChannelBuffer_members[] = {
-    {"left", T_OBJECT_EX, offsetof(ChannelBuffer, left), 0, "Left Channel"},
-    {"right", T_OBJECT_EX, offsetof(ChannelBuffer, right), 0, "Right Channel"},
     {"length", T_INT, offsetof(ChannelBuffer, length), 0, "Length in Samples"},
     {NULL}  /* Sentinel */
 };
 
 static PyMethodDef ChannelBuffer_methods[] = {
-    {"writeData", (PyCFunction)ChannelBuffer_writeData, METH_VARARGS | METH_KEYWORDS,
+    {"writeData", (PyCFunction)ChannelBuffer_writeData, METH_VARARGS,
      "Description"
     },
     {NULL, NULL, 0, NULL}  /* Sentinel */
 };
 
-static PyTypeObject ChannelBufferType = {
+static struct PyModuleDef ChannelBuffer_module = {
+    PyModuleDef_HEAD_INIT,
+    "audioDevice",
+    "Documentation",
+    -1,
+    NULL, NULL, NULL, NULL, NULL
+};
+
+static PyTypeObject ChannelBuffer_type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     "audioDevice.ChannelBuffer",/* tp_name */
     sizeof(ChannelBuffer),      /* tp_basicsize */

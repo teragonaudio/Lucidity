@@ -1,6 +1,9 @@
-from distutils.core import setup, Extension
+    from distutils.core import setup, Extension
 
-setup(name = "audioDevice", version = "1.0",
-      ext_modules = [Extension("audioDevice",
-                               ["init.c",
-                                "ChannelBuffer.c"])])
+    setup(name = "audioDevice",
+          version = "1.0",
+          author = "Teragon Audio",
+          ext_modules = [Extension("audiodevice",
+                                   ["AudioDevice.c",
+                                    "ChannelBuffer.c",
+                                    "AudioOutputOSX.c"])])

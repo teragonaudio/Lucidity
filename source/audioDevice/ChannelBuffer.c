@@ -3,6 +3,29 @@
 #include <string.h>
 #include "ChannelBuffer.h"
 
+/*
+PyMODINIT_FUNC
+PyInit_ChannelBuffer(void) {
+    PyObject *object;
+
+    // Not sure if we need this...
+    // ChannelBuffer_type.tp_new = PyType_GenericNew;
+    if(PyType_Ready(&ChannelBuffer_type) < 0) {
+        return NULL;
+    }
+
+    object = PyModule_Create(&ChannelBuffer_module);
+    if(object == NULL) {
+        return NULL;
+    }
+
+    Py_INCREF(&ChannelBuffer_type);
+    PyModule_AddObject(object, "ChannelBuffer", (PyObject*)&ChannelBuffer_type);
+
+    return object;
+}
+*/
+
 static PyObject*
 ChannelBuffer_new(PyTypeObject *type, PyObject *args, PyObject *keywords) {
     printf("Hit new\n");
@@ -11,8 +34,8 @@ ChannelBuffer_new(PyTypeObject *type, PyObject *args, PyObject *keywords) {
         self->length = 0;
         self->sizeInBytes = self->length * sizeof(Sample);
 
-        self->left = 0;
-        self->right = 0;
+      self->data[0] = NULL;
+      self->data[1] = NULL;
 
         self->readPosition = 0;
         self->writePosition = 0;
@@ -32,13 +55,13 @@ ChannelBuffer_init(ChannelBuffer *self, PyObject *args, PyObject *keywords) {
     if(self->length > 0) {
         self->sizeInBytes = self->length * sizeof(Sample);
 
-        self->left = (Sample*)malloc(self->sizeInBytes);
-        Py_INCREF(self->left);
-        memset(self->left, 0, self->sizeInBytes);
+        self->data[0] = (Sample*)malloc(self->sizeInBytes);
+        memset(self->data[0], 0, self->sizeInBytes);
 
-        self->right = (Sample*)malloc(self->sizeInBytes);
-        Py_INCREF(self->right);
-        memset(self->right, 0, self->sizeInBytes);
+        self->data[1] = (Sample*)malloc(self->sizeInBytes);
+        memset(self->data[1], 0, self->sizeInBytes);
+      
+      Py_INCREF(self->data);
     }
 
     return 0;
@@ -47,10 +70,9 @@ ChannelBuffer_init(ChannelBuffer *self, PyObject *args, PyObject *keywords) {
 static void
 ChannelBuffer_dealloc(ChannelBuffer *self) {
     printf("Hit dealloc\n");
-    Py_XDECREF(self->left);
-    free(self->left);
-    Py_XDECREF(self->right);
-    free(self->right);
+    Py_XDECREF(self->data);
+    free(self->data[0]);
+    free(self->data[1]);
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
@@ -73,30 +95,29 @@ BufferIndex advanceReadPosition(ChannelBuffer *buffer, BufferIndex numSamples) {
 static void
 ChannelBuffer_writeData(ChannelBuffer *self, PyObject *args, void *closure) {
     const char *data;
-    int length;
-    int ok, i;
+    int numSamples;
+    int ok, inputFrame, outputFrame;
 
     if(args == NULL) {
         PyErr_SetString(PyExc_TypeError, "Null buffer");
         return;
     }
-    ok = PyArg_ParseTuple(args, "y#", &data, &length);
+    ok = PyArg_ParseTuple(args, "y#", &data, &numSamples);
     if(!ok) {
         printf("Failed parsing arguments: %d\n", ok);
         return;
     }
 
-    BufferIndex i = 0;
-    if(buffer->writePosition + numSamples > buffer->length) {
-        buffer->writePosition = 0;
+    if(self->writePosition + numSamples > self->length) {
+        self->writePosition = 0;
     }
 
-    buffer->isWriting = 1;
-    for(i = 0; i < numSamples; ++i) {
-        buffer->left[i] = data[0][i];
-        buffer->right[i] = data[0][i];
+    self->isWriting = 1;
+    for(inputFrame = 0, outputFrame = 0; inputFrame < numSamples; ++outputFrame) {
+      self->data[0][outputFrame] = data[inputFrame++];
+      self->data[1][outputFrame] = data[inputFrame++];
     }
 
-    buffer->writePosition += numSamples;
-    buffer->isWriting = 0;
+    self->writePosition += numSamples;
+    self->isWriting = 0;
 }
