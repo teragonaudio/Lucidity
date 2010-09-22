@@ -13,7 +13,8 @@ class MediaFolder:
 
         for mediaFileKey in self.mediaFiles.keys():
             mediaFile = self.mediaFiles[mediaFileKey]
-            print "GOT", mediaFileKey, ":", mediaFile.mediaType.typeName
+            print "GOT", mediaFileKey
+            print "\tArtist:", mediaFile.getArtist()
 
     def rescan(self, folderPath):
         print "Scanning folder '" + folderPath + "'"

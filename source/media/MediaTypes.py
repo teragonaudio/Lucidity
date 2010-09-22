@@ -1,4 +1,5 @@
 import os
+from id3reader import id3reader
 
 __author__ = 'nik'
 
@@ -6,6 +7,9 @@ class MediaTypeBase:
     def __init__(self):
         self.isValid = False
         self.typeName = None
+
+    def getArtist(self, filePath):
+        pass
 
 class MediaTypeAac(MediaTypeBase):
     def __init__(self):
@@ -16,6 +20,10 @@ class MediaTypeMp3(MediaTypeBase):
     def __init__(self):
         self.typeName = "mp3"
         self.isValid = True
+
+    def getArtist(self, filePath):
+        reader = id3reader.Reader(filePath)
+        return reader.getValue('genre')
 
 class MediaTypeFactory:
     def __init__(self):
