@@ -5,3 +5,4 @@
 *.so
 *.perspectivev3
 *.pbxuser
+*/build/*
