@@ -6,10 +6,10 @@
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="/System/Library/Frameworks/Python.framework/Versions/2.6/bin/python2.6" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/source" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/source/app" />
     <option name="IS_MODULE_SDK" value="false" />
     <module name="Lucidity" />
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/source/Lucidity.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/source/app/Lucidity.py" />
     <option name="PARAMETERS" value="" />
     <RunnerSettings RunnerId="PyDebugRunner" />
     <RunnerSettings RunnerId="PythonRunner" />
