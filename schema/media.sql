@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   'stopTimeInSeconds' FLOAT DEFAULT '0',
   'artist' INTEGER NOT NULL,
   'album' TEXT DEFAULT NULL,
-  'albumArtist' INTEGER NOT NULL,
+  'albumArtist' INTEGER DEFAULT NULL,
   'lastModified' DATE NOT NULL,
   'lastPlayed' DATE DEFAULT NULL,
   'playCount' INTEGER DEFAULT '0');
