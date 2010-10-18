@@ -1,5 +1,5 @@
 from distutils.core import setup
 
-setup(name="lucidity",
-      packages=['media'],
-      package_dir={'media' : 'modules/media'})
+setup(name = "lucidity",
+      packages = ['lucidity.media'],
+      package_dir = {'lucidity.media' : 'modules/media'})
