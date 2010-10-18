@@ -1,5 +1,5 @@
 import os
-import sys
+import sqlite3
 
 class MediaFile:
     def __init__(self, location, filename):
@@ -8,23 +8,46 @@ class MediaFile:
 
 class MediaDatabase:
     def __init__(self, databaseLocation):
-        self.mediaFiles = self.loadDatabase(databaseLocation)
+        self.dbConnection = self._getDatabaseConnection(databaseLocation)
+        self.locations = self._loadLocationsFromDatabase()
+        self.mediaFiles = self._loadFilesFromDatabase()
 
-    def loadDatabase(self, databaseLocation):
-        return {1234 : MediaFile("foo", "bar")}
+    def _getDatabaseConnection(self, databaseLocation):
+        return sqlite3.connect(databaseLocation)
 
-class Scanner:
-    def __init__(self, mediaDatabase):
-        self.mediaDatabase = mediaDatabase
+    def _loadLocationsFromDatabase(self):
+        result = {}
+
+        dbCursor = self.dbConnection.cursor()
+        dbCursor.execute("SELECT `id`, `absolutePath` FROM `locations`")
+        for (id, absolutePath) in dbCursor:
+            result[id] = absolutePath
+
+        return result
+
+    def _loadFilesFromDatabase(self):
+        result = {}
+
+        dbCursor = self.dbConnection.cursor()
+        dbCursor.execute("SELECT `id`, `location`, `filename` FROM `files`")
+        for (id, location, filename) in dbCursor:
+            result[id] = MediaFile(location, filename)
+
+        return result
 
     def rescan(self):
-        print("Scanning folder '" + folderPath + "'")
-        if os.path.exists(folderPath):
-            for file in os.listdir(folderPath):
-                fileFullPath = os.path.join(folderPath, file)
+        for locationId, locationPath in self.locations.items():
+            print("Scanning folder '" + locationPath + "'")
+            mediaFileList = self._scanDirectory(locationPath, [])
+
+    def _scanDirectory(self, locationPath, mediaFileList):
+        if os.path.exists(locationPath):
+            for file in os.listdir(locationPath):
+                fileFullPath = os.path.join(locationPath, file)
                 if(os.path.isdir(fileFullPath)):
-                    self.rescan(fileFullPath)
+                    mediaFileList.append(self._scanDirectory(fileFullPath, mediaFileList))
                 else:
-                    mediaFile = MediaFile(fileFullPath)
-                    if(mediaFile.isValidType()):
-                        self.mediaFiles[fileFullPath] = mediaFile
+                    print("Found '" + fileFullPath + "'")
+                    mediaFileList.append(fileFullPath)
+
+        return mediaFileList
