@@ -1,2 +1,1 @@
-__author__ = 'nik'
-  
+from MediaFolder import MediaFolder
