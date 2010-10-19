@@ -5,6 +5,18 @@ class MediaFile:
     def __init__(self, filePath):
         self.filePath = filePath
 
+    @staticmethod
+    def isValid(file):
+        result = False
+
+        validExtensions = ['.mp3', '.m4a']
+        fileParts = os.path.splitext(file)
+        if(fileParts[1] is not None):
+            if fileParts[1].lower() in validExtensions:
+                result = True
+
+        return result
+
 class MediaDatabase:
     def __init__(self, databaseLocation):
         self.dbConnection = self._getDatabaseConnection(databaseLocation)
