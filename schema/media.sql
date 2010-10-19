@@ -4,14 +4,14 @@ CREATE TABLE IF NOT EXISTS `locations` (
 
 CREATE TABLE IF NOT EXISTS `files` (
   'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  'location' INTEGER NOT NULL,
+  'locationId' INTEGER NOT NULL,
   'relativePath' TEXT NOT NULL,
   'title' TEXT DEFAULT NULL,
   'timeInSeconds' INTEGER NOT NULL,
   'tempo' NUMERIC(3,2) DEFAULT NULL,
   'startTimeInSeconds' FLOAT DEFAULT NULL,
   'stopTimeInSeconds' FLOAT DEFAULT NULL,
-  'artist' INTEGER DEFAULT NULL,
+  'artistId' INTEGER DEFAULT NULL,
   'album' TEXT DEFAULT NULL,
   'albumArtist' INTEGER DEFAULT NULL,
   'lastModified' DATE NOT NULL,
