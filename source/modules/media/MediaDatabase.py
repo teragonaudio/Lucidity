@@ -47,9 +47,16 @@ class MediaDatabase:
 
         return result
 
+    def addLocation(self, location):
+        if location not in self.locations.values():
+            dbCursor = self.dbConnection.cursor()
+            locationAbsolutePath = os.path.abspath(location)
+            dbCursor.execute("INSERT INTO `locations` (`absolutePath`) VALUES ('?')", locationAbsolutePath)
+            self._rescanLocation(locationAbsolutePath)
+
     def rescan(self):
         for locationId, locationPath in self.locations.items():
-            self.rescanLocation(locationPath)
+            self._rescanLocation(locationPath)
 
     def _rescanLocation(self, locationPath):
         print("Scanning folder '" + locationPath + "'")
