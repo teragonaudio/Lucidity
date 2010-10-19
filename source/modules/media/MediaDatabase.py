@@ -49,8 +49,15 @@ class MediaDatabase:
 
     def rescan(self):
         for locationId, locationPath in self.locations.items():
-            print("Scanning folder '" + locationPath + "'")
-            mediaFileList = self._scanDirectory(locationPath, [])
+            self.rescanLocation(locationPath)
+
+    def _rescanLocation(self, locationPath):
+        print("Scanning folder '" + locationPath + "'")
+        for filePath in self._scanDirectory(locationPath, []):
+            if filePath not in self.mediaFiles:
+                mediaFile = MediaFile(filePath)
+                self.mediaFiles[filePath] = filePath
+            #                    self._addFileToDatabase(mediaFile)
 
     def _scanDirectory(self, locationPath, mediaFileList):
         if os.path.exists(locationPath):
