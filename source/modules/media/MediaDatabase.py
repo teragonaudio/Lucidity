@@ -2,9 +2,8 @@ import os
 import sqlite3
 
 class MediaFile:
-    def __init__(self, location, filename):
-        self.location = location
-        self.filename = filename
+    def __init__(self, filePath):
+        self.filePath = filePath
 
 class MediaDatabase:
     def __init__(self, databaseLocation):
@@ -31,7 +30,8 @@ class MediaDatabase:
         dbCursor = self.dbConnection.cursor()
         dbCursor.execute("SELECT `id`, `location`, `filename` FROM `files`")
         for (id, location, filename) in dbCursor:
-            result[id] = MediaFile(location, filename)
+            fileFullPath = os.path.join(self.locations[location], filename)
+            result[fileFullPath] = MediaFile(filename)
 
         return result
 
