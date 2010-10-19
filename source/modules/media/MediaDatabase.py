@@ -58,8 +58,8 @@ class MediaDatabase:
                 fileFullPath = os.path.join(locationPath, file)
                 if(os.path.isdir(fileFullPath)):
                     mediaFileList.append(self._scanDirectory(fileFullPath, mediaFileList))
-                else:
-                    print("Found '" + fileFullPath + "'")
+                elif MediaFile.isValid(fileFullPath):
+                    print("Found file ", file.encode("ascii", "ignore"))
                     mediaFileList.append(fileFullPath)
 
         return mediaFileList
