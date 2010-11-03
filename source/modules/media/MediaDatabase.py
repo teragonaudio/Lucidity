@@ -45,37 +45,54 @@ class MediaDatabase:
     def _loadFilesFromDatabase(self):
         result = {}
 
-        dbCursor = self.dbConnection.cursor()
-        dbCursor.execute("SELECT `id`, `location`, `filename` FROM `files`")
-        for (id, location, filename) in dbCursor:
-            fileFullPath = os.path.join(self.locations[location], filename)
-            result[fileFullPath] = MediaFile(filename)
+        dbCursor = self._dbConnection.cursor()
+        dbCursor.execute("SELECT `id`, `locationId`, `relativePath` FROM `files`")
+        for (id, locationId, filename) in dbCursor:
+            fileFullPath = self.locations[locationId] + filename
+            result[fileFullPath] = MediaFile(fileFullPath)
 
         return result
 
     def addLocation(self, location):
-        if location not in self.locations.values():
-            dbCursor = self.dbConnection.cursor()
+        # Make sure that the location is not a subfolder any previous location
+        locationFoundAsSubfolder = False
+        for location, absolutePath in self.locations.items():
+            if absolutePath.find(location, absolutePath) is not -1:
+                locationFoundAsSubfolder = True
+                break
+
+        # TODO: Extra checks for disallowing root, non-directories, etc.
+        if not locationFoundAsSubfolder:
+            dbCursor = self._dbConnection.cursor()
             locationAbsolutePath = os.path.abspath(location)
-            dbCursor.execute("INSERT INTO `locations` (`absolutePath`) VALUES ('?')", locationAbsolutePath)
-            self._rescanLocation(locationAbsolutePath)
+            dbCursor.execute("INSERT INTO `locations` (`absolutePath`) VALUES (?)", [locationAbsolutePath])
+            self._commitDatabase()
+
+            # Get the index of the location just added and push it to the set
+            dbCursor.execute("SELECT `id`, `absolutePath` FROM `locations` WHERE `absolutePath` = ?", [locationAbsolutePath])
+            (selectedLocation) = dbCursor.fetchone()
+            self.locations[selectedLocation[0]] = selectedLocation[1]
+            self._rescanLocation(selectedLocation)
 
     def rescan(self):
-        for locationId, locationPath in self.locations.items():
-            self._rescanLocation(locationPath)
+        for location in self.locations.items():
+            self._rescanLocation(location)
 
-    def _rescanLocation(self, locationPath):
-        print("Scanning folder '" + locationPath + "'")
-        for filePath in self._scanDirectory(locationPath, []):
-            if filePath not in self.mediaFiles:
+    def _rescanLocation(self, location):
+        print("Scanning folder '" + location[1] + "'")
+        for filePath in self._scanDirectory(location[1], []):
+            if filePath not in self.mediaFiles.keys():
                 mediaFile = MediaFile(filePath)
-                self.mediaFiles[filePath] = filePath
-            #                    self._addFileToDatabase(mediaFile)
+                self.mediaFiles[filePath] = mediaFile
+                self._addFileToDatabase(mediaFile, location)
+
+    def _commitDatabase(self):
+        self._dbConnection.commit()
 
     def _scanDirectory(self, locationPath, mediaFileList):
         if os.path.exists(locationPath):
             for file in os.listdir(locationPath):
-                fileFullPath = os.path.join(locationPath, file)
+                fileFullPath = os.path.join(locationPath, file)                
                 if(os.path.isdir(fileFullPath)):
                     mediaFileList.append(self._scanDirectory(fileFullPath, mediaFileList))
                 elif MediaFile.isValid(fileFullPath):
@@ -83,3 +100,12 @@ class MediaDatabase:
                     mediaFileList.append(fileFullPath)
 
         return mediaFileList
+
+    def _addFileToDatabase(self, mediaFile, location):
+        sliceIndex = len(location[1])
+        mediaFileRelativePath = mediaFile.absolutePath[sliceIndex:]
+
+        dbCursor = self._dbConnection.cursor()
+        dbCursor.execute('''INSERT INTO `files` (`locationId`, `relativePath`, `lastModified`) VALUES (?, ?, ?)''',
+                         [location[0], mediaFileRelativePath, mediaFile.lastModifiedDate])
+        self._commitDatabase()
