@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   'locationId' INTEGER NOT NULL,
   'relativePath' TEXT NOT NULL,
   'title' TEXT DEFAULT NULL,
-  'timeInSeconds' INTEGER NOT NULL,
+  'timeInSeconds' INTEGER DEFAULT NULL,
   'tempo' NUMERIC(3,2) DEFAULT NULL,
   'startTimeInSeconds' FLOAT DEFAULT NULL,
   'stopTimeInSeconds' FLOAT DEFAULT NULL,
