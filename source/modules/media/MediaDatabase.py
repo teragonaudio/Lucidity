@@ -4,6 +4,7 @@ import sqlite3
 class MediaFile:
     def __init__(self, absolutePath):
         self.absolutePath = absolutePath
+        self.exists = os.path.exists(self.absolutePath)
 
     @staticmethod
     def isValid(file):
