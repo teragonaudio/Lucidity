@@ -1,10 +1,14 @@
 import os
 import sqlite3
+import time
 
 class MediaFile:
     def __init__(self, absolutePath):
         self.absolutePath = absolutePath
         self.exists = os.path.exists(self.absolutePath)
+        if self.exists:
+            lastModifiedTime = os.path.getmtime(absolutePath)
+            self.lastModifiedDate = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(lastModifiedTime))
 
     @staticmethod
     def isValid(file):
