@@ -24,7 +24,8 @@ class MediaFile:
 
 class MediaDatabase:
     def __init__(self, databaseLocation):
-        self.dbConnection = self._getDatabaseConnection(databaseLocation)
+        self._databaseLocation = databaseLocation
+        self._dbConnection = self._getDatabaseConnection(databaseLocation)
         self.locations = self._loadLocationsFromDatabase()
         self.mediaFiles = self._loadFilesFromDatabase()
 
@@ -34,7 +35,7 @@ class MediaDatabase:
     def _loadLocationsFromDatabase(self):
         result = {}
 
-        dbCursor = self.dbConnection.cursor()
+        dbCursor = self._dbConnection.cursor()
         dbCursor.execute("SELECT `id`, `absolutePath` FROM `locations`")
         for (id, absolutePath) in dbCursor:
             result[id] = absolutePath
