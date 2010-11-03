@@ -56,8 +56,8 @@ class MediaDatabase:
     def addLocation(self, location):
         # Make sure that the location is not a subfolder any previous location
         locationFoundAsSubfolder = False
-        for location, absolutePath in self.locations.items():
-            if absolutePath.find(location, absolutePath) is not -1:
+        for locationIndex, locationPath in self.locations.items():
+            if locationPath.find(location) is not -1:
                 locationFoundAsSubfolder = True
                 break
 
