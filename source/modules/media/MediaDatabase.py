@@ -30,7 +30,12 @@ class MediaDatabase:
         self.mediaFiles = self._loadFilesFromDatabase()
 
     def _getDatabaseConnection(self, databaseLocation):
+        if not os.path.exists(databaseLocation):
+            self._createDatabase(databaseLocation)
         return sqlite3.connect(databaseLocation)
+
+    def _createDatabase(self, databaseLocation):
+        pass
 
     def _loadLocationsFromDatabase(self):
         result = {}
