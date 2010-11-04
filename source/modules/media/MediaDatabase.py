@@ -83,8 +83,9 @@ class MediaDatabase:
         for filePath in self._scanDirectory(location[1], []):
             if filePath not in self.mediaFiles.keys():
                 mediaFile = MediaFile(filePath)
-                self.mediaFiles[filePath] = mediaFile
-                self._addFileToDatabase(mediaFile, location)
+                if mediaFile.exists:
+                    self.mediaFiles[filePath] = mediaFile
+                    self._addFileToDatabase(mediaFile, location)
 
     def _commitDatabase(self):
         self._dbConnection.commit()
