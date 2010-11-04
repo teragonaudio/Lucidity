@@ -80,12 +80,17 @@ class MediaDatabase:
 
     def _rescanLocation(self, location):
         print("Scanning folder '" + location[1] + "'")
+        newFilesFound = 0
+        totalFilesFound = 0
         for filePath in self._scanDirectory(location[1], []):
             if filePath not in self.mediaFiles.keys():
                 mediaFile = MediaFile(filePath)
                 if mediaFile.exists:
                     self.mediaFiles[filePath] = mediaFile
                     self._addFileToDatabase(mediaFile, location)
+                    newFilesFound += 1
+            totalFilesFound += 1
+        print("Found ", totalFilesFound, " files, ", newFilesFound, " new")
 
     def _commitDatabase(self):
         self._dbConnection.commit()
