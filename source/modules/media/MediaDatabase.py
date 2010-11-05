@@ -31,11 +31,18 @@ class MediaDatabase:
 
     def _getDatabaseConnection(self, databaseLocation):
         if not os.path.exists(databaseLocation):
-            self._createDatabase(databaseLocation)
-        return sqlite3.connect(databaseLocation)
+            return self._createDatabase(databaseLocation)
+        else:
+            # TODO: Need to check database integrity
+            return sqlite3.connect(databaseLocation)
 
     def _createDatabase(self, databaseLocation):
-        pass
+        dbConnection = sqlite3.connect(databaseLocation)
+        schemaFileLocation = os.path.join(os.path.dirname(__file__), "media.sql")
+        schemaFile = open(schemaFileLocation, 'r')
+        dbConnection.executescript(schemaFile.read())
+        schemaFile.close()
+        return dbConnection
 
     def _loadLocationsFromDatabase(self):
         result = {}
