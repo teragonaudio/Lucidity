@@ -183,8 +183,8 @@ class MediaDatabase:
                     del self.mediaFiles[filePath]
                     missingFilesFound += 1
 
-        logger.debug("Found %d files, %d new, %d missing",
-                     totalFilesFound, newFilesFound, missingFilesFound)
+        logger.debug("Found %d files, %d new, %d updated, %d missing",
+                     totalFilesFound, newFilesFound, updatedFiles, missingFilesFound)
 
     def _commitDatabase(self):
         self._dbConnection.commit()
