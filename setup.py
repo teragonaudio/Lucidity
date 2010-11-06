@@ -1,7 +1,5 @@
 from distutils.core import setup
 
-mediaExtraFiles = ["*.sql"]
-
 setup(name = "lucidity",
       packages = ['lucidity',
                   'lucidity.media',
@@ -9,4 +7,4 @@ setup(name = "lucidity",
       package_dir = {'lucidity' : 'source/modules',
         'lucidity.media' : 'source/modules/media',
         'id3reader' : 'third-party/id3reader'},
-      package_data = {'lucidity.media' : mediaExtraFiles})
+      package_data = {'lucidity.media' : ["*.sql"]})
