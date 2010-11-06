@@ -168,6 +168,10 @@ class MediaDatabase:
                     newFilesFound += 1
                 else:
                     mediaFileDbCache = self.mediaFiles[filePath]
+                    # The ID is specific to the database, so this newly-created
+                    # object won't have one yet.  That means that this equality
+                    # comparison would fail, so we copy the ID to this object.
+                    mediaFile.id = mediaFileDbCache.id
                     if mediaFile != mediaFileDbCache:
                         self._updateFileInDatabase(mediaFile, location)
                         updatedFiles += 1
