@@ -27,7 +27,7 @@ class MediaFile:
             self.lastModifiedDate = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(lastModifiedTime))
 
     def __dir__(self):
-        return ["absolutePath", "performer", "title", "album"]
+        return ["id", "absolutePath", "performer", "title", "album"]
 
     def __str__(self):
         result = None
