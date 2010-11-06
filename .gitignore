@@ -1,9 +1,9 @@
 .idea/workspace.xml
+build/*
 *.swp
 *.pyc
 *.o
 *.so
 *.perspectivev3
 *.pbxuser
-*/build/*
 *.db
