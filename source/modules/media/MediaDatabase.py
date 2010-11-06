@@ -105,7 +105,6 @@ class MediaDatabase:
             fileFullPath = location + relativePath
             mediaFile = MediaFile(fileFullPath)
             self._fillMediaFileFields(mediaFile, row, columnNameIndexes)
-            logger.debug(mediaFile)
             result[fileFullPath] = MediaFile(fileFullPath)
 
         return result
