@@ -3,7 +3,7 @@ import sqlite3
 import time
 
 from id3reader import id3reader
-from lucidity.logging.Logger import logger
+from lucidity.Logger import logger
 
 class MediaFile:
     @staticmethod
