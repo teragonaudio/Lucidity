@@ -2,16 +2,10 @@ import os
 import sqlite3
 import time
 
+from id3reader import id3reader
 from lucidity.logging.Logger import logger
 
 class MediaFile:
-    def __init__(self, absolutePath):
-        self.absolutePath = absolutePath
-        self.exists = os.path.exists(self.absolutePath)
-        if self.exists:
-            lastModifiedTime = os.path.getmtime(absolutePath)
-            self.lastModifiedDate = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(lastModifiedTime))
-
     @staticmethod
     def isValid(file):
         result = False
@@ -23,6 +17,28 @@ class MediaFile:
                 result = True
 
         return result
+
+    def __init__(self, absolutePath):
+        self._setDefaultAttributeValues()
+        self.absolutePath = absolutePath
+        self.exists = os.path.exists(self.absolutePath)
+        if self.exists:
+            lastModifiedTime = os.path.getmtime(absolutePath)
+            self.lastModifiedDate = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(lastModifiedTime))
+
+    def __dir__(self):
+        return ["absolutePath", "performer", "title", "album"]
+
+    def _setDefaultAttributeValues(self):
+        for attribute in dir(self):
+            setattr(self, attribute, "")
+
+    def readMetadataFromFile(self, filePath):
+        tagReader = id3reader.Reader(filePath)
+        for attribute in dir(self):
+            tagValue = tagReader.getValue(attribute)
+            if tagValue is not None:
+                setattr(self, attribute, tagValue)
 
 class MediaDatabase:
     def __init__(self, databaseLocation):
@@ -128,6 +144,7 @@ class MediaDatabase:
                 if filePath not in self.mediaFiles.keys():
                     newFilesFound += 1
 
+                mediaFile.readMetadataFromFile(filePath)
                 self.mediaFiles[filePath] = mediaFile
                 totalFilesFound += 1
             else:
