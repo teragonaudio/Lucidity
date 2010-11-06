@@ -219,4 +219,9 @@ class MediaDatabase:
         dbCursor.execute("DELETE FROM `files` WHERE `id` = ?", [mediaFile.id])
 
     def _updateFileInDatabase(self, mediaFile, location):
+        dbCursor = self._dbConnection.cursor()
+        dbCursor.execute('''UPDATE `files`
+            SET `title` = ?, `album` = ?
+            WHERE `id` = ?''', [mediaFile.title, mediaFile.album, mediaFile.id])
+        self._commitDatabase()
         pass
