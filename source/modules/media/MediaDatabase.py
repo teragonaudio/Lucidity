@@ -94,17 +94,26 @@ class MediaDatabase:
 
     def _rescanLocation(self, location):
         logger.debug("Scanning folder '%s'", location[1])
-        newFilesFound = 0
         totalFilesFound = 0
+        newFilesFound = 0
+        missingFilesFound = 0
+
         for filePath in self._scanDirectory(location[1], []):
-            if filePath not in self.mediaFiles.keys():
-                mediaFile = MediaFile(filePath)
-                if mediaFile.exists:
-                    self.mediaFiles[filePath] = mediaFile
-                    self._addFileToDatabase(mediaFile, location)
+            mediaFile = MediaFile(filePath)
+            if mediaFile.exists:
+                self._addFileToDatabase(mediaFile, location)
+                if filePath not in self.mediaFiles.keys():
                     newFilesFound += 1
-            totalFilesFound += 1
-        logger.debug("Found %d files, %d new", totalFilesFound, newFilesFound)
+
+                self.mediaFiles[filePath] = mediaFile
+                totalFilesFound += 1
+            else:
+                if filePath in self.mediaFiles.keys():
+                    del self.mediaFiles[filePath]
+                    missingFilesFound += 1
+
+        logger.debug("Found %d files, %d new, %d missing",
+                     totalFilesFound, newFilesFound, missingFilesFound)
 
     def _commitDatabase(self):
         self._dbConnection.commit()
