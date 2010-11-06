@@ -116,7 +116,8 @@ class MediaDatabase:
     def _fillMediaFileFields(self, mediaFile, row, columnNameIndexes):
         for attribute in dir(mediaFile):
             if attribute in columnNameIndexes:
-                setattr(mediaFile, attribute, columnNameIndexes[attribute])
+                rowValue = self._getRowValue(row, columnNameIndexes, attribute)
+                setattr(mediaFile, attribute, rowValue)
 
     def addLocation(self, location):
         # Make sure that the location is not a subfolder any previous location
