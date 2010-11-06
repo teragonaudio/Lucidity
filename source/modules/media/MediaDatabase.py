@@ -157,15 +157,22 @@ class MediaDatabase:
         totalFilesFound = 0
         newFilesFound = 0
         missingFilesFound = 0
+        updatedFiles = 0
 
         for filePath in self._scanDirectory(location[1], []):
             mediaFile = MediaFile(filePath)
             if mediaFile.exists:
-                self._addFileToDatabase(mediaFile, location)
-                if filePath not in self.mediaFiles.keys():
-                    newFilesFound += 1
-
                 mediaFile.readMetadataFromFile(filePath)
+
+                if filePath not in self.mediaFiles.keys():
+                    self._addFileToDatabase(mediaFile, location)
+                    newFilesFound += 1
+                else:
+                    mediaFileDbCache = self.mediaFiles[filePath]
+                    if mediaFile != mediaFileDbCache:
+                        self._updateFileInDatabase(mediaFile)
+                        updatedFiles += 1
+
                 self.mediaFiles[filePath] = mediaFile
                 totalFilesFound += 1
             else:
@@ -202,3 +209,6 @@ class MediaDatabase:
             ''',
                          [location[0], mediaFileRelativePath, mediaFile.lastModifiedDate])
         self._commitDatabase()
+
+    def _updateFileInDatabase(self, mediaFile):
+        pass
