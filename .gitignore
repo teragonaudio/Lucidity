@@ -6,3 +6,4 @@
 *.perspectivev3
 *.pbxuser
 */build/*
+*.db
