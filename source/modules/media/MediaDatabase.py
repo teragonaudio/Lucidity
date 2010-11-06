@@ -58,14 +58,37 @@ class MediaDatabase:
 
     def _loadFilesFromDatabase(self):
         result = {}
-
         dbCursor = self._dbConnection.cursor()
-        dbCursor.execute("SELECT `id`, `locationId`, `relativePath` FROM `files`")
-        for (id, locationId, filename) in dbCursor:
-            fileFullPath = self.locations[locationId] + filename
+        dbCursor.execute("PRAGMA table_info(`files`)")
+        columnNamesRow = dbCursor.fetchall()
+        columnNameIndexes = self._getColumnNamesDict(columnNamesRow)
+
+        for row in dbCursor.execute("SELECT * FROM `files`"):
+            locationId = self._getRowValue(row, columnNameIndexes, "locationId")
+            relativePath = self._getRowValue(row, columnNameIndexes, "relativePath")
+            location = self.locations[locationId]
+            fileFullPath = location + relativePath
+            mediaFile = MediaFile(fileFullPath)
+            self._fillMediaFileFields(mediaFile, row, columnNameIndexes)
             result[fileFullPath] = MediaFile(fileFullPath)
 
         return result
+
+    def _getColumnNamesDict(self, columnNamesRow):
+        result = {}
+        for column in columnNamesRow:
+            columnName = column[1]
+            columnIndex = column[0]
+            result[columnName] = columnIndex
+        return result
+
+    def _getRowValue(self, row, columnNameIndexes, columnName):
+        return row[columnNameIndexes[columnName]]
+
+    def _fillMediaFileFields(self, mediaFile, row, columnNameIndexes):
+        for attribute in dir(mediaFile):
+            if attribute in columnNameIndexes:
+                setattr(mediaFile, attribute, columnNameIndexes[attribute])
 
     def addLocation(self, location):
         # Make sure that the location is not a subfolder any previous location
