@@ -124,6 +124,9 @@ class MediaDatabase:
         mediaFileRelativePath = mediaFile.absolutePath[sliceIndex:]
 
         dbCursor = self._dbConnection.cursor()
-        dbCursor.execute('''INSERT INTO `files` (`locationId`, `relativePath`, `lastModified`) VALUES (?, ?, ?)''',
+        dbCursor.execute('''INSERT INTO `files`
+          (`locationId`, `relativePath`, `lastModified`)
+          VALUES (?, ?, ?)
+          ''',
                          [location[0], mediaFileRelativePath, mediaFile.lastModifiedDate])
         self._commitDatabase()
