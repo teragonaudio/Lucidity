@@ -112,11 +112,11 @@ class MediaDatabase:
     def _scanDirectory(self, locationPath, mediaFileList):
         if os.path.exists(locationPath):
             for file in os.listdir(locationPath):
-                fileFullPath = os.path.join(locationPath, file)                
+                fileFullPath = os.path.join(locationPath, file)
+                logger.debug("Found file '%s'", (file))
                 if(os.path.isdir(fileFullPath)):
                     self._scanDirectory(fileFullPath, mediaFileList)
                 elif MediaFile.isValid(fileFullPath):
-                    logger.debug("Found file '%s'", (file))
                     mediaFileList.append(fileFullPath)
 
         return mediaFileList
