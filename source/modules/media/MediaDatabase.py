@@ -29,6 +29,17 @@ class MediaFile:
     def __dir__(self):
         return ["absolutePath", "performer", "title", "album"]
 
+    def __str__(self):
+        result = None
+        for attribute in dir(self):
+            attr = getattr(self, attribute)
+            if result == None:
+                result = ""
+            else:
+                result += ", "
+            result += attribute + ": '" + attr.__str__() + "'"
+        return result
+
     def _setDefaultAttributeValues(self):
         for attribute in dir(self):
             setattr(self, attribute, "")
@@ -86,6 +97,7 @@ class MediaDatabase:
             fileFullPath = location + relativePath
             mediaFile = MediaFile(fileFullPath)
             self._fillMediaFileFields(mediaFile, row, columnNameIndexes)
+            logger.debug(mediaFile)
             result[fileFullPath] = MediaFile(fileFullPath)
 
         return result
