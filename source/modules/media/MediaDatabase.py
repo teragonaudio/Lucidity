@@ -2,6 +2,8 @@ import os
 import sqlite3
 import time
 
+from lucidity.logging.Logger import logger
+
 class MediaFile:
     def __init__(self, absolutePath):
         self.absolutePath = absolutePath
@@ -91,7 +93,7 @@ class MediaDatabase:
             self._rescanLocation(location)
 
     def _rescanLocation(self, location):
-        print("Scanning folder '" + location[1] + "'")
+        logger.debug("Scanning folder '%s'", location[1])
         newFilesFound = 0
         totalFilesFound = 0
         for filePath in self._scanDirectory(location[1], []):
@@ -102,7 +104,7 @@ class MediaDatabase:
                     self._addFileToDatabase(mediaFile, location)
                     newFilesFound += 1
             totalFilesFound += 1
-        print("Found ", totalFilesFound, " files, ", newFilesFound, " new")
+        logger.debug("Found %d files, %d new", totalFilesFound, newFilesFound)
 
     def _commitDatabase(self):
         self._dbConnection.commit()
@@ -114,7 +116,7 @@ class MediaDatabase:
                 if(os.path.isdir(fileFullPath)):
                     self._scanDirectory(fileFullPath, mediaFileList)
                 elif MediaFile.isValid(fileFullPath):
-                    print("Found file ", file.encode("ascii", "ignore"))
+                    logger.debug("Found file '%s'", (file))
                     mediaFileList.append(fileFullPath)
 
         return mediaFileList
