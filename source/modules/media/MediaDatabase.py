@@ -10,7 +10,7 @@ class MediaFile:
     def isValid(file):
         result = False
 
-        validExtensions = ['.mp3', '.m4a']
+        validExtensions = ['.mp3']
         fileParts = os.path.splitext(file)
         if(fileParts[1] is not None):
             if fileParts[1].lower() in validExtensions:
