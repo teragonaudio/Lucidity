@@ -40,6 +40,14 @@ class MediaFile:
             result += attribute + ": '" + attr.__str__() + "'"
         return result
 
+    def __eq__(self, other):
+        for attribute in dir(self):
+            selfAttr = getattr(self, attribute)
+            otherAttr = getattr(other, attribute)
+            if selfAttr != otherAttr:
+                return False
+        return True
+
     def _setDefaultAttributeValues(self):
         for attribute in dir(self):
             setattr(self, attribute, "")
