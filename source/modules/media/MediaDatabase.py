@@ -207,10 +207,11 @@ class MediaDatabase:
 
         dbCursor = self._dbConnection.cursor()
         dbCursor.execute('''INSERT INTO `files`
-            (`locationId`, `relativePath`, `lastModified`)
-            VALUES (?, ?, ?)
+            (`locationId`, `relativePath`, `lastModified`, `title`, `album`)
+            VALUES (?, ?, ?, ?, ?)
             ''',
-                         [location[0], mediaFileRelativePath, mediaFile.lastModifiedDate])
+                         [location[0], mediaFileRelativePath, mediaFile.lastModifiedDate,
+                         mediaFile.title, mediaFile.album])
         self._commitDatabase()
 
     def _deleteFileFromDatabase(self, mediaFile):
