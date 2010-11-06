@@ -169,7 +169,7 @@ class MediaDatabase:
                 else:
                     mediaFileDbCache = self.mediaFiles[filePath]
                     if mediaFile != mediaFileDbCache:
-                        self._updateFileInDatabase(mediaFile)
+                        self._updateFileInDatabase(mediaFile, location)
                         updatedFiles += 1
 
                 self.mediaFiles[filePath] = mediaFile
@@ -209,5 +209,9 @@ class MediaDatabase:
                          [location[0], mediaFileRelativePath, mediaFile.lastModifiedDate])
         self._commitDatabase()
 
-    def _updateFileInDatabase(self, mediaFile):
+    def _deleteFileFromDatabase(self, mediaFile):
+        dbCursor = self._dbConnection.cursor()
+        dbCursor.execute("DELETE FROM `files` WHERE `id` = ?", [mediaFile.id])
+
+    def _updateFileInDatabase(self, mediaFile, location):
         pass
