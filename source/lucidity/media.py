@@ -184,7 +184,7 @@ class MediaDatabase:
                     # comparison would fail, so we copy the ID to this object.
                     mediaFile.id = mediaFileDbCache.id
                     if mediaFile != mediaFileDbCache:
-                        self._updateFileInDatabase(mediaFile, location)
+                        self._updateFileInDatabase(mediaFile)
                         updatedFiles += 1
 
                 self.mediaFiles[filePath] = mediaFile
@@ -230,7 +230,7 @@ class MediaDatabase:
         dbCursor = self._dbConnection.cursor()
         dbCursor.execute("DELETE FROM `files` WHERE `id` = ?", [mediaFile.id])
 
-    def _updateFileInDatabase(self, mediaFile, location):
+    def _updateFileInDatabase(self, mediaFile):
         dbCursor = self._dbConnection.cursor()
         dbCursor.execute('''UPDATE `files`
             SET `title` = ?, `album` = ?
