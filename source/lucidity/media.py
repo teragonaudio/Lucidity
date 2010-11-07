@@ -30,7 +30,9 @@ class MediaFile:
 
     def __dir__(self):
         return ["id", "absolutePath", "title", "album", "artist", "albumArtist", "year",
-                "lastModified"]
+                "lastModified", "lastPlayed", "playCount", "timeInSeconds", "tempo",
+                "startTimeInSeconds", "stopTimeInSeconds"
+        ]
 
     def __str__(self):
         result = None
