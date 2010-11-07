@@ -196,7 +196,17 @@ class MediaDatabase:
 
         dbCursor = self._dbConnection.cursor()
         dbCursor.execute('SELECT `id` FROM `files` WHERE ' + whereClause)
-        return dbCursor.fetchall()
+        searchResults = []
+        done = False
+        while not done:
+            row = dbCursor.fetchone()
+            if row is None:
+                done = True
+            else:
+                searchResults.append(self.mediaFiles[row[0]])
+        logger.debug("Found %d results for query '%s'", len(searchResults), searchQuery)
+
+        return searchResults
 
     def _rescanLocation(self, location):
         logger.info("Scanning folder '%s'", location[1])
