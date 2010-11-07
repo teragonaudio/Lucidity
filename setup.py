@@ -3,12 +3,10 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 import sys
 
-link_args = []
-    link_args = [
-        "-framework", "AudioUnit",
-        "-framework", "CoreAudio"
-        ]
+platformLinkArgs = []
+
 if sys.platform == "darwin":
+    platformLinkArgs = ['-framework', 'AudioUnit']
 
 setup(name = "lucidity",
       cmdclass = {'build_ext': build_ext},
@@ -26,6 +24,6 @@ setup(name = "lucidity",
       ext_modules = [
           Extension("lucidity.audiodevice",
                     ["source/lucidity/audiodevice.pyx"],
-                    extra_link_args = link_args)
+                    extra_link_args = platformLinkArgs)
           ],
       )
