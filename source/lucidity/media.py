@@ -217,16 +217,34 @@ class MediaDatabase:
         return mediaFileList
 
     def _addFileToDatabase(self, mediaFile, location):
-        sliceIndex = len(location[1])
-        mediaFileRelativePath = mediaFile.absolutePath[sliceIndex:]
+        # Slice off the location's path plus an extra character for the path separator
+        sliceFromIndex = len(location[1]) + 1
+        mediaFileRelativePath = mediaFile.absolutePath[sliceFromIndex:]
+        otherFields = {
+            'relativePath': mediaFileRelativePath,
+            'locationId': location[0]
+        }
+        queryFields = self._getQueryFields(mediaFile, otherFields)
 
+        # Place fields into comma-separated strings in order to build the insert query
+        queryColumns = None
+        queryValuePlaceholders = None
+        queryValues = []
+        for (field, value) in queryFields.items():
+            if queryColumns is None:
+                queryColumns = ''
+                queryValuePlaceholders = ''
+            else:
+                queryColumns += ', '
+                queryValuePlaceholders += ', '
+
+            queryColumns += '`' + field + '`'
+            queryValuePlaceholders += '?'
+            queryValues.append(value)
+
+        queryString = 'INSERT INTO `files` (' + queryColumns + ') VALUES (' + queryValuePlaceholders + ')'
         dbCursor = self._dbConnection.cursor()
-        dbCursor.execute('''INSERT INTO `files`
-            (`locationId`, `relativePath`, `lastModified`, `title`, `album`)
-            VALUES (?, ?, ?, ?, ?)
-            ''',
-                         [location[0], mediaFileRelativePath, mediaFile.lastModifiedDate,
-                          mediaFile.title, mediaFile.album])
+        dbCursor.execute(queryString, queryValues)
         self._commitDatabase()
 
     def _deleteFileFromDatabase(self, mediaFile):
@@ -235,8 +253,36 @@ class MediaDatabase:
 
     def _updateFileInDatabase(self, mediaFile):
         dbCursor = self._dbConnection.cursor()
-        dbCursor.execute('''UPDATE `files`
-            SET `title` = ?, `album` = ?
-            WHERE `id` = ?''', [mediaFile.title, mediaFile.album, mediaFile.id])
+        queryFields = self._getQueryFields(mediaFile, {})
+
+        updatePairs = None
+        updateValues = []
+        for (field, value) in queryFields.items():
+            if updatePairs is None:
+                updatePairs = ''
+            else:
+                updatePairs += ', '
+
+            updatePairs += '`' + field + '` = ?'
+            updateValues.append(value)
+
+        queryString = 'UPDATE `files` SET ' + updatePairs + ' WHERE `id` = ?'
+        updateValues.append(mediaFile.id)
+        dbCursor.execute(queryString, updateValues)
         self._commitDatabase()
         pass
+
+    def _getQueryFields(self, mediaFile, otherFields):
+        queryFields = otherFields
+
+        # Manually insert some fields which do not exist in the MediaFile class
+        # before building a query
+        for attribute in dir(mediaFile):
+            if attribute in self._filesColumns:
+                attributeValue = getattr(mediaFile, attribute)
+                if attributeValue is not None:
+                    queryFields[attribute] = attributeValue
+
+        # This field may not be included in the query, as it is auto-incremented
+        del(queryFields['id'])
+        return queryFields
