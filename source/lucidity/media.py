@@ -174,6 +174,30 @@ class MediaDatabase:
         for location in self.locations.items():
             self._rescanLocation(location)
 
+    def search(self, searchQuery, inColumns = None, matchExact = False):
+        if inColumns is None:
+            # TODO: Ack, this is ugly.  Maybe we are abusing __dir__ here
+            # The dir() call will work as expected but only with an instantiated
+            # object.  When calling dir(MediaFile), the default known attributes
+            # are returned, and the __dir__ override doesn't get hit.
+            inColumns = dir(MediaFile(None))
+
+        matchTypeSeparator = " OR "
+        if matchExact:
+            matchTypeSeparator = " AND "
+
+        whereClause = None
+        for column in inColumns:
+            if whereClause is None:
+                whereClause = ""
+            else:
+                whereClause += matchTypeSeparator
+            whereClause += '`' + column + '` LIKE "' + searchQuery + '%"'
+
+        dbCursor = self._dbConnection.cursor()
+        dbCursor.execute('SELECT `id` FROM `files` WHERE ' + whereClause)
+        return dbCursor.fetchall()
+
     def _rescanLocation(self, location):
         logger.info("Scanning folder '%s'", location[1])
         totalFilesFound = 0
