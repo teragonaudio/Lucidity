@@ -116,7 +116,7 @@ class MediaDatabase:
             fileFullPath = os.path.join(location, relativePath)
             mediaFile = MediaFile(fileFullPath)
             self._fillMediaFileFields(mediaFile, row, self._filesColumns)
-            result[fileFullPath] = mediaFile
+            result[mediaFile.id] = mediaFile
 
         return result
 
@@ -184,22 +184,32 @@ class MediaDatabase:
         for filePath in self._scanDirectory(location[1], []):
             mediaFile = MediaFile(filePath)
             if mediaFile.exists:
+                mediaFileId = None
                 mediaFile.readMetadataFromFile(filePath)
+                mediaFileRelativePath = mediaFile.relativePath(location[1])
+                searchResultIds = self.search(mediaFileRelativePath, ['relativePath'], matchExact = True)
+                
+                if isinstance(searchResultIds, list):
+                    for result in searchResultIds:
+                        resultId = result[0]
+                        if self.mediaFiles[resultId].absolutePath == mediaFile.absolutePath:
+                            mediaFileId = resultId
+                            break
 
-                if filePath not in self.mediaFiles.keys():
-                    self._addFileToDatabase(mediaFile, location)
+                if mediaFileId not in self.mediaFiles.keys():
+                    newId = self._addFileToDatabase(mediaFile, location)
+                    mediaFile.id = newId
                     newFilesFound += 1
                 else:
-                    mediaFileDbCache = self.mediaFiles[filePath]
                     # The ID is specific to the database, so this newly-created
                     # object won't have one yet.  That means that this equality
                     # comparison would fail, so we copy the ID to this object.
-                    mediaFile.id = mediaFileDbCache.id
-                    if mediaFile != mediaFileDbCache:
+                    mediaFile.id = mediaFileId
+                    if mediaFile != self.mediaFiles[mediaFileId]:
                         self._updateFileInDatabase(mediaFile)
                         updatedFiles += 1
 
-                self.mediaFiles[filePath] = mediaFile
+                self.mediaFiles[mediaFile.id] = mediaFile
                 logger.debug(mediaFile)
                 totalFilesFound += 1
             else:
