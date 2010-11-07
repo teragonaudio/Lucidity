@@ -153,7 +153,8 @@ class MediaDatabase:
             self._commitDatabase()
 
             # Get the index of the location just added and push it to the set
-            dbCursor.execute("SELECT `id`, `absolutePath` FROM `locations` WHERE `absolutePath` = ?", [locationAbsolutePath])
+            dbCursor.execute("SELECT `id`, `absolutePath` FROM `locations` WHERE `absolutePath` = ?",
+                             [locationAbsolutePath])
             (selectedLocation) = dbCursor.fetchone()
             self.locations[selectedLocation[0]] = selectedLocation[1]
             self._rescanLocation(selectedLocation)
@@ -223,7 +224,7 @@ class MediaDatabase:
             VALUES (?, ?, ?, ?, ?)
             ''',
                          [location[0], mediaFileRelativePath, mediaFile.lastModifiedDate,
-                         mediaFile.title, mediaFile.album])
+                          mediaFile.title, mediaFile.album])
         self._commitDatabase()
 
     def _deleteFileFromDatabase(self, mediaFile):
