@@ -21,8 +21,10 @@ class MediaFile:
     def __init__(self, absolutePath):
         self._setDefaultAttributeValues()
         self.absolutePath = absolutePath
-        self.exists = os.path.exists(self.absolutePath)
-        if self.exists:
+        self.exists = False
+
+        if self.absolutePath is not None and os.path.exists(self.absolutePath):
+            self.exists = True
             lastModifiedTime = os.path.getmtime(absolutePath)
             self.lastModified = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(lastModifiedTime))
 
