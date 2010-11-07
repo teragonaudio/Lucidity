@@ -8,7 +8,8 @@ class MediaFinder:
                                        ('artist', 'ASC'),
                                        ('title', 'ASC')]
 
-    def find(self, searchQuery):
+    def find(self, searchQuery, matchFromStart = False):
         return self._mediaDatabase.search(searchQuery,
                                           searchColumns = self._defaultSearchColumns,
-                                          orderByColumns = self._defaultOrderByColumns)
+                                          orderByColumns = self._defaultOrderByColumns,
+                                          matchFromStart = matchFromStart)
