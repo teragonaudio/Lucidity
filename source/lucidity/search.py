@@ -2,9 +2,13 @@ class MediaFinder:
     def __init__(self, mediaDatabase):
         self._mediaDatabase = mediaDatabase
         self._defaultSearchColumns = ['title', 'artist', 'albumArtist', 'album']
+        self._defaultGroupByColumns = ['artist', 'album']
+        self._defaultOrderByColumns = [('lastPlayed', 'DESC'),
+                                       ('lastModified', 'DESC'),
+                                       ('artist', 'ASC'),
+                                       ('title', 'ASC')]
 
-    def find(self, searchQuery, inColumns = None):
-        if inColumns is None:
-            inColumns = self._defaultSearchColumns
-        searchResults = self._mediaDatabase.search(searchQuery, inColumns)
-        return searchResults
+    def find(self, searchQuery):
+        return self._mediaDatabase.search(searchQuery,
+                                          searchColumns = self._defaultSearchColumns,
+                                          orderByColumns = self._defaultOrderByColumns)
