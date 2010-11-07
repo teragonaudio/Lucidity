@@ -4,6 +4,7 @@ from lucidity.media import MediaDatabase
 if __name__ == "__main__":
     mediaDatabase = MediaDatabase("media.db")
     mediaFinder = MediaFinder(mediaDatabase)
-    searchResults = mediaFinder.find("Album")
+    searchResults = mediaFinder.find("syntax")
     for mediaFile in searchResults:
-        print(mediaFile)
+        safeString = mediaFile.__str__()
+        print(safeString.encode("ascii", "ignore"))
