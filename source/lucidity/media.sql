@@ -16,4 +16,5 @@ CREATE TABLE IF NOT EXISTS `files` (
   'albumArtist' INTEGER DEFAULT NULL,
   'lastModified' DATE NOT NULL,
   'lastPlayed' DATE DEFAULT NULL,
+  'year' DATE DEFAULT NULL,
   'playCount' INTEGER DEFAULT '0');
