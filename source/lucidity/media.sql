@@ -11,13 +11,9 @@ CREATE TABLE IF NOT EXISTS `files` (
   'tempo' NUMERIC(3,2) DEFAULT NULL,
   'startTimeInSeconds' FLOAT DEFAULT NULL,
   'stopTimeInSeconds' FLOAT DEFAULT NULL,
-  'artistId' INTEGER DEFAULT NULL,
+  'artist' TEXT DEFAULT NULL,
   'album' TEXT DEFAULT NULL,
   'albumArtist' INTEGER DEFAULT NULL,
   'lastModified' DATE NOT NULL,
   'lastPlayed' DATE DEFAULT NULL,
   'playCount' INTEGER DEFAULT '0');
-
-CREATE TABLE IF NOT EXISTS `artists` (
-  'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  'name' TEXT NOT NULL);
