@@ -54,6 +54,7 @@ class MediaFile:
     def _setDefaultAttributeValues(self):
         for attribute in dir(self):
             setattr(self, attribute, "")
+        self.id = -1
 
     def readMetadataFromFile(self, filePath):
         tagReader = id3reader.Reader(filePath)
