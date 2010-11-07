@@ -176,28 +176,53 @@ class MediaDatabase:
         for location in self.locations.items():
             self._rescanLocation(location)
 
-    def search(self, searchQuery, inColumns = None, matchExact = False):
-        if inColumns is None:
+    def search(self, searchQuery, searchColumns = None, groupByColumns = None,
+               orderByColumns = None, matchExact = False, matchFromStart = False):
+        if searchColumns is None:
             # TODO: Ack, this is ugly.  Maybe we are abusing __dir__ here
             # The dir() call will work as expected but only with an instantiated
             # object.  When calling dir(MediaFile), the default known attributes
             # are returned, and the __dir__ override doesn't get hit.
-            inColumns = dir(MediaFile(None))
+            searchColumns = dir(MediaFile(None))
 
         matchTypeSeparator = " OR "
         if matchExact:
             matchTypeSeparator = " AND "
 
         whereClause = None
-        for column in inColumns:
+        for column in searchColumns:
             if whereClause is None:
                 whereClause = ""
             else:
                 whereClause += matchTypeSeparator
-            whereClause += '`' + column + '` LIKE "' + searchQuery + '%"'
+            whereClause += '`' + column + '` LIKE "'
+            if not matchFromStart:
+                whereClause += '%'
+            whereClause += searchQuery + '%"'
 
         dbCursor = self._dbConnection.cursor()
-        dbCursor.execute('SELECT `id` FROM `files` WHERE ' + whereClause)
+        queryString = 'SELECT `id` FROM `files` WHERE ' + whereClause
+        if groupByColumns is not None and isinstance(groupByColumns, list):
+            groupByString = None
+            for column in groupByColumns:
+                if groupByString is None:
+                    groupByString = ' GROUP BY '
+                else:
+                    groupByString += ', '
+                groupByString += '`' + column + '`'
+            queryString += groupByString
+
+        if orderByColumns is not None and isinstance(orderByColumns, list):
+            orderByString = None
+            for (column, orderType) in orderByColumns:
+                if orderByString is None:
+                    orderByString = ' ORDER BY '
+                else:
+                    orderByString += ', '
+                orderByString += '`' + column + '` ' + orderType
+            queryString += orderByString
+
+        dbCursor.execute(queryString)
         searchResults = []
         done = False
         while not done:
