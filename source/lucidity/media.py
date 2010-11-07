@@ -130,6 +130,14 @@ class MediaDatabase:
         addLocation = True
         locationAbsolutePath = os.path.abspath(location)
 
+        if locationAbsolutePath == os.sep:
+            raise Exception("The top-level directory is not permitted for locations")
+        if not os.path.exists(locationAbsolutePath):
+            raise Exception("This folder does not exist")
+        else:
+            if not os.path.isdir(locationAbsolutePath):
+                raise Exception("This location is not a directory")
+
         # Make sure that the location is not a subfolder any previous location
         for locationIndex, locationPath in self.locations.items():
             # Check if the location is the same as a known location, or a subfolder
