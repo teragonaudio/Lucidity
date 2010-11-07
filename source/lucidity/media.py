@@ -60,6 +60,12 @@ class MediaFile:
             if tagValue is not None:
                 setattr(self, attribute, tagValue)
 
+    def relativePath(self, location):
+        # Slice off the location's path plus an extra character for the path separator
+        sliceFromIndex = len(location) + 1
+        return self.absolutePath[sliceFromIndex:]
+
+
 class MediaDatabase:
     def __init__(self, databaseLocation):
         self._filesColumns = {}
@@ -217,11 +223,8 @@ class MediaDatabase:
         return mediaFileList
 
     def _addFileToDatabase(self, mediaFile, location):
-        # Slice off the location's path plus an extra character for the path separator
-        sliceFromIndex = len(location[1]) + 1
-        mediaFileRelativePath = mediaFile.absolutePath[sliceFromIndex:]
         otherFields = {
-            'relativePath': mediaFileRelativePath,
+            'relativePath': mediaFile.relativePath(location[1]),
             'locationId': location[0]
         }
         queryFields = self._getQueryFields(mediaFile, otherFields)
