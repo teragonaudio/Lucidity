@@ -225,9 +225,8 @@ class MediaDatabase:
                 
                 if isinstance(searchResultIds, list):
                     for result in searchResultIds:
-                        resultId = result[0]
-                        if self.mediaFiles[resultId].absolutePath == mediaFile.absolutePath:
-                            mediaFileId = resultId
+                        if result.absolutePath == mediaFile.absolutePath:
+                            mediaFileId = result.id
                             break
 
                 if mediaFileId not in self.mediaFiles.keys():
