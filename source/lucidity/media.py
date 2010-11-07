@@ -251,7 +251,9 @@ class MediaDatabase:
         queryString = 'INSERT INTO `files` (' + queryColumns + ') VALUES (' + queryValuePlaceholders + ')'
         dbCursor = self._dbConnection.cursor()
         dbCursor.execute(queryString, queryValues)
+        newId = dbCursor.lastrowid
         self._commitDatabase()
+        return newId
 
     def _deleteFileFromDatabase(self, mediaFile):
         dbCursor = self._dbConnection.cursor()
