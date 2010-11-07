@@ -163,7 +163,7 @@ class MediaDatabase:
             self._rescanLocation(location)
 
     def _rescanLocation(self, location):
-        logger.debug("Scanning folder '%s'", location[1])
+        logger.info("Scanning folder '%s'", location[1])
         totalFilesFound = 0
         newFilesFound = 0
         missingFilesFound = 0
@@ -194,8 +194,8 @@ class MediaDatabase:
                     del self.mediaFiles[filePath]
                     missingFilesFound += 1
 
-        logger.debug("Found %d files, %d new, %d updated, %d missing",
-                     totalFilesFound, newFilesFound, updatedFiles, missingFilesFound)
+        logger.info("Found %d files, %d new, %d updated, %d missing",
+                    totalFilesFound, newFilesFound, updatedFiles, missingFilesFound)
 
     def _commitDatabase(self):
         self._dbConnection.commit()
