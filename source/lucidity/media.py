@@ -43,8 +43,8 @@ class MediaFile:
 
     def __eq__(self, other):
         for attribute in dir(self):
-            selfAttr = getattr(self, attribute)
-            otherAttr = getattr(other, attribute)
+            selfAttr = str(getattr(self, attribute))
+            otherAttr = str(getattr(other, attribute))
             if selfAttr != otherAttr:
                 return False
         return True
