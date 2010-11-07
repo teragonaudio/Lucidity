@@ -126,7 +126,7 @@ class MediaDatabase:
         for attribute in dir(mediaFile):
             if attribute in columnNameIndexes:
                 rowValue = self._getRowValue(row, columnNameIndexes, attribute)
-                setattr(mediaFile, attribute, rowValue)
+                setattr(mediaFile, attribute, str(rowValue))
 
     def addLocation(self, location):
         addLocation = True
