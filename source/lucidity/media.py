@@ -70,7 +70,7 @@ class MediaDatabase:
 
     def _getDatabaseConnection(self, databaseLocation):
         if os.path.exists(databaseLocation):
-            # TODO: Need to check database integrity
+            # TODO: Need to check database integrity, schema, etc.
             return sqlite3.connect(databaseLocation)
         else:
             return self._createDatabase(databaseLocation)
