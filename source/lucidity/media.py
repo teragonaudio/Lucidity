@@ -127,17 +127,20 @@ class MediaDatabase:
                 setattr(mediaFile, attribute, rowValue)
 
     def addLocation(self, location):
-        # Make sure that the location is not a subfolder any previous location
-        locationFoundAsSubfolder = False
-        for locationIndex, locationPath in self.locations.items():
-            if locationPath.find(location) is not -1:
-                locationFoundAsSubfolder = True
-                break
+        addLocation = True
+        locationAbsolutePath = os.path.abspath(location)
 
-        # TODO: Extra checks for disallowing root, non-directories, etc.
-        if not locationFoundAsSubfolder:
+        # Make sure that the location is not a subfolder any previous location
+        for locationIndex, locationPath in self.locations.items():
+            # Check if the location is the same as a known location, or a subfolder
+            # of an already known location
+            if locationAbsolutePath.find(locationPath) is not -1:
+                addLocation = False
+            # Jump out of this loop if the location was found
+            if not addLocation: break
+
+        if addLocation:
             dbCursor = self._dbConnection.cursor()
-            locationAbsolutePath = os.path.abspath(location)
             dbCursor.execute("INSERT INTO `locations` (`absolutePath`) VALUES (?)", [locationAbsolutePath])
             self._commitDatabase()
 
