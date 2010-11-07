@@ -62,6 +62,7 @@ class MediaFile:
 
 class MediaDatabase:
     def __init__(self, databaseLocation):
+        self._filesColumns = {}
         self._databaseLocation = databaseLocation
         self._dbConnection = self._getDatabaseConnection(databaseLocation)
         self.locations = self._loadLocationsFromDatabase()
@@ -96,16 +97,16 @@ class MediaDatabase:
         result = {}
         dbCursor = self._dbConnection.cursor()
         dbCursor.execute("PRAGMA table_info(`files`)")
-        columnNamesRow = dbCursor.fetchall()
-        columnNameIndexes = self._getColumnNamesDict(columnNamesRow)
+        columnNames = dbCursor.fetchall()
+        self._filesColumns = self._getColumnNamesDict(columnNames)
 
         for row in dbCursor.execute("SELECT * FROM `files`"):
-            locationId = self._getRowValue(row, columnNameIndexes, "locationId")
-            relativePath = self._getRowValue(row, columnNameIndexes, "relativePath")
+            locationId = self._getRowValue(row, self._filesColumns, "locationId")
+            relativePath = self._getRowValue(row, self._filesColumns, "relativePath")
             location = self.locations[locationId]
-            fileFullPath = location + relativePath
+            fileFullPath = os.path.join(location, relativePath)
             mediaFile = MediaFile(fileFullPath)
-            self._fillMediaFileFields(mediaFile, row, columnNameIndexes)
+            self._fillMediaFileFields(mediaFile, row, self._filesColumns)
             result[fileFullPath] = mediaFile
 
         return result
