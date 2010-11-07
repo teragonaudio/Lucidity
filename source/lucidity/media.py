@@ -188,6 +188,7 @@ class MediaDatabase:
                         updatedFiles += 1
 
                 self.mediaFiles[filePath] = mediaFile
+                logger.debug(mediaFile)
                 totalFilesFound += 1
             else:
                 if filePath in self.mediaFiles.keys():
