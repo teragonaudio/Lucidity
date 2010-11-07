@@ -24,10 +24,11 @@ class MediaFile:
         self.exists = os.path.exists(self.absolutePath)
         if self.exists:
             lastModifiedTime = os.path.getmtime(absolutePath)
-            self.lastModifiedDate = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(lastModifiedTime))
+            self.lastModified = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(lastModifiedTime))
 
     def __dir__(self):
-        return ["id", "absolutePath", "title", "album", "artist", "albumArtist", "year"]
+        return ["id", "absolutePath", "title", "album", "artist", "albumArtist", "year",
+                "lastModified"]
 
     def __str__(self):
         result = None
