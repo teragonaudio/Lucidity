@@ -67,11 +67,11 @@ class MediaDatabase:
         self.mediaFiles = self._loadFilesFromDatabase()
 
     def _getDatabaseConnection(self, databaseLocation):
-        if not os.path.exists(databaseLocation):
-            return self._createDatabase(databaseLocation)
-        else:
+        if os.path.exists(databaseLocation):
             # TODO: Need to check database integrity
             return sqlite3.connect(databaseLocation)
+        else:
+            return self._createDatabase(databaseLocation)
 
     def _createDatabase(self, databaseLocation):
         dbConnection = sqlite3.connect(databaseLocation)
