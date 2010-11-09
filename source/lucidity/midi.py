@@ -3,6 +3,7 @@ from pygame import midi
 from lucidity.log import logger
 from threading import Thread
 from time import sleep
+from multiprocessing.synchronize import Lock
 
 class MidiEvent:
     def __init__(self, status, data1, data2, timestamp = 0):
@@ -54,7 +55,7 @@ class MidiOutput(MidiDevice):
 class MidiDeviceList:
     def __init__(self):
         self.devices = None
-        self.openedInputs = {}
+        self._openedInputs = {}
         logger.info("Initializing MIDI")
         pygame.midi.init()
         self.rescan()
@@ -97,21 +98,28 @@ class MidiDeviceList:
 class MidiEventLoop(Thread):
     def __init__(self, pollIntervalInMs = 25):
         Thread.__init__(self, name = "MidiEventLoop")
+        self._lock = Lock()
         self._isRunning = False
         self._pollInterval = pollIntervalInMs / 1000
         self.devices = MidiDeviceList()
 
     def terminate(self):
-        # TODO: This is not really thread-safe
+        self._lock.acquire(True)
         self._isRunning = False
+        for device in self.devices.openedInputs():
+            device.close()
         pygame.midi.quit()
+        self._lock.release()
 
     def run(self):
+        logger.debug("MidiEventLoop started")
         self._isRunning = True
         while self._isRunning:
-            for device in self.devices.openedInputs.values():
+            self._lock.acquire(True)
+            for device in self.devices.openedInputs():
                 while device.poll():
                     self._parseEvent(device.readEvents())
+            self._lock.release()
             sleep(self._pollInterval)
 
     def _parseEvent(self, eventList):
