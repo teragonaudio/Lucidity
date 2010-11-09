@@ -29,11 +29,9 @@ class MidiDevice:
             result += "Not Open"
         return result
 
-    def open(self):
-        pass
-
-    def poll(self):
-        pass
+    def open(self): pass
+    def close(self): pass
+    def poll(self): pass
 
 class MidiInput(MidiDevice):
     def __init__(self, id, name, opened):
