@@ -1,4 +1,5 @@
 import cython
+from lucidity.log import logger
 
 cdef extern from "stdlib.h":
     void* malloc(size_t size)
@@ -121,11 +122,10 @@ class AudioDeviceException(Exception):
 
 cdef class AudioDeviceFactory:
     def getAudioDevice(self):
-        import os
-        sysname = os.uname()[0]
-        if sysname == "Darwin":
+        import sys
+        if sys.platform == "darwin":
             return AudioDeviceOSX()
-        elif sysname == "Windows":
+        elif sys.platform == "windows":
             return AudioDeviceASIO()
         else:
             return AudioDeviceUnavailable()
@@ -141,13 +141,11 @@ cdef class AudioDeviceOSX:
 
         component = FindNextComponent(NULL, &desc)
         if component is NULL:
-            print("Could not locate default audio device")
-            return False
+            raise AudioDeviceException("Could not locate default audio device")
 
         err = OpenAComponent(component, &gOutputUnit)
         if component is NULL or err is not 0:
-            print("Error opening default audio device")
-            return False
+            raise AudioDeviceException("Error opening default audio device")
 
         audioUnitCallback = cython.declare(AURenderCallbackStruct)
         audioUnitCallback.inputProc = audioDeviceRenderer
@@ -156,11 +154,12 @@ cdef class AudioDeviceOSX:
         err = AudioUnitSetProperty(gOutputUnit, kAudioUnitProperty_SetRenderCallback,
             kAudioUnitScope_Input, 0, &audioUnitCallback, sizeof(audioUnitCallback))
         if err is not 0:
-            print("Could not set output renderer")
-            return False
+            raise AudioDeviceException("Could not set output renderer")
 
-        print("OMFG")
-        return True
+        logger.info("Audio device initialized")
+
+    def uninitialize(self):
+        AudioOutputUnitStop(gOutputUnit)
 
 cdef api OSStatus audioDeviceRenderer(void* inRefCon,
     AudioUnitRenderActionFlags* ioActionFlags,
@@ -172,9 +171,8 @@ cdef api OSStatus audioDeviceRenderer(void* inRefCon,
 
 cdef class AudioDeviceASIO:
     def initialize(self):
-        pass
+        raise AudioDeviceException("Audio device is unavailable on this platform")
 
 cdef class AudioDeviceUnavailable:
     def initialize(self):
         raise AudioDeviceException("Audio device is unavailable on this platform")
-        return None
