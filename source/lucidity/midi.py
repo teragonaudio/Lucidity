@@ -40,7 +40,13 @@ class MidiInput(MidiDevice):
         self._inputPort = None
 
     def open(self):
+        logger.info("Opening MIDI input '%s'", self.name)
         self._inputPort = pygame.midi.Input(self._id)
+
+    def close(self):
+        logger.info("Closing MIDI input '%s'", self.name)
+        if self._inputPort is not None:
+            self._inputPort.close()
 
     def poll(self):
         return self._inputPort.poll()
