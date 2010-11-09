@@ -86,14 +86,17 @@ class MidiDeviceList:
         if device is None:
             raise Exception("Device '" + name + "' not found")
 
-        if device._id in self.openedInputs:
+        if device._id in self._openedInputs:
             raise Exception("Request to open device '%s', which is already open", name)
 
         if device.type == "Input":
             device.open()
-            self.openedInputs[device._id] = device
+            self._openedInputs[device._id] = device
         else:
             raise Exception("Device '%s' is not an input device", name)
+
+    def openedInputs(self):
+        return self._openedInputs.values()
 
 class MidiEventLoop(Thread):
     def __init__(self, pollIntervalInMs = 25):
