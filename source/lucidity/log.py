@@ -1,10 +1,10 @@
 import logging
 
 logger = logging.getLogger("lucidity")
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 _consoleHandler = logging.StreamHandler()
-_consoleHandler.setLevel(logging.INFO)
+_consoleHandler.setLevel(logging.DEBUG)
 
 _logFormat = logging.Formatter("%(message)s")
 _consoleHandler.setFormatter(_logFormat)
