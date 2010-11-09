@@ -1,12 +1,13 @@
 #import audiodevice
 #import wave
-from audiodevice import ChannelBuffer, AudioDeviceFactory
+from lucidity.audiodevice import ChannelBuffer, AudioDeviceFactory
 
 if __name__ == "__main__":
     buffer = ChannelBuffer(1024)
     audioDevice = AudioDeviceFactory().getAudioDevice()
     audioDevice.initialize()
     #audioDevice.doStuff(buffer)
+    audioDevice.uninitialize()
     
     #waveFile = wave.open("test.wav", "r")
     #print("File has %d channels, %d frames" % (waveFile.getnchannels(), waveFile.getnframes()))
