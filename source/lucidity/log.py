@@ -9,3 +9,5 @@ _consoleHandler.setLevel(logging.DEBUG)
 _logFormat = logging.Formatter("%(message)s")
 _consoleHandler.setFormatter(_logFormat)
 logger.addHandler(_consoleHandler)
+
+logger.info("Lucidity logging module initialized")
