@@ -1,5 +1,6 @@
 import pygame
-from pygame import midi
+import pygame.midi
+#from pygame import midi
 from lucidity.log import logger
 from threading import Thread
 from time import sleep
