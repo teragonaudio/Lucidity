@@ -1,0 +1,6 @@
+[submodule "third-party/id3reader"]
+	path = third-party/id3reader
+	url = git@github.com:nikreiman/id3reader.git
+[submodule "third-party/pygame"]
+	path = third-party/pygame
+	url = git@github.com:nikreiman/pygame.git
