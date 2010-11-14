@@ -6,6 +6,33 @@ from multiprocessing.synchronize import Lock
 from time import sleep, clock
 import wave
 
+class AudioDevice:
+    def __init__(self, name, numInputs, numOutputs):
+        self.name = name
+        self.numInputs = numInputs
+        self.numOutputs = numOutputs
+
+    def __str__(self):
+        return "Device name: '" + self.name + "', " + \
+               "Inputs: " + str(self.numInputs) + ", " + \
+               "Outputs: " + str(self.numOutputs)
+
+class AudioDeviceList:
+    def __init__(self):
+        self.devices = []
+        self.rescan()
+
+    def rescan(self):
+        self.devices = []
+        logger.info("Audio device rescan started")
+        devices = pygame.mixer.get_devices()
+        logger.debug("Found %d devices", len(devices))
+        for device in devices:
+            (name, numInputs, numOutputs) = device
+            scannedDevice = AudioDevice(name, numInputs, numOutputs)
+            self.devices.append(scannedDevice)
+            logger.debug("%s", scannedDevice)
+
 class AudioOutputLoop(Thread):
     def __init__(self, sampleRate, bufferSize):
         Thread.__init__(self, name = "AudioOutputLoop")
