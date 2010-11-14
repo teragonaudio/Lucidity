@@ -70,7 +70,7 @@ class MidiDeviceList:
     def rescan(self):
         self.devices = []
         numDevices = pygame.midi.get_count()
-        logger.debug("Rescan started, found %d devices", (numDevices))
+        logger.debug("MIDI device rescan started, found %d devices", (numDevices))
         for i in range(0, numDevices):
             (interface, name, input, output, opened) = pygame.midi.get_device_info(i)
             deviceName = name.decode("utf-8")
