@@ -1,10 +1,11 @@
 #import audiodevice
 #import wave
-from lucidity.audiodevice import AudioOutputLoop
+from lucidity.audiodevice import AudioDeviceList
 
 if __name__ == "__main__":
-    audioOutput = AudioOutputLoop(44100, 512)
-    audioOutput.start()
+    deviceList = AudioDeviceList()
+    #audioOutput = AudioOutputLoop(44100, 512)
+    #audioOutput.start()
 
     #buffer = ChannelBuffer(1024)
     #audioDevice = AudioDeviceFactory().getAudioDevice()
