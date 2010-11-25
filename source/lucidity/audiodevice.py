@@ -33,9 +33,6 @@ class AudioDeviceList:
             self.devices.append(scannedDevice)
             logger.debug("%s", scannedDevice)
 
-class AudioOutput:
-    def __init__(self, audioDeviceName, startingPort, numPorts):
-        pass
 
 class AudioOutputLoop(Thread):
     def __init__(self, audioDevice, sampleRate = 44100.0, bufferSize = 512):
