@@ -38,10 +38,12 @@ class AudioOutput:
         pass
 
 class AudioOutputLoop(Thread):
-    def __init__(self, sampleRate, bufferSize):
+    def __init__(self, audioDevice, sampleRate = 44100.0, bufferSize = 512):
         Thread.__init__(self, name = "AudioOutputLoop")
         self._lock = Lock()
         self._isRunning = False
+
+        self._audioDevice = audioDevice
         self._bufferSize = bufferSize
         self._sampleRate = sampleRate
         self._maxTimePerBlockInSec = bufferSize / sampleRate
