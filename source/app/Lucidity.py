@@ -1,10 +1,3 @@
-import sys
-
-from PyQt4 import QtGui, uic
-from MainWindow import MainWindow
-
-__author__ = 'nik'
-
 ##+
 # @section About Lucidity
 # Lucidity is software for performing digital music.  It allows a DJ to mix both in,
@@ -350,8 +343,4 @@ __author__ = 'nik'
 # @subsection Plug-In Configuration
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
-    widget = uic.loadUi('../resources/layout/MainWindow.ui')
-    widget.show()
-    widget.raise_()
-    sys.exit(app.exec_())
+    pass
