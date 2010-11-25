@@ -23,7 +23,7 @@ setup(name = "lucidity",
           },
       ext_modules = [
           Extension("lucidity.audiodevice",
-                    ["source/lucidity/audiodevice.pyx"],
+                    ["source/lucidity/audiodevice.py"],
                     extra_link_args = platformLinkArgs)
           ],
       )
