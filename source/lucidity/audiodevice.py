@@ -40,7 +40,7 @@ class AudioDeviceList:
             raise Exception("Device '" + deviceName + "' not found")
 
 class AudioOutputLoop(Thread):
-    def __init__(self, audioDevice, sampleRate = 44100.0, bufferSize = 512):
+    def __init__(self, audioDevice, sampleRate = 44100, bufferSize = 512):
         Thread.__init__(self, name = "AudioOutputLoop")
         self._lock = Lock()
         self._isRunning = False
