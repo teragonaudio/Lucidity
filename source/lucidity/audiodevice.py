@@ -19,20 +19,25 @@ class AudioDevice:
 
 class AudioDeviceList:
     def __init__(self):
-        self.devices = []
+        self.devices = {}
         self.rescan()
 
     def rescan(self):
-        self.devices = []
+        self.devices = {}
         logger.info("Audio device rescan started")
         devices = pygame.mixer.get_devices()
         logger.debug("Found %d devices", len(devices))
         for device in devices:
             (name, numInputs, numOutputs) = device
             scannedDevice = AudioDevice(name, numInputs, numOutputs)
-            self.devices.append(scannedDevice)
+            self.devices[name] = scannedDevice
             logger.debug("%s", scannedDevice)
 
+    def get(self, deviceName):
+        if deviceName in self.devices.keys():
+            return self.devices[deviceName]
+        else:
+            raise Exception("Device '" + deviceName + "' not found")
 
 class AudioOutputLoop(Thread):
     def __init__(self, audioDevice, sampleRate = 44100.0, bufferSize = 512):
