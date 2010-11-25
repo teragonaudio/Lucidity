@@ -50,7 +50,7 @@ class AudioOutputLoop(Thread):
         self._sampleRate = sampleRate
         self._maxTimePerBlockInSec = bufferSize / sampleRate
 
-        pygame.mixer.init(frequency = sampleRate, buffer = bufferSize)
+        pygame.mixer.init(deviceName = audioDevice.name, frequency = sampleRate, buffer = bufferSize)
         self._channel = pygame.mixer.find_channel()
 
         self.testWave = wave.open("./tests/resources/test.wav", "r")
