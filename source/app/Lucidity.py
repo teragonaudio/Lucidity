@@ -342,5 +342,8 @@
 # @subsection MIDI Device Configuration
 # @subsection Plug-In Configuration
 
+from lucidity.views import MainWindow
+
 if __name__ == '__main__':
-    pass
+    mainWindow = MainWindow()
+    mainWindow.start()
