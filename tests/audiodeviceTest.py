@@ -1,9 +1,13 @@
 #import audiodevice
 #import wave
-from lucidity.audiodevice import AudioDeviceList
+from lucidity.audiodevice import AudioDeviceList, AudioOutputLoop
 
 if __name__ == "__main__":
     deviceList = AudioDeviceList()
+    audioDevice = deviceList.get("Soundflower (2ch)")
+    audioOutput = AudioOutputLoop(audioDevice)
+
+
     #audioOutput = AudioOutputLoop(44100, 512)
     #audioOutput.start()
 
