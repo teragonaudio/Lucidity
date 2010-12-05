@@ -70,7 +70,6 @@ class MainWindow():
         drawRect = pygame.Rect(clickPosition[0], clickPosition[1], 60, 60)
         pygame.draw.rect(self._surface, self._colorChooser.nextColor(3), drawRect)
         pygame.display.update(drawRect)
-        pass
 
     def _processMouseMotion(self, eventDict):
         pass
