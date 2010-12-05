@@ -1,7 +1,7 @@
 import os
 import pygame
 from lucidity.log import logger
-from lucidity.colors import Colors
+from lucidity.colors import ColorChooser
 
 # Avoid warnings about unused locals, which is necessary for the event handlers to work
 # properly via reflection
@@ -13,19 +13,20 @@ class MainWindow():
         pygame.display.set_icon(pygame.image.load(os.path.join(".", "icon.png")))
         self._shouldQuit = False
         self._surface = None
+        self._colorChooser = ColorChooser()
 
     def run(self):
         """
         Open up the window for the application.  This must, sadly, be done in the main
         thread, or else the window will not properly respond to events.
         """
-        windowFlags = pygame.DOUBLEBUF | pygame.HWSURFACE
-        self._surface = pygame.display.set_mode((1024, 768), windowFlags, 24)
+        windowFlags = pygame.HWSURFACE | pygame.FULLSCREEN
+        self._surface = pygame.display.set_mode((1440, 900), windowFlags, 32)
         self._printVideoInfo(pygame.display.Info())
 
-        self._surface.fill(Colors.darkBackgroundColor)
+        self._surface.fill(self._colorChooser.findColor("Black"))
         pygame.display.flip()
-        pygame.event.set_grab(True)
+        #pygame.event.set_grab(True)
 
         logger.debug("Initialized display with driver: " + pygame.display.get_driver())
         while not self._shouldQuit:
@@ -50,10 +51,23 @@ class MainWindow():
         state = eventDict['state']
         logger.info("Application activated, gain: " + str(gain) + ", state: " + str(state))
 
+    def _processKeyDown(self, eventDict):
+        pass
+
+    def _processKeyUp(self, eventDict):
+        pass
+
     def _processMouseButtonDown(self, eventDict):
+        logger.debug("Click at " + str(eventDict['pos']))
         pass
 
     def _processMouseButtonUp(self, eventDict):
+        logger.debug("UP Click at " + str(eventDict['pos']))
+
+        clickPosition = eventDict['pos']
+        drawRect = pygame.Rect(clickPosition[0], clickPosition[1], 60, 60)
+        pygame.draw.rect(self._surface, self._colorChooser.nextColor(), drawRect)
+        pygame.display.update(drawRect)
         pass
 
     def _processMouseMotion(self, eventDict):
