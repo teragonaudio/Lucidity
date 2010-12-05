@@ -1,5 +1,5 @@
-import pygame
 import os
+import pygame
 from lucidity.log import logger
 from lucidity.colors import Colors
 
