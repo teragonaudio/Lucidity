@@ -1,4 +1,4 @@
-__author__ = 'nik'
+from lucidity.log import logger
 
 ##+
 # Lucidity recognizes the following key commands:
@@ -34,3 +34,53 @@ __author__ = 'nik'
 #
 # Lucidity does not allow the user to remap the key commands.  This is done so that
 # the software feels the same on all installations.
+
+RegularKeyCommands = {
+}
+
+ControlKeyCommands = {
+    'q': "quit"
+}
+
+ShiftKeyCommands = {
+}
+
+ModifierHashes = {
+    0: RegularKeyCommands,
+    1: ShiftKeyCommands,
+    1024: ControlKeyCommands
+}
+
+class KeyHandler:
+    def processKey(self, delegate, key, modifiers = None):
+        keyCharacter = chr(key)
+        try:
+            if modifiers not in ModifierHashes:
+                raise UnhandledModifierError(key, modifiers)
+            keyHash = ModifierHashes[modifiers]
+
+            if keyCharacter in keyHash:
+                handlerFunction = getattr(delegate, keyHash[keyCharacter])
+                handlerFunction()
+            else:
+                raise UnhandledKeyError(key, modifiers)
+        except AttributeError:
+            logger.error("Delegate does not handle key command")
+        except UnhandledKeyError as error:
+            logger.debug("Unhandled command: " + error.printKey())
+        except UnhandledModifierError as error:
+            logger.debug("Unhandled modifier: " + error.printKey())
+
+class KeyError(Exception):
+    def __init__(self, key, modifiers):
+        self.key = key
+        self.modifiers = modifiers
+
+    def printKey(self):
+        return "Key: '" + chr(self.key) + "', Modifiers: " + str(self.modifiers)
+
+class UnhandledKeyError(KeyError):
+    pass
+
+class UnhandledModifierError(KeyError):
+    pass

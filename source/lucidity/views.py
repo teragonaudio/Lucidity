@@ -2,6 +2,7 @@ import os
 import pygame
 from lucidity.log import logger
 from lucidity.colors import ColorChooser
+from lucidity.keyboard import KeyHandler
 
 # Avoid warnings about unused locals, which is necessary for the event handlers to work
 # properly via reflection
@@ -14,6 +15,7 @@ class MainWindow():
         self._shouldQuit = False
         self._surface = None
         self._colorChooser = ColorChooser()
+        self._keyHandler = KeyHandler()
 
     def run(self):
         """
@@ -55,6 +57,7 @@ class MainWindow():
         pass
 
     def _processKeyUp(self, eventDict):
+        self._keyHandler.processKey(self, eventDict['key'], eventDict['mod'])
         pass
 
     def _processMouseButtonDown(self, eventDict):
