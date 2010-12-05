@@ -3,6 +3,9 @@ import os
 from lucidity.log import logger
 from lucidity.colors import Colors
 
+# Avoid warnings about unused locals, which is necessary for the event handlers to work
+# properly via reflection
+#noinspection PyUnusedLocal
 class MainWindow():
     def __init__(self):
         pygame.display.init()
