@@ -333,7 +333,7 @@
 # or click on the "test" button again.
 #
 # @section Key Commands
-# @include KeyCommands.py
+# @include keyboard.py
 
 # TODO: Fill in this documentation later
 # @section Configuring Lucidity
