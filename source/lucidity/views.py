@@ -3,6 +3,8 @@ import pygame
 from lucidity.log import logger
 from lucidity.colors import ColorChooser
 from lucidity.keyboard import KeyHandler
+from lucidity.panels import MainGrid, Toolbar
+from lucidity.layout import PanelSizer
 
 # Avoid warnings about unused locals, which is necessary for the event handlers to work
 # properly via reflection
@@ -16,6 +18,9 @@ class MainWindow():
         self._surface = None
         self._colorChooser = ColorChooser()
         self._keyHandler = KeyHandler()
+        self._resolution = (1440, 900)
+        self._panelSizer = PanelSizer()
+        self._surfaces = []
 
     def run(self):
         """
@@ -23,12 +28,12 @@ class MainWindow():
         thread, or else the window will not properly respond to events.
         """
         windowFlags = pygame.HWSURFACE | pygame.FULLSCREEN
-        self._surface = pygame.display.set_mode((1440, 900), windowFlags, 32)
+        self._surface = pygame.display.set_mode(self._resolution, windowFlags, 32)
         self._printVideoInfo(pygame.display.Info())
 
         self._surface.fill(self._colorChooser.findColor("Black"))
+        self._initializeSurfaces(self._resolution)
         pygame.display.flip()
-        #pygame.event.set_grab(True)
 
         logger.debug("Initialized display with driver: " + pygame.display.get_driver())
         while not self._shouldQuit:
@@ -36,6 +41,16 @@ class MainWindow():
             self._processEvent(event)
 
         pygame.display.quit()
+
+    def _initializeSurfaces(self, resolution):
+        topToolbar = Toolbar(self._surface, self._colorChooser,
+                             self._panelSizer.getTopToolbarRect(resolution[0]))
+        self._surfaces.append(topToolbar)
+        bottomToolbar = Toolbar(self._surface, self._colorChooser,
+                                self._panelSizer.getBottomToolbarRect(resolution[0], resolution[1]))
+        mainGrid = MainGrid(self._surface, self._colorChooser,
+                            self._panelSizer.getMainGridRect(resolution[0], resolution[1]))
+        self._surfaces.append(mainGrid)
 
     def quit(self):
         logger.info("Lucidity is quitting. Bye-bye!")
