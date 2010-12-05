@@ -62,15 +62,13 @@ class MainWindow():
         pass
 
     def _processMouseButtonDown(self, eventDict):
-        logger.debug("Click at " + str(eventDict['pos']))
         pass
 
     def _processMouseButtonUp(self, eventDict):
-        logger.debug("UP Click at " + str(eventDict['pos']))
-
+        logger.debug("Click at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
         drawRect = pygame.Rect(clickPosition[0], clickPosition[1], 60, 60)
-        pygame.draw.rect(self._surface, self._colorChooser.nextColor(), drawRect)
+        pygame.draw.rect(self._surface, self._colorChooser.nextColor(3), drawRect)
         pygame.display.update(drawRect)
         pass
 
