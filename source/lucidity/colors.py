@@ -138,8 +138,8 @@ class ColorChooser:
                 return color[1]
         raise Exception("Color '" + colorName + "' not found")
 
-    def nextColor(self):
-        nextIndex = self._currentIndex + 1
+    def nextColor(self, interval = 1):
+        nextIndex = self._currentIndex + interval
         if nextIndex >= len(AllColors):
             nextIndex = 0
         self._currentIndex = nextIndex
