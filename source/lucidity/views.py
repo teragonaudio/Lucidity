@@ -38,6 +38,7 @@ class MainWindow():
         pygame.display.quit()
 
     def quit(self):
+        logger.info("Lucidity is quitting. Bye-bye!")
         self._shouldQuit = True
 
     def _processEvent(self, event):

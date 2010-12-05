@@ -10,4 +10,4 @@ _logFormat = logging.Formatter("%(relativeCreated)d: %(levelname)s - %(message)s
 _consoleHandler.setFormatter(_logFormat)
 logger.addHandler(_consoleHandler)
 
-logger.info("Lucidity logging module initialized")
+logger.info("Lucidity initialized. Hello there!")
