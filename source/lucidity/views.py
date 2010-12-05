@@ -21,10 +21,11 @@ class MainWindow():
         """
         windowFlags = pygame.DOUBLEBUF | pygame.HWSURFACE
         self._surface = pygame.display.set_mode((1024, 768), windowFlags, 24)
-        print(pygame.display.Info())
+        self._printVideoInfo(pygame.display.Info())
 
         self._surface.fill(Colors.darkBackgroundColor)
         pygame.display.flip()
+        pygame.event.set_grab(True)
 
         logger.debug("Initialized display with driver: " + pygame.display.get_driver())
         while not self._shouldQuit:
@@ -42,8 +43,33 @@ class MainWindow():
             processFunction = getattr(self, "_process" + eventType)
             processFunction(event.dict)
         except AttributeError:
-            logger.info("Event type '" + eventType + "' cannot be handled")
+            logger.info("Event type '" + eventType + "' is not handled")
 
-    #noinspection PyUnusedLocal
+    def _processActiveEvent(self, eventDict):
+        gain = eventDict['gain']
+        state = eventDict['state']
+        logger.info("Application activated, gain: " + str(gain) + ", state: " + str(state))
+
+    def _processMouseButtonDown(self, eventDict):
+        pass
+
+    def _processMouseButtonUp(self, eventDict):
+        pass
+
+    def _processMouseMotion(self, eventDict):
+        pass
+
     def _processQuit(self, eventDict = None):
         self.quit()
+
+    def _printVideoInfo(self, videoInfo):
+        resolutionWidth = str(videoInfo.current_w)
+        resolutionHeight = str(videoInfo.current_h)
+        logger.debug("Current resolution: " + resolutionWidth + "x" + resolutionHeight)
+        videoInfoAttributes = {'hw': 'Hardware acceleration',
+                               'wm': 'Windowed display',
+                               'bitsize': 'Display depth',
+        }
+
+        for key in videoInfoAttributes.keys():
+            logger.debug(videoInfoAttributes[key] + ": " + str(getattr(videoInfo, key)))
