@@ -130,13 +130,17 @@ class ColorChooser:
     def currentColor(self):
         return AllColors[self._currentIndex][1]
 
-    def findColor(self, colorName):
+    def _findColor(self, colorName):
         # TODO: Yeah, yeah, this could easily be made more efficient.  Whatever.
         for i in range(0, len(AllColors)):
             color = AllColors[i]
             if color[0] == colorName:
-                return color[1]
+                return color
         raise Exception("Color '" + colorName + "' not found")
+
+    def findColor(self, colorName):
+        color = self._findColor(colorName)
+        return color[1]
 
     def nextColor(self, interval = 1):
         nextIndex = self._currentIndex + interval
@@ -148,3 +152,7 @@ class ColorChooser:
     def randomColor(self):
         self._currentIndex = random.randint(0, len(AllColors))
         return self.currentColor()
+
+    def removeColor(self, colorName):
+        color = self._findColor(colorName)
+        AllColors.remove(color)
