@@ -4,7 +4,9 @@ from lucidity.log import logger
 from lucidity.colors import ColorChooser
 from lucidity.keyboard import KeyHandler
 from lucidity.panels import MainGrid, Toolbar
-from lucidity.layout import PanelSizer
+from lucidity.layout import PanelSizer, Sizing, Positioning
+from lucidity.widgets import Button
+from lucidity.skinning import Skin
 
 # Avoid warnings about unused locals, which is necessary for the event handlers to work
 # properly via reflection
@@ -20,7 +22,8 @@ class MainWindow():
         self._keyHandler = KeyHandler()
         self._resolution = (1440, 900)
         self._panelSizer = PanelSizer()
-        self._surfaces = []
+        self._panels = []
+        self._skin = Skin("default")
 
     def run(self):
         """
@@ -28,29 +31,56 @@ class MainWindow():
         thread, or else the window will not properly respond to events.
         """
         windowFlags = pygame.HWSURFACE | pygame.FULLSCREEN
-        self._surface = pygame.display.set_mode(self._resolution, windowFlags, 32)
+        self._surface = pygame.display.set_mode((0, 0), windowFlags)
         self._printVideoInfo(pygame.display.Info())
 
         self._surface.fill(self._colorChooser.findColor("Black"))
-        self._initializeSurfaces(self._resolution)
+        self._initializeSurfaces(self._resolution, self._skin)
         pygame.display.flip()
 
-        logger.debug("Initialized display with driver: " + pygame.display.get_driver())
+        logger.info("Initialized display with driver: " + pygame.display.get_driver())
         while not self._shouldQuit:
             event = pygame.event.wait()
             self._processEvent(event)
 
         pygame.display.quit()
 
-    def _initializeSurfaces(self, resolution):
-        topToolbar = Toolbar(self._surface, self._colorChooser,
-                             self._panelSizer.getTopToolbarRect(resolution[0]))
-        self._surfaces.append(topToolbar)
-        bottomToolbar = Toolbar(self._surface, self._colorChooser,
-                                self._panelSizer.getBottomToolbarRect(resolution[0], resolution[1]))
+    def _initializeSurfaces(self, resolution, skin:"Skin"):
         mainGrid = MainGrid(self._surface, self._colorChooser,
                             self._panelSizer.getMainGridRect(resolution[0], resolution[1]))
-        self._surfaces.append(mainGrid)
+        self._panels.append(mainGrid)
+
+        topToolbar = Toolbar(self._surface, self._colorChooser,
+                             self._panelSizer.getTopToolbarRect(resolution[0]))
+        firstButtonRect = pygame.Rect(topToolbar.rect.left + Sizing.toolbarPadding,
+                                      topToolbar.rect.top + Sizing.toolbarPadding, 0, 0)
+        leftButton = Button(self._surface, firstButtonRect,
+                            skin.images["Left-Arrow-Up"],
+                            skin.images["Left-Arrow-Down"],
+                            mainGrid.moveLeft)
+        topToolbar.addButton(leftButton)
+        rightButton = Button(self._surface, Positioning.rectToRight(leftButton.rect, Sizing.toolbarPadding),
+                             skin.images["Right-Arrow-Up"],
+                             skin.images["Right-Arrow-Down"],
+                             mainGrid.moveRight)
+        upButton = Button(self._surface, Positioning.rectToRight(rightButton.rect, Sizing.toolbarPadding),
+                          skin.images["Up-Arrow-Up"],
+                          skin.images["Up-Arrow-Down"],
+                          mainGrid.moveUp)
+        topToolbar.addButton(upButton)
+        downButton = Button(self._surface, Positioning.rectToRight(upButton.rect, Sizing.toolbarPadding),
+                            skin.images["Down-Arrow-Up"],
+                            skin.images["Down-Arrow-Down"],
+                            mainGrid.moveDown)
+        topToolbar.addButton(downButton)
+        topToolbar.addButton(rightButton)
+
+
+        self._panels.append(topToolbar)
+
+        bottomToolbar = Toolbar(self._surface, self._colorChooser,
+                                self._panelSizer.getBottomToolbarRect(resolution[0], resolution[1]))
+        self._panels.append(bottomToolbar)
 
     def quit(self):
         logger.info("Lucidity is quitting. Bye-bye!")
@@ -77,14 +107,18 @@ class MainWindow():
         pass
 
     def _processMouseButtonDown(self, eventDict):
-        pass
+        logger.debug("Down at " + str(eventDict['pos']))
+        clickPosition = eventDict['pos']
+        for panel in self._panels:
+            if panel.rect.collidepoint(clickPosition[0], clickPosition[1]):
+                panel.onMouseDown(clickPosition)
 
     def _processMouseButtonUp(self, eventDict):
-        logger.debug("Click at " + str(eventDict['pos']))
+        logger.debug("Up at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
-        drawRect = pygame.Rect(clickPosition[0], clickPosition[1], 60, 60)
-        pygame.draw.rect(self._surface, self._colorChooser.nextColor(3), drawRect)
-        pygame.display.update(drawRect)
+        for panel in self._panels:
+            if panel.rect.collidepoint(clickPosition[0], clickPosition[1]):
+                panel.onMouseUp(clickPosition)
 
     def _processMouseMotion(self, eventDict):
         pass
