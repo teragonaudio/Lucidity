@@ -39,16 +39,20 @@ RegularKeyCommands = {
 }
 
 ControlKeyCommands = {
-    'q': "quit"
 }
 
 ShiftKeyCommands = {
 }
 
+ControlShiftKeyCommands = {
+    'q': "quit"
+}
+
 ModifierHashes = {
     0: RegularKeyCommands,
     1: ShiftKeyCommands,
-    1024: ControlKeyCommands
+    1024: ControlKeyCommands,
+    1025: ControlShiftKeyCommands
 }
 
 class KeyHandler:
