@@ -39,13 +39,22 @@ RegularKeyCommands = {
 }
 
 ControlKeyCommands = {
+    9: "minimize", # tab, since SDL traps command + tab
+    ord('m'): "minimize",
 }
 
 ShiftKeyCommands = {
 }
 
 ControlShiftKeyCommands = {
-    'q': "quit"
+    ord('q'): "quit",
+}
+
+ModifierKeys = {
+    304: None, # shift
+    306: None, # control
+    308: None, # alt
+    310: None, # command
 }
 
 ModifierHashes = {
@@ -57,14 +66,15 @@ ModifierHashes = {
 
 class KeyHandler:
     def processKey(self, delegate, key, modifiers = None):
-        keyCharacter = chr(key)
         try:
+            if key in ModifierKeys:
+                return
             if modifiers not in ModifierHashes:
                 raise UnhandledModifierError(key, modifiers)
             keyHash = ModifierHashes[modifiers]
 
-            if keyCharacter in keyHash:
-                handlerFunction = getattr(delegate, keyHash[keyCharacter])
+            if key in keyHash:
+                handlerFunction = getattr(delegate, keyHash[key])
                 handlerFunction()
             else:
                 raise UnhandledKeyError(key, modifiers)
@@ -81,7 +91,8 @@ class KeyError(Exception):
         self.modifiers = modifiers
 
     def printKey(self):
-        return "Key: '" + chr(self.key) + "', Modifiers: " + str(self.modifiers)
+        return "Key: '" + chr(self.key) + "' (" + str(self.key) + "), " + \
+               "Modifiers: " + str(self.modifiers)
 
 class UnhandledKeyError(KeyError):
     pass
