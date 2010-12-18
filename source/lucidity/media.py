@@ -12,7 +12,7 @@ class MediaFile:
 
         validExtensions = ['.mp3']
         fileParts = os.path.splitext(file)
-        if(fileParts[1] is not None):
+        if fileParts[1] is not None:
             if fileParts[1].lower() in validExtensions:
                 result = True
 
@@ -287,10 +287,10 @@ class MediaDatabase:
         if os.path.exists(locationPath):
             for file in os.listdir(locationPath):
                 fileFullPath = os.path.join(locationPath, file)
-                if(os.path.isdir(fileFullPath)):
+                if os.path.isdir(fileFullPath):
                     self._scanDirectory(fileFullPath, mediaFileList)
                 elif MediaFile.isValid(fileFullPath):
-                    logger.debug("Found file '%s'", (file))
+                    logger.debug("Found file '%s'", file)
                     mediaFileList.append(fileFullPath)
 
         return mediaFileList
