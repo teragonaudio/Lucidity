@@ -136,7 +136,9 @@ class ColorChooser:
             color = AllColors[i]
             if color[0] == colorName:
                 return color
-        raise Exception("Color '" + colorName + "' not found")
+
+        # If not found, then return black
+        return AllColors[len(AllColors) - 1]
 
     def findColor(self, colorName):
         color = self._findColor(colorName)
