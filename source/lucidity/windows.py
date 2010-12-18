@@ -5,9 +5,8 @@ from lucidity.log import logger
 from lucidity.colors import ColorChooser
 from lucidity.keyboard import KeyHandler
 from lucidity.grid import MainGrid
-from lucidity.panels import Toolbar
-from lucidity.layout import PanelSizer, Sizing, Positioning
-from lucidity.widgets import Button
+from lucidity.layout import PanelSizer
+from lucidity.toolbars import TopToolbar, BottomToolbar
 from lucidity.skinning import Skin
 
 # Avoid warnings about unused locals, which is necessary for the event handlers to work
@@ -38,7 +37,7 @@ class MainWindow():
         self._printVideoInfo(pygame.display.Info())
 
         self.surface.fill(self._colorChooser.findColor("Black"))
-        self._initializeSurfaces(self._resolution, self._skin)
+        self._initializePanels(self._resolution, self._skin)
         pygame.display.flip()
 
         logger.info("Initialized display with driver: " + pygame.display.get_driver())
@@ -63,39 +62,17 @@ class MainWindow():
         logger.info("Average FPS: " + str(frames / totalTime))
         pygame.display.quit()
 
-    def _initializeSurfaces(self, resolution, skin:"Skin"):
+    def _initializePanels(self, resolution, skin:"Skin"):
         mainGrid = MainGrid(self.surface, self._panelSizer.getMainGridRect(resolution[0], resolution[1]),
                             self._colorChooser, self._skin)
         self._panels.append(mainGrid)
 
-        topToolbar = Toolbar(self.surface, self._panelSizer.getTopToolbarRect(resolution[0]),
-                             self._colorChooser, self._skin)
-        firstButtonRect = pygame.Rect(topToolbar.rect.left + Sizing.toolbarPadding,
-                                      topToolbar.rect.top + Sizing.toolbarPadding, 0, 0)
-        leftButton = Button(self.surface, firstButtonRect,
-                            skin.images["Left-Arrow-Up"],
-                            skin.images["Left-Arrow-Down"],
-                            mainGrid.moveLeft)
-        topToolbar.addButton(leftButton)
-        rightButton = Button(self.surface, Positioning.rectToRight(leftButton.rect, Sizing.toolbarPadding),
-                             skin.images["Right-Arrow-Up"],
-                             skin.images["Right-Arrow-Down"],
-                             mainGrid.moveRight)
-        upButton = Button(self.surface, Positioning.rectToRight(rightButton.rect, Sizing.toolbarPadding),
-                          skin.images["Up-Arrow-Up"],
-                          skin.images["Up-Arrow-Down"],
-                          mainGrid.moveUp)
-        topToolbar.addButton(upButton)
-        downButton = Button(self.surface, Positioning.rectToRight(upButton.rect, Sizing.toolbarPadding),
-                            skin.images["Down-Arrow-Up"],
-                            skin.images["Down-Arrow-Down"],
-                            mainGrid.moveDown)
-        topToolbar.addButton(downButton)
-        topToolbar.addButton(rightButton)
+        topToolbar = TopToolbar(self.surface, self._panelSizer.getTopToolbarRect(resolution[0]),
+                                self._colorChooser, self._skin, self)
         self._panels.append(topToolbar)
 
-        bottomToolbar = Toolbar(self.surface, self._panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
-                                self._colorChooser, self._skin)
+        bottomToolbar = BottomToolbar(self.surface, self._panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
+                                      self._colorChooser, self._skin, self)
         self._panels.append(bottomToolbar)
 
     def quit(self):
