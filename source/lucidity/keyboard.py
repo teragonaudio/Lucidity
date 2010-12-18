@@ -39,15 +39,15 @@ RegularKeyCommands = {
 }
 
 ControlKeyCommands = {
-    9: "minimize", # tab, since SDL traps command + tab
-    ord('m'): "minimize",
+    9: "Minimize", # tab, since SDL traps command + tab
+    ord('m'): "Minimize",
 }
 
 ShiftKeyCommands = {
 }
 
 ControlShiftKeyCommands = {
-    ord('q'): "quit",
+    ord('q'): "Quit",
 }
 
 ModifierKeys = {
@@ -74,7 +74,7 @@ class KeyHandler:
             keyHash = ModifierHashes[modifiers]
 
             if key in keyHash:
-                handlerFunction = getattr(delegate, keyHash[key])
+                handlerFunction = getattr(delegate, "process" + keyHash[key])
                 handlerFunction()
             else:
                 raise UnhandledKeyError(key, modifiers)

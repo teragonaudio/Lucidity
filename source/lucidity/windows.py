@@ -9,9 +9,6 @@ from lucidity.layout import PanelSizer
 from lucidity.toolbars import TopToolbar, BottomToolbar
 from lucidity.skinning import Skin
 
-# Avoid warnings about unused locals, which is necessary for the event handlers to work
-# properly via reflection
-#noinspection PyUnusedLocal
 class MainWindow():
     def __init__(self):
         pygame.display.init()
@@ -20,12 +17,11 @@ class MainWindow():
         self._shouldQuit = False
         self.surface = None
         self._colorChooser = ColorChooser()
-        self._keyHandler = KeyHandler()
         self._resolution = (1440, 900)
-        self._panelSizer = PanelSizer()
         self._panels = []
         self._skin = Skin("default")
         self._maxFps = 30
+        self.mainDelegate = MainDelegate(self)
 
     def run(self):
         """
@@ -37,7 +33,7 @@ class MainWindow():
         self._printVideoInfo(pygame.display.Info())
 
         self.surface.fill(self._colorChooser.findColor("Black"))
-        self._initializePanels(self._resolution, self._skin)
+        self._initializePanels(self._resolution, self._colorChooser, self._skin)
         pygame.display.flip()
 
         logger.info("Initialized display with driver: " + pygame.display.get_driver())
@@ -62,17 +58,22 @@ class MainWindow():
         logger.info("Average FPS: " + str(frames / totalTime))
         pygame.display.quit()
 
-    def _initializePanels(self, resolution, skin:"Skin"):
-        mainGrid = MainGrid(self.surface, self._panelSizer.getMainGridRect(resolution[0], resolution[1]),
-                            self._colorChooser, self._skin)
+    def _initializePanels(self, resolution, colorChooser:"ColorChooser", skin:"Skin"):
+        panelSizer = PanelSizer()
+        mainGrid = MainGrid(self.surface,
+                            panelSizer.getMainGridRect(resolution[0], resolution[1]),
+                            colorChooser, skin)
         self._panels.append(mainGrid)
+        self.mainDelegate.mainGrid = mainGrid
 
-        topToolbar = TopToolbar(self.surface, self._panelSizer.getTopToolbarRect(resolution[0]),
-                                self._colorChooser, self._skin, self)
+        topToolbar = TopToolbar(self.surface,
+                                panelSizer.getTopToolbarRect(resolution[0]),
+                                colorChooser, skin, self.mainDelegate)
         self._panels.append(topToolbar)
 
-        bottomToolbar = BottomToolbar(self.surface, self._panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
-                                      self._colorChooser, self._skin, self)
+        bottomToolbar = BottomToolbar(self.surface,
+                                      panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
+                                      colorChooser, skin, self.mainDelegate)
         self._panels.append(bottomToolbar)
 
     def quit(self):
@@ -86,42 +87,24 @@ class MainWindow():
     def _processEvent(self, event):
         eventType = pygame.event.event_name(event.type)
         try:
-            processFunction = getattr(self, "_process" + eventType)
+            processFunction = getattr(self.mainDelegate, "process" + eventType)
             processFunction(event.dict)
         except AttributeError:
             logger.info("Event type '" + eventType + "' is not handled")
 
-    def _processActiveEvent(self, eventDict):
-        gain = eventDict['gain']
-        state = eventDict['state']
-        logger.info("Application activated, gain: " + str(gain) + ", state: " + str(state))
-
-    def _processKeyDown(self, eventDict):
-        pass
-
-    def _processKeyUp(self, eventDict):
-        self._keyHandler.processKey(self, eventDict['key'], eventDict['mod'])
-        pass
-
-    def _processMouseButtonDown(self, eventDict):
+    def processMouseButtonDown(self, eventDict):
         logger.debug("Down at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
         for panel in self._panels:
             if panel.rect.collidepoint(clickPosition[0], clickPosition[1]):
                 panel.onMouseDown(clickPosition)
 
-    def _processMouseButtonUp(self, eventDict):
+    def processMouseButtonUp(self, eventDict):
         logger.debug("Up at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
         for panel in self._panels:
             if panel.rect.collidepoint(clickPosition[0], clickPosition[1]):
                 panel.onMouseUp(clickPosition)
-
-    def _processMouseMotion(self, eventDict):
-        pass
-
-    def _processQuit(self, eventDict = None):
-        self.quit()
 
     def _printVideoInfo(self, videoInfo):
         resolutionWidth = str(videoInfo.current_w)
@@ -134,3 +117,51 @@ class MainWindow():
 
         for key in videoInfoAttributes.keys():
             logger.debug(videoInfoAttributes[key] + ": " + str(getattr(videoInfo, key)))
+
+# Avoid warnings about unused locals, which is necessary for the event handlers to work
+# properly via reflection
+#noinspection PyUnusedLocal
+class MainDelegate:
+    def __init__(self, mainWindow:"MainWindow"):
+        self.mainWindow = mainWindow
+        self.mainGrid = None
+        self.keyHandler = KeyHandler()
+
+    def moveLeft(self):
+        self.mainGrid.moveLeft()
+
+    def moveRight(self):
+        self.mainGrid.moveRight()
+
+    def moveUp(self):
+        self.mainGrid.moveUp()
+
+    def moveDown(self):
+        self.mainGrid.moveDown()
+
+    def processActiveEvent(self, eventDict):
+        gain = eventDict['gain']
+        state = eventDict['state']
+        logger.info("Application activated, gain: " + str(gain) + ", state: " + str(state))
+
+    def processKeyDown(self, eventDict):
+        pass
+
+    def processKeyUp(self, eventDict):
+        self.keyHandler.processKey(self, eventDict['key'], eventDict['mod'])
+        pass
+
+    def processMouseButtonDown(self, eventDict):
+        self.mainWindow.processMouseButtonDown(eventDict)
+
+    def processMouseButtonUp(self, eventDict):
+        self.mainWindow.processMouseButtonUp(eventDict)
+
+    def processMouseMotion(self, eventDict):
+        pass
+
+    def processMinimize(self, eventDict = None):
+        self.mainWindow.minimize()
+
+    def processQuit(self, eventDict = None):
+        self.mainWindow.quit()
