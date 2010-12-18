@@ -1,6 +1,6 @@
 import pygame
 from lucidity.layout import Sizing, Positioning
-from lucidity.panels import Toolbar
+from lucidity.containers import Toolbar
 from lucidity.widgets import Button, Label
 
 class TopToolbar(Toolbar):

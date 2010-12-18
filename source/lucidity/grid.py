@@ -1,12 +1,12 @@
 import pygame
 from lucidity.layout import Sizing
-from lucidity.panels import Panel
+from lucidity.containers import Container
 from lucidity.sprites import Block
 
-class MainGrid(Panel):
+class MainGrid(Container):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
                  colorChooser:"ColorChooser", skin:"Skin"):
-        Panel.__init__(self, parentSurface, rect, colorChooser, skin)
+        Container.__init__(self, parentSurface, rect, colorChooser, skin)
         backgroundColor = colorChooser.findColor("Black")
         self.parentSurface.fill(backgroundColor, self.rect)
         self.sprites = pygame.sprite.RenderUpdates()

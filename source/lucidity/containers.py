@@ -1,6 +1,6 @@
 import pygame
 
-class Panel:
+class Container:
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
                  colorChooser:"ColorChooser", skin:"Skin"):
         self.parentSurface = parentSurface
@@ -20,10 +20,10 @@ class Panel:
     def onMouseDown(self, position): pass
     def onMouseUp(self, position): pass
 
-class Toolbar(Panel):
+class Toolbar(Container):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
                  colorChooser:"ColorChooser", skin:"Skin", backgroundColor):
-        Panel.__init__(self, parentSurface, rect, colorChooser, skin)
+        Container.__init__(self, parentSurface, rect, colorChooser, skin)
         self.background = pygame.Surface((self.rect.width, self.rect.height))
         self.background.fill(backgroundColor)
         self.parentSurface.blit(self.background, self.rect)
