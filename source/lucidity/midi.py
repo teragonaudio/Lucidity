@@ -149,7 +149,8 @@ class MidiEventLoop(Thread):
 
     def quit(self):
         self._lock.acquire(True)
-        self.devices.closeAll()
+        if self.devices is not None:
+            self.devices.closeAll()
         self._isRunning = False
         self._lock.release()
         logger.info("Closed all MIDI devices")
