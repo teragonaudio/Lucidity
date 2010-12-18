@@ -15,10 +15,12 @@ class MainGrid(Panel):
                                self.rect.width,
                                self.rect.height - (Sizing.gridPadding * 2))
         self.rect = gridRect
+
         self.background = pygame.Surface((gridRect.width, gridRect.height))
         self.background = self.background.convert()
         self.background.fill(colorChooser.findColor("Banana Mania"))
         self.parentSurface.blit(self.background, self.rect)
+
         pygame.display.flip()
 
     def draw(self):
