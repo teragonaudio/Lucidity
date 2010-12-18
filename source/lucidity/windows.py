@@ -23,6 +23,7 @@ class MainWindow():
         self._panels = []
         self._skin = Skin("default")
         self._maxFps = 30
+        self._setStatusTextCallback = None
         self._midiEventLoop = MidiEventLoop(self.mainDelegate)
 
     def run(self):
@@ -36,6 +37,7 @@ class MainWindow():
 
         self.surface.fill(self._colorChooser.findColor("Black"))
         self._initializePanels(self._resolution, self._colorChooser, self._skin)
+        self.setStatusText("Starting Up...")
         pygame.display.flip()
 
         logger.info("Initialized display with driver: " + pygame.display.get_driver())
@@ -44,6 +46,7 @@ class MainWindow():
         frameRenderTimeInSec = 1 / self._maxFps
 
         self._midiEventLoop.start()
+        self.setStatusText("Ready")
 
         while not self._shouldQuit:
             startTime = time()
@@ -58,10 +61,12 @@ class MainWindow():
                 pygame.time.delay(int(sleepTime * 1000))
             frames += 1
 
+        logger.info("Lucidity is quitting. Bye-bye!")
         totalTime = time() - initTime
         logger.info("Average FPS: " + str(frames / totalTime))
         self._midiEventLoop.quit()
         pygame.display.quit()
+        pygame.quit()
 
     def _initializePanels(self, resolution, colorChooser:"ColorChooser", skin:"Skin"):
         panelSizer = PanelSizer()
@@ -71,23 +76,28 @@ class MainWindow():
         self._panels.append(mainGrid)
         self.mainDelegate.mainGrid = mainGrid
 
+        toolbarBackgroundColor = colorChooser.findColor("Gray")
         topToolbar = TopToolbar(self.surface,
                                 panelSizer.getTopToolbarRect(resolution[0]),
-                                colorChooser, skin, self.mainDelegate)
+                                colorChooser, skin, toolbarBackgroundColor, self.mainDelegate)
         self._panels.append(topToolbar)
+        self._setStatusTextCallback = topToolbar.setStatusText
 
         bottomToolbar = BottomToolbar(self.surface,
                                       panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
-                                      colorChooser, skin, self.mainDelegate)
+                                      colorChooser, skin, toolbarBackgroundColor, self.mainDelegate)
         self._panels.append(bottomToolbar)
 
     def quit(self):
-        logger.info("Lucidity is quitting. Bye-bye!")
+        self.setStatusText("Shutting down...")
         self._shouldQuit = True
 
     def minimize(self):
         logger.debug("Minimizing")
         pygame.display.iconify()
+
+    def setStatusText(self, text):
+        self._setStatusTextCallback(text)
 
     def _processEvent(self, event):
         eventType = pygame.event.event_name(event.type)

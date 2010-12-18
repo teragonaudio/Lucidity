@@ -10,6 +10,9 @@ class Panel:
         self.skin = skin
         self._widgets = []
 
+    def addWidget(self, widget:"Widget"):
+        self._widgets.append(widget)
+
     def width(self): return self.rect.width
     def height(self): return self.rect.height
 
@@ -19,15 +22,12 @@ class Panel:
 
 class Toolbar(Panel):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
-                 colorChooser:"ColorChooser", skin:"Skin"):
+                 colorChooser:"ColorChooser", skin:"Skin", backgroundColor):
         Panel.__init__(self, parentSurface, rect, colorChooser, skin)
         self.background = pygame.Surface((self.rect.width, self.rect.height))
-        self.background.fill(colorChooser.findColor("Gray"))
+        self.background.fill(backgroundColor)
         self.parentSurface.blit(self.background, self.rect)
         pygame.display.flip()
-
-    def addButton(self, button:"Button"):
-        self._widgets.append(button)
 
     def onMouseDown(self, position):
         for widget in self._widgets:

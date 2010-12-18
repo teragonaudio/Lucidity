@@ -1,4 +1,5 @@
 import pygame
+from lucidity.layout import Sizing
 
 class Widget:
     def __init__(self, parentSurface:"Surface", rect:"Rect"):
@@ -34,3 +35,32 @@ class Button(Widget):
     def draw(self):
         self.parentSurface.blit(self.activeImage, self.rect)
         pygame.display.update(self.rect)
+
+class Label(Widget):
+    def __init__(self, parentSurface:"Surface", rect:"Rect", fontColor, fontSize,
+                 drawBorder, borderColor, backgroundColor):
+        Widget.__init__(self, parentSurface, rect)
+        if drawBorder:
+            pygame.draw.rect(self.parentSurface, borderColor, self.rect, 1)
+
+        self.rect = pygame.Rect(rect.left + Sizing.widgetPadding, rect.top + Sizing.widgetPadding,
+                                rect.width - (Sizing.widgetPadding * 2),
+                                rect.height - (Sizing.widgetPadding * 2))
+        self.background = pygame.Surface((self.rect.width, self.rect.height))
+        self.background.fill(backgroundColor)
+        self.backgroundColor = backgroundColor
+
+        pygame.font.init()
+        self._font = pygame.font.Font("resources/graphics/fonts/AtomicClockRadio.ttf", fontSize)
+        self._color = fontColor
+        self._text = ""
+
+    def draw(self):
+        fontSurface = self._font.render(self._text, True, self._color)
+        self.parentSurface.blit(self.background, self.rect)
+        self.parentSurface.blit(fontSurface, self.rect)
+        pygame.display.update(self.rect)
+
+    def setText(self, text:"str"):
+        self._text = text
+        self.draw()

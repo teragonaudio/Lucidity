@@ -5,6 +5,7 @@ class Sizing:
     toolbarPadding = 6
     toolbarEmptySpace = 24
     toolbarButtonSize = 32
+    widgetPadding = 4
 
 class PanelSizer:
     def _topToolbarHeight(self):
