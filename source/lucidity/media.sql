@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS `locations` (
   'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  'absolutePath' TEXT NOT NULL);
+  'absolutePath' TEXT NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS `files` (
   'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -17,4 +18,5 @@ CREATE TABLE IF NOT EXISTS `files` (
   'lastModified' DATE NOT NULL,
   'lastPlayed' DATE DEFAULT NULL,
   'year' DATE DEFAULT NULL,
-  'playCount' INTEGER DEFAULT '0');
+  'playCount' INTEGER DEFAULT '0'
+);
