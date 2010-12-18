@@ -6,6 +6,7 @@ from lucidity.colors import ColorChooser
 from lucidity.keyboard import KeyHandler
 from lucidity.grid import MainGrid
 from lucidity.layout import PanelSizer
+from lucidity.midi import MidiEventLoop
 from lucidity.toolbars import TopToolbar, BottomToolbar
 from lucidity.skinning import Skin
 
@@ -14,14 +15,15 @@ class MainWindow():
         pygame.display.init()
         pygame.display.set_caption("Lucidity")
         pygame.display.set_icon(pygame.image.load(os.path.join(".", "icon.png")))
-        self._shouldQuit = False
+        self.mainDelegate = MainDelegate(self)
         self.surface = None
+        self._shouldQuit = False
         self._colorChooser = ColorChooser()
         self._resolution = (1440, 900)
         self._panels = []
         self._skin = Skin("default")
         self._maxFps = 30
-        self.mainDelegate = MainDelegate(self)
+        self._midiEventLoop = MidiEventLoop(self.mainDelegate)
 
     def run(self):
         """
@@ -41,6 +43,8 @@ class MainWindow():
         initTime = time()
         frameRenderTimeInSec = 1 / self._maxFps
 
+        self._midiEventLoop.start()
+
         while not self._shouldQuit:
             startTime = time()
             for event in pygame.event.get():
@@ -56,6 +60,7 @@ class MainWindow():
 
         totalTime = time() - initTime
         logger.info("Average FPS: " + str(frames / totalTime))
+        self._midiEventLoop.quit()
         pygame.display.quit()
 
     def _initializePanels(self, resolution, colorChooser:"ColorChooser", skin:"Skin"):

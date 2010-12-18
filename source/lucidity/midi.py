@@ -1,6 +1,5 @@
 import pygame
 import pygame.midi
-#from pygame import midi
 from lucidity.log import logger
 from threading import Thread
 from time import sleep
@@ -63,6 +62,7 @@ class MidiDeviceList:
     def __init__(self):
         self.devices = None
         self._openedInputs = {}
+        self._openedOutputs = {}
         logger.info("Initializing MIDI")
         pygame.midi.init()
         self.rescan()
@@ -70,7 +70,7 @@ class MidiDeviceList:
     def rescan(self):
         self.devices = []
         numDevices = pygame.midi.get_count()
-        logger.debug("MIDI device rescan started, found %d devices", (numDevices))
+        logger.debug("MIDI device rescan started, found %d devices", numDevices)
         for i in range(0, numDevices):
             (interface, name, input, output, opened) = pygame.midi.get_device_info(i)
             deviceName = name.decode("utf-8")
@@ -83,45 +83,82 @@ class MidiDeviceList:
             logger.debug("Device %d: %s", i, device)
             self.devices.append(device)
 
-    def openInput(self, name):
-        device = None
-        for d in self.devices:
-            if d.name == name:
-                device = d
-                break
+    def openAll(self):
+        for device in self.devices:
+            self.open(device)
 
+    def open(self, device):
         if device is None:
-            raise Exception("Device '" + name + "' not found")
+            raise Exception("Device cannot be None")
 
         if device._id in self._openedInputs:
-            raise Exception("Request to open device '%s', which is already open", name)
+            raise Exception("Request to open device '%s', which is already open", device.name)
 
         if device.type == "Input":
             device.open()
             self._openedInputs[device._id] = device
+        elif device.type == "Output":
+            device.open()
+            self._openedOutputs[device._id] = device
         else:
-            raise Exception("Device '%s' is not an input device", name)
+            raise Exception("Device '%s' has unknown type '%s'", device.name, device.type)
 
     def openedInputs(self):
         return self._openedInputs.values()
 
+    def openedOutputs(self):
+        return self._openedOutputs.values()
+
+    def closeAll(self):
+        for device in self.devices:
+            self.close(device)
+
+    def close(self, device):
+        device.close()
+        if device.type == "Input":
+            self._openedInputs.pop(device._id)
+        elif device.type == "Output":
+            self._openedOutputs.pop(device._id)
+
+class MidiMappings:
+    def __init__(self, delegate):
+        self.delegate = delegate
+        self.mappingTable = {}
+        self.reloadMappings()
+
+    def reloadMappings(self):
+        pass
+
+    def process(self, midiEvent:"MidiEvent"):
+        if not midiEvent.data2:
+            return
+
+        mappingKey = (midiEvent.status << 8) + midiEvent.data1
+        if mappingKey in self.mappingTable:
+            if self.mappingTable[mappingKey]:
+                self.mappingTable[mappingKey]()
+
 class MidiEventLoop(Thread):
-    def __init__(self, pollIntervalInMs = 25):
+    def __init__(self, delegate, pollIntervalInMs = 25):
         Thread.__init__(self, name = "MidiEventLoop")
         self._lock = Lock()
         self._isRunning = False
         self._pollInterval = pollIntervalInMs / 1000
-        self.devices = MidiDeviceList()
+        self.devices = None
+        self.midiMappings = MidiMappings(delegate)
 
-    def terminate(self):
+    def quit(self):
         self._lock.acquire(True)
+        self.devices.closeAll()
         self._isRunning = False
-        for device in self.devices.openedInputs():
-            device.close()
-        pygame.midi.quit()
         self._lock.release()
+        logger.info("Closed all MIDI devices")
 
     def run(self):
+        # Initialize is done here so as not to block the main thread
+        self.devices = MidiDeviceList()
+        self.devices.openAll()
+
         logger.debug("MidiEventLoop started")
         self._isRunning = True
         while self._isRunning:
@@ -132,8 +169,10 @@ class MidiEventLoop(Thread):
             self._lock.release()
             sleep(self._pollInterval)
 
+        pygame.midi.quit()
+
     def _parseEvent(self, eventList):
         eventData = eventList[0][0]
         midiEvent = MidiEvent(eventData[0], eventData[1], eventData[2], eventList[0][1])
         logger.debug("Incoming MIDI message: %s", midiEvent)
-        pass
+        self.midiMappings.process(midiEvent)
