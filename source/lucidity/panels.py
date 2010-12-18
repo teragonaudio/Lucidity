@@ -29,12 +29,6 @@ class Toolbar(Panel):
     def addButton(self, button:"Button"):
         self._widgets.append(button)
 
-    def draw(self):
-        for widget in self._widgets:
-            if False: #widget.isDirty:
-                self.parentSurface.blit(self.background, widget.rect, widget.rect)
-                widget.draw()
-
     def onMouseDown(self, position):
         for widget in self._widgets:
             if widget.rect.collidepoint(position):
