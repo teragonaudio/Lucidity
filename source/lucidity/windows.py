@@ -127,16 +127,19 @@ class MainDelegate:
         self.mainGrid = None
         self.keyHandler = KeyHandler()
 
-    def moveLeft(self):
+    def processCue(self):
+        pass
+
+    def processMoveLeft(self):
         self.mainGrid.moveLeft()
 
-    def moveRight(self):
+    def processMoveRight(self):
         self.mainGrid.moveRight()
 
-    def moveUp(self):
+    def processMoveUp(self):
         self.mainGrid.moveUp()
 
-    def moveDown(self):
+    def processMoveDown(self):
         self.mainGrid.moveDown()
 
     def processActiveEvent(self, eventDict):
@@ -165,3 +168,24 @@ class MainDelegate:
 
     def processQuit(self, eventDict = None):
         self.mainWindow.quit()
+
+    def processUndo(self):
+        pass
+
+    def processRedo(self):
+        pass
+
+    def processSelect(self):
+        pass
+
+    def processDelete(self):
+        pass
+
+    def processClone(self):
+        pass
+
+    def processSave(self):
+        pass
+
+    def processSettings(self):
+        pass
