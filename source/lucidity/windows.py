@@ -4,7 +4,8 @@ from time import time
 from lucidity.log import logger
 from lucidity.colors import ColorChooser
 from lucidity.keyboard import KeyHandler
-from lucidity.panels import MainGrid, Toolbar
+from lucidity.grid import MainGrid
+from lucidity.panels import Toolbar
 from lucidity.layout import PanelSizer, Sizing, Positioning
 from lucidity.widgets import Button
 from lucidity.skinning import Skin
