@@ -3,6 +3,7 @@ import pygame
 class Sizing:
     gridPadding = 24
     toolbarPadding = 6
+    toolbarEmptySpace = 24
     toolbarButtonSize = 32
 
 class PanelSizer:
