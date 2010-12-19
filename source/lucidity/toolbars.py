@@ -5,8 +5,8 @@ from lucidity.widgets import Button, Label
 
 class TopToolbar(Toolbar):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
-                 colorChooser:"ColorChooser", skin:"Skin", backgroundColor, delegate):
-        Toolbar.__init__(self, parentSurface, rect, colorChooser, skin, backgroundColor)
+                 skin:"Skin", backgroundColor, delegate):
+        Toolbar.__init__(self, parentSurface, rect, skin, backgroundColor)
         firstButtonRect = pygame.Rect(rect.left + Sizing.toolbarPadding,
                                       rect.top + Sizing.toolbarPadding, 0, 0)
         leftButton = Button(parentSurface, firstButtonRect,
@@ -65,8 +65,9 @@ class TopToolbar(Toolbar):
                                       lastButtonRect.left - Sizing.toolbarEmptySpace - statusLabelLeft,
                                       Sizing.toolbarButtonSize)
         self.statusLabel = Label(parentSurface, statusLabelRect,
-                                 colorChooser.findColor("White"), 22,
-                                 True, colorChooser.findColor("Black"),
+                                 "resources/graphics/fonts/AtomicClockRadio.ttf",
+                                 skin.colorChooser.findColor("White"), 22,
+                                 True, skin.colorChooser.findColor("Black"),
                                  backgroundColor)
         self.addWidget(self.statusLabel)
 
@@ -74,6 +75,5 @@ class TopToolbar(Toolbar):
         self.statusLabel.setText(text)
         
 class BottomToolbar(Toolbar):
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
-                 colorChooser:"ColorChooser", skin:"Skin", backgroundColor, delegate):
-        Toolbar.__init__(self, parentSurface, rect, colorChooser, skin, backgroundColor)
+    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin", backgroundColor, delegate):
+        Toolbar.__init__(self, parentSurface, rect, skin, backgroundColor)

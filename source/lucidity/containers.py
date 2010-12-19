@@ -1,10 +1,8 @@
 import pygame
 
 class Container:
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
-                 colorChooser:"ColorChooser", skin:"Skin"):
+    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin"):
         self.parentSurface = parentSurface
-        self._colorChooser = colorChooser
         self.rect = rect
         self.background = None
         self.skin = skin
@@ -21,9 +19,8 @@ class Container:
     def onMouseUp(self, position): pass
 
 class Toolbar(Container):
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
-                 colorChooser:"ColorChooser", skin:"Skin", backgroundColor):
-        Container.__init__(self, parentSurface, rect, colorChooser, skin)
+    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin", backgroundColor):
+        Container.__init__(self, parentSurface, rect, skin)
         self.background = pygame.Surface((self.rect.width, self.rect.height))
         self.background.fill(backgroundColor)
         self.parentSurface.blit(self.background, self.rect)

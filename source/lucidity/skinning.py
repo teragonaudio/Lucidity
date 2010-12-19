@@ -2,9 +2,10 @@ import pygame
 import os
 
 class Skin:
-    def __init__(self, name:"str"):
+    def __init__(self, name:"str", colorChooser:"ColorChooser"):
         self.name = name
         self.images = self._loadImages()
+        self.colorChooser = colorChooser
 
     def _loadImages(self):
         images = {}

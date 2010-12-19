@@ -4,10 +4,9 @@ from lucidity.containers import Container
 from lucidity.sprites import Block
 
 class MainGrid(Container):
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
-                 colorChooser:"ColorChooser", skin:"Skin"):
-        Container.__init__(self, parentSurface, rect, colorChooser, skin)
-        backgroundColor = colorChooser.findColor("Black")
+    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin"):
+        Container.__init__(self, parentSurface, rect, skin)
+        backgroundColor = skin.colorChooser.findColor("Black")
         self.parentSurface.fill(backgroundColor, self.rect)
         self.sprites = pygame.sprite.RenderUpdates()
 
@@ -18,7 +17,7 @@ class MainGrid(Container):
 
         self.background = pygame.Surface((gridRect.width, gridRect.height))
         self.background = self.background.convert()
-        self.background.fill(colorChooser.findColor("Banana Mania"))
+        self.background.fill(skin.colorChooser.findColor("Banana Mania"))
         self.parentSurface.blit(self.background, self.rect)
 
         pygame.display.flip()

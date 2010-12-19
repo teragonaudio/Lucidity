@@ -18,10 +18,9 @@ class MainWindow():
         self.mainDelegate = MainDelegate(self)
         self.surface = None
         self._shouldQuit = False
-        self._colorChooser = ColorChooser()
         self._resolution = (1440, 900)
         self._panels = []
-        self._skin = Skin("default")
+        self._skin = Skin("default", ColorChooser())
         self._maxFps = 30
         self._setStatusTextCallback = None
         self._midiEventLoop = MidiEventLoop(self.mainDelegate)
@@ -35,8 +34,8 @@ class MainWindow():
         self.surface = pygame.display.set_mode(self._resolution, windowFlags)
         self._printVideoInfo(pygame.display.Info())
 
-        self.surface.fill(self._colorChooser.findColor("Black"))
-        self._initializePanels(self._resolution, self._colorChooser, self._skin)
+        self.surface.fill(self._skin.colorChooser.findColor("Black"))
+        self._initializePanels(self._resolution, self._skin)
         self.setStatusText("Starting Up...")
         pygame.display.flip()
 
@@ -68,24 +67,23 @@ class MainWindow():
         pygame.display.quit()
         pygame.quit()
 
-    def _initializePanels(self, resolution, colorChooser:"ColorChooser", skin:"Skin"):
+    def _initializePanels(self, resolution, skin:"Skin"):
         panelSizer = PanelSizer()
         mainGrid = MainGrid(self.surface,
-                            panelSizer.getMainGridRect(resolution[0], resolution[1]),
-                            colorChooser, skin)
+                            panelSizer.getMainGridRect(resolution[0], resolution[1]), skin)
         self._panels.append(mainGrid)
         self.mainDelegate.mainGrid = mainGrid
 
-        toolbarBackgroundColor = colorChooser.findColor("Gray")
+        toolbarBackgroundColor = self._skin.colorChooser.findColor("Gray")
         topToolbar = TopToolbar(self.surface,
                                 panelSizer.getTopToolbarRect(resolution[0]),
-                                colorChooser, skin, toolbarBackgroundColor, self.mainDelegate)
+                                skin, toolbarBackgroundColor, self.mainDelegate)
         self._panels.append(topToolbar)
         self._setStatusTextCallback = topToolbar.setStatusText
 
         bottomToolbar = BottomToolbar(self.surface,
                                       panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
-                                      colorChooser, skin, toolbarBackgroundColor, self.mainDelegate)
+                                      skin, toolbarBackgroundColor, self.mainDelegate)
         self._panels.append(bottomToolbar)
 
     def quit(self):
