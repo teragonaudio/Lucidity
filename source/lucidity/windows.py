@@ -35,13 +35,13 @@ class MainWindow():
         windowFlags = pygame.FULLSCREEN
         self.surface = pygame.display.set_mode(self._resolution, windowFlags)
         self._printVideoInfo(pygame.display.Info())
+        logger.info("Initialized display with driver: " + pygame.display.get_driver())
 
         self.surface.fill(self._skin.colorChooser.findColor("Black"))
         self._initializePanels(self._resolution, self._skin)
         self.setStatusText("Starting Up...")
         pygame.display.flip()
 
-        logger.info("Initialized display with driver: " + pygame.display.get_driver())
         frames = 0
         initTime = time.time()
         frameRenderTimeInSec = 1 / self._maxFps
