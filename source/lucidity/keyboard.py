@@ -36,6 +36,7 @@ from lucidity.log import logger
 # the software feels the same on all installations.
 
 RegularKeyCommands = {
+    27: "Quit", # Escape, should be removed later (obviously)
     276: "MoveLeft",
     275: "MoveRight",
     273: "MoveUp",
