@@ -1,6 +1,7 @@
 import os
 import pygame
-from time import time
+import time
+from lucidity.arrangement import Sequence
 from lucidity.log import logger
 from lucidity.colors import ColorChooser
 from lucidity.keyboard import KeyHandler
@@ -17,9 +18,10 @@ class MainWindow():
         pygame.display.set_icon(pygame.image.load(os.path.join(".", "icon.png")))
         self.mainDelegate = MainDelegate(self)
         self.surface = None
+        self.sequence = Sequence()
         self._shouldQuit = False
         self._resolution = (1440, 900)
-        self._panels = []
+        self._containers = []
         self._skin = Skin("default", ColorChooser())
         self._maxFps = 30
         self._setStatusTextCallback = None
@@ -41,27 +43,28 @@ class MainWindow():
 
         logger.info("Initialized display with driver: " + pygame.display.get_driver())
         frames = 0
-        initTime = time()
+        initTime = time.time()
         frameRenderTimeInSec = 1 / self._maxFps
 
         self._midiEventLoop.start()
         self.setStatusText("Ready")
 
         while not self._shouldQuit:
-            startTime = time()
+            startTime = time.time()
             for event in pygame.event.get():
                 self._processEvent(event)
 
-            for panel in self._panels:
-                panel.draw()
+            self.sequence.tick()
+            for container in self._containers:
+                container.draw()
 
-            sleepTime = frameRenderTimeInSec - (time() - startTime)
+            sleepTime = frameRenderTimeInSec - (time.time() - startTime)
             if sleepTime > 0:
                 pygame.time.delay(int(sleepTime * 1000))
             frames += 1
 
         logger.info("Lucidity is quitting. Bye-bye!")
-        totalTime = time() - initTime
+        totalTime = time.time() - initTime
         logger.info("Average FPS: " + str(frames / totalTime))
         self._midiEventLoop.quit()
         pygame.display.quit()
@@ -70,21 +73,22 @@ class MainWindow():
     def _initializePanels(self, resolution, skin:"Skin"):
         panelSizer = PanelSizer()
         mainGrid = MainGrid(self.surface,
-                            panelSizer.getMainGridRect(resolution[0], resolution[1]), skin)
-        self._panels.append(mainGrid)
+                            panelSizer.getMainGridRect(resolution[0], resolution[1]),
+                            skin, self.sequence)
+        self._containers.append(mainGrid)
         self.mainDelegate.mainGrid = mainGrid
 
         toolbarBackgroundColor = self._skin.colorChooser.findColor("Gray")
         topToolbar = TopToolbar(self.surface,
                                 panelSizer.getTopToolbarRect(resolution[0]),
                                 skin, toolbarBackgroundColor, self.mainDelegate)
-        self._panels.append(topToolbar)
+        self._containers.append(topToolbar)
         self._setStatusTextCallback = topToolbar.setStatusText
 
         bottomToolbar = BottomToolbar(self.surface,
                                       panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
                                       skin, toolbarBackgroundColor, self.mainDelegate)
-        self._panels.append(bottomToolbar)
+        self._containers.append(bottomToolbar)
 
     def quit(self):
         self.setStatusText("Shutting down...")
@@ -102,22 +106,22 @@ class MainWindow():
         try:
             processFunction = getattr(self.mainDelegate, "process" + eventType)
             processFunction(event.dict)
-        except AttributeError:
-            logger.info("Event type '" + eventType + "' is not handled")
+        except AttributeError as exception:
+            logger.info("Error handling event '" + eventType + "': " + str(exception))
 
     def processMouseButtonDown(self, eventDict):
         logger.debug("Down at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
-        for panel in self._panels:
-            if panel.rect.collidepoint(clickPosition[0], clickPosition[1]):
-                panel.onMouseDown(clickPosition)
+        for container in self._containers:
+            if container.rect.collidepoint(clickPosition[0], clickPosition[1]):
+                container.onMouseDown(clickPosition)
 
     def processMouseButtonUp(self, eventDict):
         logger.debug("Up at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
-        for panel in self._panels:
-            if panel.rect.collidepoint(clickPosition[0], clickPosition[1]):
-                panel.onMouseUp(clickPosition)
+        for container in self._containers:
+            if container.rect.collidepoint(clickPosition[0], clickPosition[1]):
+                container.onMouseUp(clickPosition)
 
     def _printVideoInfo(self, videoInfo):
         resolutionWidth = str(videoInfo.current_w)

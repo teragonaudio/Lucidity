@@ -1,18 +1,50 @@
-from pygame.sprite import Sprite
+import pygame
+import time
+from pygame.sprite import DirtySprite
 from lucidity.log import logger
 
-class Block(Sprite):
-    def __init__(self, image:"Surface", position):
-        Sprite.__init__(self)
-        self.rect = image.get_rect().move(position[0], position[1])
-        self.image = image.convert_alpha()
+class GridSprite(DirtySprite):
+    def __init__(self, rect:"pygame.Rect", speedInPxPerSec:"float"):
+        DirtySprite.__init__(self)
+        self.rect = rect
+        self.lastTime = time.time()
+        self.speedInPxPerSec = speedInPxPerSec
+        logger.debug("Animation speed: " + str(speedInPxPerSec))
+        self.absolutePosition = float(rect.left)
 
     def moveLeft(self, numPixels:"int"):
         self.rect.move_ip(0 - numPixels, 0)
+        self.dirty = 1
 
     def update(self, *args):
-        self.moveLeft(1)
+        now = time.time()
+        elapsedTime = now - self.lastTime
+        newPosition = self.absolutePosition - (self.speedInPxPerSec * elapsedTime)
+        differenceInPx = self.rect.left - newPosition
+        if differenceInPx > 1.0:
+            self.moveLeft(int(differenceInPx))
+        self.absolutePosition = newPosition
+        self.lastTime = now
 
-    def kill(self):
-        logger.debug("Killing sprite")
-        super().kill()
+class Block(GridSprite):
+    def __init__(self, image:"Surface", position:"tuple", speedInPxPerSec:"float"):
+        GridSprite.__init__(self, image.get_rect().move(position[0], position[1]), speedInPxPerSec)
+        self.image = image.convert_alpha()
+
+class VerticalLine(GridSprite):
+    pass
+
+class TrackLine(DirtySprite):
+    def __init__(self, index:"int", width:"int", skin:"Skin"):
+        DirtySprite.__init__(self)
+        self.index = index
+        self.visible = False
+        self.backgroundColor = skin.colorChooser.findColor("Red")
+        self.rect = pygame.Rect(0, -1, width, 1)
+        self.image = pygame.Surface((self.rect.width, self.rect.height))
+        self.image.fill(self.backgroundColor, self.rect)
+
+    def setPosition(self, top:"int"):
+        self.rect = pygame.Rect(0, top, self.rect.width, self.rect.height)
+        self.image.fill(self.backgroundColor, self.rect)
+        self.dirty = 1
