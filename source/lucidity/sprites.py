@@ -9,7 +9,6 @@ class GridSprite(DirtySprite):
         self.rect = rect
         self.lastTime = time.time()
         self.speedInPxPerSec = speedInPxPerSec
-        logger.debug("Animation speed: " + str(speedInPxPerSec))
         self.absolutePosition = float(rect.left)
 
     def moveLeft(self, numPixels:"int"):
@@ -32,19 +31,23 @@ class Block(GridSprite):
         self.image = image.convert_alpha()
 
 class VerticalLine(GridSprite):
-    pass
+    def __init__(self, valueInBeats:"int", height:"int", skin:"Skin", speedInPxPerSec:"float"):
+        GridSprite.__init__(self, pygame.Rect(-1, 0, 1, height), speedInPxPerSec)
+        self.image = pygame.Surface((self.rect.width, self.rect.height))
+        self.backgroundColor = skin.colorChooser.findColor("Black")
 
 class TrackLine(DirtySprite):
     def __init__(self, index:"int", width:"int", skin:"Skin"):
         DirtySprite.__init__(self)
         self.index = index
         self.visible = False
-        self.backgroundColor = skin.colorChooser.findColor("Red")
+        self.backgroundColor = skin.colorChooser.findColor("Black")
         self.rect = pygame.Rect(0, -1, width, 1)
         self.image = pygame.Surface((self.rect.width, self.rect.height))
         self.image.fill(self.backgroundColor, self.rect)
 
     def setPosition(self, top:"int"):
-        self.rect = pygame.Rect(0, top, self.rect.width, self.rect.height)
-        self.image.fill(self.backgroundColor, self.rect)
+        self.rect.top = top
+
+    def update(self, *args):
         self.dirty = 1
