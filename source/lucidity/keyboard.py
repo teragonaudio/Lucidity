@@ -36,6 +36,10 @@ from lucidity.log import logger
 # the software feels the same on all installations.
 
 RegularKeyCommands = {
+    276: "MoveLeft",
+    275: "MoveRight",
+    273: "MoveUp",
+    274: "MoveDown",
 }
 
 ControlKeyCommands = {
