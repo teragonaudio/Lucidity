@@ -5,23 +5,31 @@ from lucidity.containers import Container
 from lucidity.sprites import Block, TrackLine
 from lucidity.timing import MusicTimeConverter
 
-MIN_WIDTH_IN_BARS = 32   # 1 minute @ 120 BPM
-MAX_WIDTH_IN_BARS = 1024 # 30 minutes @ 120 BPM
-DEF_WIDTH_IN_BARS = 120  # 4 minutes @ 120 BPM
-
 class GridSequence:
+    MIN_WIDTH_IN_BARS = 32   # 1 minute @ 120 BPM
+    MAX_WIDTH_IN_BARS = 1024 # 30 minutes @ 120 BPM
+    DEF_WIDTH_IN_BARS = 120  # 4 minutes @ 120 BPM
+
     def __init__(self, sequence:"Sequence"):
         self._sequence = sequence
-        self.widthInBars = DEF_WIDTH_IN_BARS
+        self.widthInBars = self.DEF_WIDTH_IN_BARS
         self.activeTrackCount = Sequence.MIN_TRACKS
 
     def expandTracks(self):
-        if self.activeTrackCount < 16:
+        if self.activeTrackCount < Sequence.MAX_TRACKS:
             self.activeTrackCount += 1
 
     def collapseTracks(self):
-        if self.activeTrackCount > 4:
+        if self.activeTrackCount > Sequence.MIN_TRACKS:
             self.activeTrackCount -= 1
+
+    def expandBars(self):
+        if self.widthInBars < self.MAX_WIDTH_IN_BARS:
+            self.widthInBars += 4
+
+    def collapseBars(self):
+        if self.widthInBars > self.MIN_WIDTH_IN_BARS:
+            self.widthInBars -= 4
 
     def getTempo(self):
         return self._sequence.getTempo()
@@ -30,16 +38,16 @@ class GridSequence:
         self._sequence.setTempo(tempo)
 
     def moveLeft(self):
-        pass
+        self.collapseBars()
 
     def moveRight(self):
-        pass
+        self.expandBars()
 
     def moveUp(self):
-        pass
+        self.collapseTracks()
 
     def moveDown(self):
-        pass
+        self.expandTracks()
 
 class GridSizer:
     def __init__(self, gridSequence:"GridSequence", rect:"pygame.Rect"):
@@ -63,45 +71,58 @@ class MainGrid(Container):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin", sequence:"Sequence"):
         Container.__init__(self, parentSurface, rect, skin)
         backgroundColor = skin.colorChooser.findColor("Black")
-        self.parentSurface.fill(backgroundColor, self.rect)
+        parentSurface.fill(backgroundColor, rect)
 
-        self.gridSequence = GridSequence(sequence)
-        self.gridSizer = GridSizer(self.gridSequence, rect)
-        self.gridTimer = GridTimer(self.gridSequence)
+        gridRect = pygame.Rect(0, rect.top + Sizing.gridPadding,
+                               rect.width,
+                               rect.height - (Sizing.gridPadding * 2))
+        self.originalTop = gridRect.top
 
-        self.gridItems = pygame.sprite.RenderUpdates()
-        self.gridBarLines = pygame.sprite.RenderUpdates()
-        self.gridTrackLines = pygame.sprite.RenderUpdates()
-        for i in range(0, Sequence.MAX_TRACKS):
-            self.gridTrackLines.add(TrackLine(i, self.rect.width, skin))
-
-        gridRect = pygame.Rect(0, self.rect.top + Sizing.gridPadding,
-                               self.rect.width,
-                               self.rect.height - (Sizing.gridPadding * 2))
-        self.rect = gridRect
-
-        self.background = pygame.Surface((gridRect.width, gridRect.height))
-        self.background = self.background.convert()
+        self.parentSurface = parentSurface.subsurface(gridRect)
+        self.rect = self.parentSurface.get_rect()
+        self.background = pygame.Surface((self.rect.width, self.rect.height))
         self.background.fill(skin.colorChooser.findColor("Banana Mania"))
         self.parentSurface.blit(self.background, self.rect)
+
+        self.gridSequence = GridSequence(sequence)
+        self.gridSizer = GridSizer(self.gridSequence, self.rect)
+        self.gridTimer = GridTimer(self.gridSequence)
+
+        self.gridItems = pygame.sprite.LayeredDirty()
+        self.gridBarLines = pygame.sprite.LayeredDirty()
+
+        self.gridTrackLines = pygame.sprite.LayeredDirty()
+        for i in range(0, Sequence.MAX_TRACKS):
+            self.gridTrackLines.add(TrackLine(i, self.rect.width, skin))
         self.repositionTrackLines()
 
-        pygame.display.flip()
+    def getPixelHeightPerTrack(self):
+        return self.rect.height / self.gridSequence.activeTrackCount
 
     def repositionTrackLines(self):
-        pixelsPerTrack = self.rect.height / self.gridSequence.activeTrackCount
+        self.gridTrackLines.clear(self.parentSurface, self.background)
+        pixelsPerTrack = self.getPixelHeightPerTrack()
         for sprite in self.gridTrackLines.sprites():
             sprite.visible = int(sprite.index < self.gridSequence.activeTrackCount)
             if sprite.visible:
                 sprite.setPosition(self.rect.top + pixelsPerTrack * sprite.index)
+            else:
+                sprite.setPosition(-1)
 
+        self.gridTrackLines.update()
         updateRects = self.gridTrackLines.draw(self.parentSurface)
+        for rect in updateRects:
+            rect.top += self.originalTop
         pygame.display.update(updateRects)
+
+        # TODO: All other sprites must be repositioned accordingly, uck
 
     def draw(self):
         self.gridItems.clear(self.parentSurface, self.background)
         self.gridItems.update()
         updateRects = self.gridItems.draw(self.parentSurface)
+        for rect in updateRects:
+            rect.top += self.originalTop
         pygame.display.update(updateRects)
         for sprite in self.gridItems.sprites():
             if not self.rect.colliderect(sprite.rect):
@@ -122,14 +143,39 @@ class MainGrid(Container):
         pass
 
     def onMouseUp(self, position):
-        block = Block(pygame.image.load("icon.png"), position, self.getSpeed())
+        pixelsPerTrack = self.getPixelHeightPerTrack()
+        nearestTrackLine = None
+        positionY = position[1] - self.originalTop
+
+        for trackLine in self.gridTrackLines.sprites():
+            if trackLine.visible:
+                if positionY > trackLine.rect.top and \
+                   positionY - trackLine.rect.top < pixelsPerTrack:
+                    nearestTrackLine = trackLine
+                    break
+
+        x = position[0] # TODO: Get nearest bar/beat line
+        y = nearestTrackLine.rect.top + nearestTrackLine.rect.height
+        block = Block(pygame.image.load("icon.png"), (x, y), self.getSpeed())
         self.gridItems.add(block)
 
+    def recalculateAnimationSpeeds(self, gridBarWidthBefore):
+        if self.gridSequence.widthInBars != gridBarWidthBefore:
+            newSpeed = self.getSpeed()
+            for sprite in self.gridItems.sprites():
+                sprite.speedInPxPerSec = newSpeed
+            for sprite in self.gridBarLines.sprites():
+                sprite.speedInPxPerSec = newSpeed
+
     def moveLeft(self):
+        gridBarWidthBefore = self.gridSequence.widthInBars
         self.gridSequence.moveLeft()
+        self.recalculateAnimationSpeeds(gridBarWidthBefore)
 
     def moveRight(self):
+        gridBarWidthBefore = self.gridSequence.widthInBars
         self.gridSequence.moveRight()
+        self.recalculateAnimationSpeeds(gridBarWidthBefore)
 
     def redrawTrackLines(self, activeTrackCountBefore):
         if self.gridSequence.activeTrackCount != activeTrackCountBefore:
