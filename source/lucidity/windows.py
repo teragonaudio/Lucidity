@@ -46,7 +46,7 @@ class MainWindow():
         initTime = time.time()
         frameRenderTimeInSec = 1 / self._maxFps
 
-        self._midiEventLoop.start()
+        # self._midiEventLoop.start()
         self.setStatusText("Ready")
 
         while not self._shouldQuit:
