@@ -2,7 +2,7 @@ import pygame
 from lucidity.layout import Sizing
 
 class Widget:
-    def __init__(self, parentSurface:"Surface", rect:"Rect"):
+    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect"):
         self.parentSurface = parentSurface
         self.rect = rect
 
@@ -37,7 +37,8 @@ class Button(Widget):
         pygame.display.update(self.rect)
 
 class Label(Widget):
-    def __init__(self, parentSurface:"Surface", rect:"Rect", fontColor, fontSize,
+    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
+                 fontName, fontColor, fontSize,
                  drawBorder, borderColor, backgroundColor):
         Widget.__init__(self, parentSurface, rect)
         if drawBorder:
@@ -51,7 +52,7 @@ class Label(Widget):
         self.backgroundColor = backgroundColor
 
         pygame.font.init()
-        self._font = pygame.font.Font("resources/graphics/fonts/AtomicClockRadio.ttf", fontSize)
+        self._font = pygame.font.Font(fontName, fontSize)
         self._color = fontColor
         self._text = ""
 
@@ -64,3 +65,10 @@ class Label(Widget):
     def setText(self, text:"str"):
         self._text = text
         self.draw()
+
+class ItemPanel(Widget):
+    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
+                 upImage:"Surface", downImage:"Surface"):
+        Widget.__init__(self, parentSurface, rect)
+        
+        #self.itemImageButton = Button()
