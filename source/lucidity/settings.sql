@@ -3,3 +3,8 @@ CREATE TABLE IF NOT EXISTS `settings` (
   'name' TEXT NOT NULL,
   'value' TEXT DEFAULT NULL
 );
+
+-- Default settings values
+INSERT INTO `settings` (`name`, `value`) VALUES ('app.debug', '0');
+INSERT INTO `settings` (`name`, `value`) VALUES ('app.fullscreen', '0');
+INSERT INTO `settings` (`name`, `value`) VALUES ('midi.enable', '1');
