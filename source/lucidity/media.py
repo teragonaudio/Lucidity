@@ -1,8 +1,7 @@
 import os
-import sqlite3
 import time
-
 from id3reader import id3reader
+from lucidity.database import Sqlite3Database
 from lucidity.log import logger
 
 class MediaFile:
@@ -74,44 +73,28 @@ class MediaFile:
 class MediaDatabase:
     def __init__(self, databaseLocation):
         self._filesColumns = {}
-        self._databaseLocation = databaseLocation
-        self._dbConnection = self._getDatabaseConnection(databaseLocation)
+        schemaFileLocation = os.path.join(os.path.dirname(__file__), "media.sql")
+        self._database = Sqlite3Database(databaseLocation, schemaFileLocation)
         self.locations = self._loadLocationsFromDatabase()
         self.mediaFiles = self._loadFilesFromDatabase()
-
-    def _getDatabaseConnection(self, databaseLocation):
-        if os.path.exists(databaseLocation):
-            # TODO: Need to check database integrity, schema, etc.
-            return sqlite3.connect(databaseLocation)
-        else:
-            return self._createDatabase(databaseLocation)
-
-    def _createDatabase(self, databaseLocation):
-        dbConnection = sqlite3.connect(databaseLocation)
-        schemaFileLocation = os.path.join(os.path.dirname(__file__), "media.sql")
-        schemaFile = open(schemaFileLocation, 'r')
-        dbConnection.executescript(schemaFile.read())
-        schemaFile.close()
-        return dbConnection
 
     def _loadLocationsFromDatabase(self):
         result = {}
 
-        dbCursor = self._dbConnection.cursor()
-        dbCursor.execute("SELECT `id`, `absolutePath` FROM `locations`")
-        for (id, absolutePath) in dbCursor:
+        cursor = self._database.query("SELECT `id`, `absolutePath` FROM `locations`", [], False)
+        for (id, absolutePath) in cursor:
             result[id] = absolutePath
 
         return result
 
     def _loadFilesFromDatabase(self):
         result = {}
-        dbCursor = self._dbConnection.cursor()
-        dbCursor.execute("PRAGMA table_info(`files`)")
-        columnNames = dbCursor.fetchall()
+
+        cursor = self._database.query("PRAGMA table_info(`files`)", [], False)
+        columnNames = cursor.fetchall()
         self._filesColumns = self._getColumnNamesDict(columnNames)
 
-        for row in dbCursor.execute("SELECT * FROM `files`"):
+        for row in cursor.execute("SELECT * FROM `files`"):
             locationId = self._getRowValue(row, self._filesColumns, "locationId")
             relativePath = self._getRowValue(row, self._filesColumns, "relativePath")
             location = self.locations[locationId]
@@ -161,14 +144,12 @@ class MediaDatabase:
             if not addLocation: break
 
         if addLocation:
-            dbCursor = self._dbConnection.cursor()
-            dbCursor.execute("INSERT INTO `locations` (`absolutePath`) VALUES (?)", [locationAbsolutePath])
-            self._commitDatabase()
+            cursor = self._database.query("INSERT INTO `locations` (`absolutePath`) VALUES (?)", [locationAbsolutePath], True)
 
             # Get the index of the location just added and push it to the set
-            dbCursor.execute("SELECT `id`, `absolutePath` FROM `locations` WHERE `absolutePath` = ?",
-                             [locationAbsolutePath])
-            (selectedLocation) = dbCursor.fetchone()
+            cursor.execute("SELECT `id`, `absolutePath` FROM `locations` WHERE `absolutePath` = ?",
+                           [locationAbsolutePath])
+            (selectedLocation) = cursor.fetchone()
             self.locations[selectedLocation[0]] = selectedLocation[1]
             self._rescanLocation(selectedLocation)
 
@@ -200,7 +181,6 @@ class MediaDatabase:
                 whereClause += '%'
             whereClause += searchQuery + '%"'
 
-        dbCursor = self._dbConnection.cursor()
         queryString = 'SELECT `id` FROM `files` WHERE ' + whereClause
         if groupByColumns is not None and isinstance(groupByColumns, list):
             groupByString = None
@@ -222,11 +202,11 @@ class MediaDatabase:
                 orderByString += '`' + column + '` ' + orderType
             queryString += orderByString
 
-        dbCursor.execute(queryString)
+        cursor = self._database.query(queryString, [], False)
         searchResults = []
         done = False
         while not done:
-            row = dbCursor.fetchone()
+            row = cursor.fetchone()
             if row is None:
                 done = True
             else:
@@ -280,9 +260,6 @@ class MediaDatabase:
         logger.info("Found %d files, %d new, %d updated, %d missing",
                     totalFilesFound, newFilesFound, updatedFiles, missingFilesFound)
 
-    def _commitDatabase(self):
-        self._dbConnection.commit()
-
     def _scanDirectory(self, locationPath, mediaFileList):
         if os.path.exists(locationPath):
             for file in os.listdir(locationPath):
@@ -319,18 +296,14 @@ class MediaDatabase:
             queryValues.append(value)
 
         queryString = 'INSERT INTO `files` (' + queryColumns + ') VALUES (' + queryValuePlaceholders + ')'
-        dbCursor = self._dbConnection.cursor()
-        dbCursor.execute(queryString, queryValues)
-        newId = dbCursor.lastrowid
-        self._commitDatabase()
+        cursor = self._database.query(queryString, queryValues, True)
+        newId = cursor.lastrowid
         return newId
 
     def _deleteFileFromDatabase(self, mediaFile):
-        dbCursor = self._dbConnection.cursor()
-        dbCursor.execute("DELETE FROM `files` WHERE `id` = ?", [mediaFile.id])
+        self._database.query("DELETE FROM `files` WHERE `id` = ?", [mediaFile.id], True)
 
     def _updateFileInDatabase(self, mediaFile):
-        dbCursor = self._dbConnection.cursor()
         queryFields = self._getQueryFields(mediaFile, {})
 
         updatePairs = None
@@ -346,9 +319,7 @@ class MediaDatabase:
 
         queryString = 'UPDATE `files` SET ' + updatePairs + ' WHERE `id` = ?'
         updateValues.append(mediaFile.id)
-        dbCursor.execute(queryString, updateValues)
-        self._commitDatabase()
-        pass
+        self._database.query(queryString, updateValues, True)
 
     def _getQueryFields(self, mediaFile, otherFields):
         queryFields = otherFields
