@@ -1,13 +1,15 @@
 import os
 import sqlite3
 
+#noinspection PyDefaultArgument
 class Database:
     def __init__(self, absolutePath:"str", schemaPath:"str"):
         self.absolutePath = absolutePath
         self.schemaPath = schemaPath
 
-    def query(self, statement:"str", args:"list", commit:"bool"=False): pass
+    def query(self, statement:"str", args:"list"=[], commit:"bool"=False): pass
 
+#noinspection PyDefaultArgument
 class Sqlite3Database(Database):
     def __init__(self, absolutePath:"str", schemaPath:"str"):
         Database.__init__(self, absolutePath, schemaPath)
@@ -26,7 +28,7 @@ class Sqlite3Database(Database):
         connection.commit()
         connection.close()
 
-    def query(self, statement:"str", args:"list", commit:"bool"=False):
+    def query(self, statement:"str", args:"list"=[], commit:"bool"=False):
         cursor = self._connection.cursor()
         cursor.execute(statement, args)
         if commit:
