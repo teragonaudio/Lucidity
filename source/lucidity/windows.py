@@ -8,6 +8,8 @@ from lucidity.keyboard import KeyHandler
 from lucidity.grid import MainGrid
 from lucidity.layout import PanelSizer
 from lucidity.midi import MidiEventLoop
+from lucidity.paths import PathFinder
+from lucidity.settings import Settings
 from lucidity.toolbars import TopToolbar, BottomToolbar
 from lucidity.skinning import Skin
 
@@ -19,6 +21,7 @@ class MainWindow():
         self.mainDelegate = MainDelegate(self)
         self.surface = None
         self.sequence = Sequence()
+        self.settings = Settings(PathFinder.findUserFile('settings.db'))
         self._shouldQuit = False
         self._resolution = (1440, 900)
         self._containers = []
@@ -46,7 +49,9 @@ class MainWindow():
         initTime = time.time()
         frameRenderTimeInSec = 1 / self._maxFps
 
-        # self._midiEventLoop.start()
+        if self.settings.getInt("midi.enable"):
+            self._midiEventLoop.start()
+            
         self.setStatusText("Ready")
 
         while not self._shouldQuit:
