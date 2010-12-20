@@ -3,6 +3,7 @@ import time
 from id3reader import id3reader
 from lucidity.database import Sqlite3Database
 from lucidity.log import logger
+from lucidity.paths import PathFinder
 
 class MediaFile:
     @staticmethod
@@ -73,7 +74,7 @@ class MediaFile:
 class MediaDatabase:
     def __init__(self, databaseLocation):
         self._filesColumns = {}
-        schemaFileLocation = os.path.join(os.path.dirname(__file__), "media.sql")
+        schemaFileLocation = PathFinder.findModule("media.sql")
         self._database = Sqlite3Database(databaseLocation, schemaFileLocation)
         self.locations = self._loadLocationsFromDatabase()
         self.mediaFiles = self._loadFilesFromDatabase()
