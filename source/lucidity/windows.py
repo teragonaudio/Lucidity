@@ -50,8 +50,11 @@ class MainWindow():
         initTime = time.time()
         frameRenderTimeInSec = 1 / self._maxFps
 
+        midiStarted = False
         if self.settings.getInt("midi.enable"):
             self._midiEventLoop.start()
+            midiStarted = True
+
         self._systemUsage.start()
 
         self.setStatusText("Ready")
@@ -70,11 +73,15 @@ class MainWindow():
                 pygame.time.delay(int(sleepTime * 1000))
             frames += 1
 
-        logger.info("Lucidity is quitting. Bye-bye!")
         totalTime = time.time() - initTime
         logger.info("Average FPS: " + str(frames / totalTime))
         self._systemUsage.quit()
-        self._midiEventLoop.quit()
+        self._systemUsage.join()
+
+        if midiStarted:
+            self._midiEventLoop.quit()
+            self._midiEventLoop.join()
+            
         pygame.display.quit()
         pygame.quit()
 
@@ -99,6 +106,7 @@ class MainWindow():
         self._containers.append(bottomToolbar)
 
     def quit(self):
+        logger.info("Lucidity is quitting. Bye-bye!")
         self.setStatusText("Shutting down...")
         self._shouldQuit = True
 
