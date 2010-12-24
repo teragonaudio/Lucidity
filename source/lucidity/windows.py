@@ -24,7 +24,7 @@ class MainWindow():
         self._shouldQuit = False
         self._resolution = (1440, 900)
         self._containers = []
-        self._skin = Skin(self.settings.getString("app.skin"))
+        self._skin = Skin(self.settings.getString("gui.skin"), self.settings.getInt("gui.colorInterval"))
         self._maxFps = self.settings.getFloat("gui.maxFps")
         self._setStatusTextCallback = None
         self._midiEventLoop = MidiEventLoop(self.mainDelegate)

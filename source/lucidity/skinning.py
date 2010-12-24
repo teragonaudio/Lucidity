@@ -4,13 +4,14 @@ from lucidity.colors import ColorChooser
 from lucidity.paths import PathFinder
 
 class Skin:
-    def __init__(self, name:"str"):
+    def __init__(self, name:str, interval:int):
         self.name = name
         skinPath = PathFinder.findSkin(name)
         self.images = self._loadImages(skinPath)
         self._guiColors = self._loadColors(skinPath, "GuiColors.txt")
         self._palette = self._loadColors(skinPath, "Palette.txt")
         self._fonts = self._loadFonts(skinPath, "Fonts.txt")
+        self.interval = interval
 
     def font(self, itemName:"str"):
         return self._fonts[itemName]
@@ -18,8 +19,8 @@ class Skin:
     def guiColor(self, itemName:"str"):
         return self._guiColors.findColor(itemName)
 
-    def nextPaletteColor(self, interval:"int"=1):
-        return self._palette.nextColor(interval)
+    def nextPaletteColor(self):
+        return self._palette.nextColor(self.interval)
 
     def _loadColors(self, skinPath:"str", colorFileName:"str"):
         return ColorChooser.createFromDefinition(os.path.join(skinPath, colorFileName))
