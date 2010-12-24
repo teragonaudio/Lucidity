@@ -172,13 +172,14 @@ class MainGrid(Container):
                     nearestTrackLine = trackLine
                     break
 
-        x = position[0] # TODO: Get nearest bar/beat line
-        y = nearestTrackLine.rect.top + nearestTrackLine.rect.height
-        block = Block((x, y), self.gridSizer.getBarWidthInPx(),
-                      self.gridSizer.getTrackHeightInPx(),
-                      self.skin.nextPaletteColor(),
-                      self.getSpeed())
-        self.gridItems.add(block)
+        if nearestTrackLine is not None:
+            x = position[0] # TODO: Get nearest bar/beat line
+            y = nearestTrackLine.rect.top + nearestTrackLine.rect.height
+            block = Block((x, y), self.gridSizer.getBarWidthInPx(),
+                          self.gridSizer.getTrackHeightInPx(),
+                          self.skin.nextPaletteColor(),
+                          self.getSpeed())
+            self.gridItems.add(block)
 
     def recalculateAnimationSpeeds(self, gridBarWidthBefore):
         if self.gridSequence.widthInBars != gridBarWidthBefore:
