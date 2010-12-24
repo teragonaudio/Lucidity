@@ -25,6 +25,9 @@ class GridSprite(DirtySprite):
         self.absolutePosition = newPosition
         self.lastTime = now
 
+        if self.rect.left + self.rect.width < 0:
+            self.kill()
+
 class Block(GridSprite):
     def __init__(self, image:"Surface", position:"tuple", speedInPxPerSec:"float"):
         GridSprite.__init__(self, image.get_rect().move(position[0], position[1]), speedInPxPerSec)
