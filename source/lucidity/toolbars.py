@@ -65,7 +65,7 @@ class TopToolbar(Toolbar):
                                       lastButtonRect.left - Sizing.toolbarEmptySpace - statusLabelLeft,
                                       Sizing.toolbarButtonSize)
         self.statusLabel = Label(parentSurface, statusLabelRect,
-                                 "resources/graphics/fonts/AtomicClockRadio.ttf",
+                                 skin.font("Status"),
                                  skin.guiColor("Toolbar Text"), 22,
                                  True, skin.guiColor("Toolbar Outline"),
                                  backgroundColor)
