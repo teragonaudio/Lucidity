@@ -8,25 +8,31 @@ class Database:
         self.schemaPath = schemaPath
 
     def query(self, statement:"str", args:"list"=[], commit:"bool"=False): pass
+    def verifyDatabase(self, absolutePath:"str", schemaPath:"str"): pass
 
 #noinspection PyDefaultArgument
 class Sqlite3Database(Database):
     def __init__(self, absolutePath:"str", schemaPath:"str"):
         Database.__init__(self, absolutePath, schemaPath)
-        self._connection = self.getConnection(absolutePath)
+        self._connection = self._getConnection(absolutePath, schemaPath)
 
-    def getConnection(self, absolutePath:"str"):
+    def _getConnection(self, absolutePath:"str", schemaPath:"str"):
         if not os.path.exists(absolutePath):
-            self.createDatabase(absolutePath)
+            self._createDatabase(absolutePath, schemaPath)
+        else:
+            self.verifyDatabase(absolutePath, schemaPath)
         return sqlite3.connect(absolutePath)
 
-    def createDatabase(self, absolutePath:"str"):
+    def _createDatabase(self, absolutePath:"str", schemaPath:"str"):
         connection = sqlite3.connect(absolutePath)
-        schemaFile = open(self.schemaPath, 'r')
+        schemaFile = open(schemaPath, 'r')
         connection.executescript(schemaFile.read())
         schemaFile.close()
         connection.commit()
         connection.close()
+
+    def verifyDatabase(self, absolutePath:"str", schemaPath:"str"):
+        pass
 
     def query(self, statement:"str", args:"list"=[], commit:"bool"=False):
         cursor = self._connection.cursor()
