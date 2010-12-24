@@ -65,7 +65,7 @@ class GridTimer:
         self.gridSequence = gridSequence
 
     def getWidthInSec(self):
-        return MusicTimeConverter.beatsToSeconds(self.gridSequence.getTempo(), self.gridSequence.widthInBars)
+        return MusicTimeConverter.beatsToSeconds(self.gridSequence.getTempo(), self.gridSequence.widthInBars * 4)
 
 class MainGrid(Container):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin", sequence:"Sequence"):
