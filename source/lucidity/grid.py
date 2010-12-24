@@ -9,7 +9,8 @@ from lucidity.timing import MusicTimeConverter
 class GridSequence:
     MIN_WIDTH_IN_BARS = 32   # 1 minute @ 120 BPM
     MAX_WIDTH_IN_BARS = 1024 # 30 minutes @ 120 BPM
-    DEF_WIDTH_IN_BARS = 120  # 4 minutes @ 120 BPM
+    #DEF_WIDTH_IN_BARS = 120  # 4 minutes @ 120 BPM
+    DEF_WIDTH_IN_BARS = MIN_WIDTH_IN_BARS
 
     def __init__(self, sequence:"Sequence"):
         self._sequence = sequence
