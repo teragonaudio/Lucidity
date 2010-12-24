@@ -5,8 +5,14 @@ class Setting:
     def __init__(self, name:"str", value:"str"):
         self.name = name
         self.strValue = value
-        self.intValue = int(value)
-        self.floatValue = float(value)
+        try:
+            self.intValue = int(value)
+        except ValueError:
+            self.intValue = -1
+        try:
+            self.floatValue = float(value)
+        except ValueError:
+            self.floatValue = -1.0
 
 class Settings:
     def __init__(self, absolutePath):
