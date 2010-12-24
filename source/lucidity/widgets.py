@@ -1,8 +1,9 @@
 import pygame
+from pygame import Surface
 from lucidity.layout import Sizing
 
 class Widget:
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect"):
+    def __init__(self, parentSurface:Surface, rect:pygame.Rect):
         self.parentSurface = parentSurface
         self.rect = rect
 
@@ -11,9 +12,9 @@ class Widget:
     def draw(self): pass
 
 class Button(Widget):
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
-                 upImage:"Surface", downImage:"Surface",
-                 onClickHandler:"callable"):
+    def __init__(self, parentSurface:Surface, rect:pygame.Rect,
+                 upImage:Surface, downImage:Surface,
+                 onClickHandler):
         Widget.__init__(self, parentSurface, rect)
         self.upImage = upImage
         self.downImage = downImage
