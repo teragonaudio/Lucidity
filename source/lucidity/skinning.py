@@ -2,7 +2,6 @@ import pygame
 import os
 from lucidity.colors import ColorChooser
 from lucidity.paths import PathFinder
-from lucidity.log import logger
 
 class Skin:
     def __init__(self, name:"str"):
@@ -44,6 +43,8 @@ class Skin:
             try:
                 images[imageTypeName] = pygame.image.load(os.path.join(skinPath, image))
             except pygame.error:
-                logger.debug("Could not load image '" + imageTypeName + "'")
+                # File could not be loaded, really not a big deal since there are also
+                # other skinning resources in this directory and such.
+                pass
 
         return images
