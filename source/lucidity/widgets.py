@@ -67,9 +67,26 @@ class Label(Widget):
         self._text = text
         self.draw()
 
-class ItemPanel(Widget):
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
-                 upImage:"Surface", downImage:"Surface"):
+class Filmstrip(Widget):
+    def __init__(self, parentSurface:Surface, rect:pygame.Rect, filmstrip:Surface):
         Widget.__init__(self, parentSurface, rect)
-        
-        #self.itemImageButton = Button()
+        self.images = []
+        self.numImages = int(filmstrip.get_rect().height / filmstrip.get_rect().width)
+        self.currentImage = 0
+        clipRect = pygame.Rect(0, 0, rect.width, rect.height)
+        for x in range(0, self.numImages):
+            self.images.append(filmstrip.subsurface(clipRect))
+            clipRect.move_ip(0, rect.height)
+        self.draw()
+
+    def draw(self):
+        self.parentSurface.blit(self.images[self.currentImage], self.rect)
+        pygame.display.update(self.rect)
+
+    def setImage(self, percent:float):
+        self.currentImage = int((self.numImages - 1) * (percent / 100.0))
+        self.draw()
+
+class ItemPanel(Widget):
+    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect"):
+        Widget.__init__(self, parentSurface, rect)
