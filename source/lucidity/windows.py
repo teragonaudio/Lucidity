@@ -129,14 +129,14 @@ class MainWindow():
         # logger.debug("Down at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
         for container in self._containers:
-            if container.rect.collidepoint(clickPosition[0], clickPosition[1]):
+            if container.absRect.collidepoint(clickPosition[0], clickPosition[1]):
                 container.onMouseDown(clickPosition)
 
     def processMouseButtonUp(self, eventDict):
         # logger.debug("Up at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
         for container in self._containers:
-            if container.rect.collidepoint(clickPosition[0], clickPosition[1]):
+            if container.absRect.collidepoint(clickPosition[0], clickPosition[1]):
                 container.onMouseUp(clickPosition)
 
     def getWindowFlags(self, settings):
