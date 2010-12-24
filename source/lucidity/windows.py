@@ -35,7 +35,7 @@ class MainWindow():
         Open up the window for the application.  This must, sadly, be done in the main
         thread, or else the window will not properly respond to events.
         """
-        windowFlags = pygame.FULLSCREEN
+        windowFlags = self.getWindowFlags(self.settings)
         self.surface = pygame.display.set_mode(self._resolution, windowFlags)
         self._printVideoInfo(pygame.display.Info())
         logger.info("Initialized display with driver: " + pygame.display.get_driver())
@@ -127,6 +127,17 @@ class MainWindow():
         for container in self._containers:
             if container.rect.collidepoint(clickPosition[0], clickPosition[1]):
                 container.onMouseUp(clickPosition)
+
+    def getWindowFlags(self, settings):
+        windowFlags = 0
+
+        for setting in ["fullscreen", "doublebuf", "hwsurface", "opengl"]:
+            fullSettingName = "gui" + "." + setting
+            if settings.getInt(fullSettingName) > 0:
+                pygameWindowFlagAttr = getattr(pygame, setting.upper())
+                windowFlags |= pygameWindowFlagAttr
+
+        return windowFlags
 
     def _printVideoInfo(self, videoInfo):
         resolutionWidth = str(videoInfo.current_w)
