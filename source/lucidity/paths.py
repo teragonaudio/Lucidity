@@ -13,7 +13,7 @@ class PathFinder:
 
     @staticmethod
     def findSkin(name:"str"):
-        skinPath = PathFinder.findResource("graphics/skins/" + name)
+        skinPath = PathFinder.findResource("skins/" + name)
         if not os.path.exists(skinPath):
             raise Exception("Skins path '" + skinPath + "' does not exist")
         return skinPath
