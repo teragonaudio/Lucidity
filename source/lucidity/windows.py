@@ -8,6 +8,7 @@ from lucidity.grid import MainGrid
 from lucidity.layout import PanelSizer
 from lucidity.midi import MidiEventLoop
 from lucidity.paths import PathFinder
+from lucidity.performance import SystemUsage
 from lucidity.settings import Settings
 from lucidity.toolbars import TopToolbar, BottomToolbar
 from lucidity.skinning import Skin
@@ -28,6 +29,7 @@ class MainWindow():
         self._maxFps = self.settings.getFloat("gui.maxFps")
         self._setStatusTextCallback = None
         self._midiEventLoop = MidiEventLoop(self.mainDelegate)
+        self._systemUsage = SystemUsage(self.mainDelegate)
 
     def run(self):
         """
@@ -50,7 +52,8 @@ class MainWindow():
 
         if self.settings.getInt("midi.enable"):
             self._midiEventLoop.start()
-            
+        self._systemUsage.start()
+
         self.setStatusText("Ready")
 
         while not self._shouldQuit:
@@ -70,6 +73,7 @@ class MainWindow():
         logger.info("Lucidity is quitting. Bye-bye!")
         totalTime = time.time() - initTime
         logger.info("Average FPS: " + str(frames / totalTime))
+        self._systemUsage.quit()
         self._midiEventLoop.quit()
         pygame.display.quit()
         pygame.quit()
@@ -158,6 +162,14 @@ class MainDelegate:
         self.mainWindow = mainWindow
         self.mainGrid = None
         self.keyHandler = KeyHandler()
+
+    def processCpuUsage(self, cpuUsage):
+        # logger.debug("CPU usage: " + str(cpuUsage))
+        pass
+
+    def processMemUsage(self, memUsage):
+        # logger.debug("Memory usage: " + str(memUsage / 1048576) + "Mb")
+        pass
 
     def processCue(self):
         pass
