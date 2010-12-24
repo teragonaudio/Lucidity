@@ -29,7 +29,7 @@ class MainWindow():
         self._maxFps = self.settings.getFloat("gui.maxFps")
         self._setStatusTextCallback = None
         self._midiEventLoop = MidiEventLoop(self.mainDelegate)
-        self._systemUsage = SystemUsage(self.mainDelegate)
+        self._systemUsage = None
 
     def run(self):
         """
@@ -104,6 +104,7 @@ class MainWindow():
                                       panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
                                       skin, toolbarBackgroundColor, self.mainDelegate)
         self._containers.append(bottomToolbar)
+        self._systemUsage = SystemUsage(bottomToolbar)
 
     def quit(self):
         logger.info("Lucidity is quitting. Bye-bye!")
@@ -170,14 +171,6 @@ class MainDelegate:
         self.mainWindow = mainWindow
         self.mainGrid = None
         self.keyHandler = KeyHandler()
-
-    def processCpuUsage(self, cpuUsage):
-        # logger.debug("CPU usage: " + str(cpuUsage))
-        pass
-
-    def processMemUsage(self, memUsage):
-        # logger.debug("Memory usage: " + str(memUsage / 1048576) + "Mb")
-        pass
 
     def processCue(self):
         pass

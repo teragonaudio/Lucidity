@@ -1,7 +1,7 @@
 import pygame
 from lucidity.layout import Sizing, Positioning
 from lucidity.containers import Toolbar
-from lucidity.widgets import Button, Label
+from lucidity.widgets import Button, Label, Filmstrip
 
 class TopToolbar(Toolbar):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
@@ -77,3 +77,16 @@ class TopToolbar(Toolbar):
 class BottomToolbar(Toolbar):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin", backgroundColor, delegate):
         Toolbar.__init__(self, parentSurface, rect, skin, backgroundColor)
+
+        lastButtonRect = pygame.Rect(rect.right - Sizing.toolbarButtonSize - Sizing.toolbarPadding,
+                                     rect.bottom - Sizing.toolbarButtonSize - Sizing.toolbarPadding,
+                                     Sizing.toolbarButtonSize, Sizing.toolbarButtonSize)
+        self.cpuUsageButton = Filmstrip(parentSurface, lastButtonRect, skin.images["CPU-Usage"])
+        self.addWidget(self.cpuUsageButton)
+
+    def processCpuUsage(self, percent):
+        self.cpuUsageButton.setImage(percent)
+
+    def processMemUsage(self, memUsage):
+        # logger.debug("Memory usage: " + str(memUsage / 1048576) + "Mb")
+        pass
