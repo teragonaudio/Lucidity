@@ -4,6 +4,7 @@ class Container:
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin"):
         self.parentSurface = parentSurface
         self.rect = rect
+        self.absRect = rect
         self.background = None
         self.skin = skin
         self._widgets = []
