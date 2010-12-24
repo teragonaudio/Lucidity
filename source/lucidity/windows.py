@@ -118,14 +118,14 @@ class MainWindow():
             logger.info("Error handling event '" + eventType + "': " + str(exception))
 
     def processMouseButtonDown(self, eventDict):
-        logger.debug("Down at " + str(eventDict['pos']))
+        # logger.debug("Down at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
         for container in self._containers:
             if container.rect.collidepoint(clickPosition[0], clickPosition[1]):
                 container.onMouseDown(clickPosition)
 
     def processMouseButtonUp(self, eventDict):
-        logger.debug("Up at " + str(eventDict['pos']))
+        # logger.debug("Up at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
         for container in self._containers:
             if container.rect.collidepoint(clickPosition[0], clickPosition[1]):
