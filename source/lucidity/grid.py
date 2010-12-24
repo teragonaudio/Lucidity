@@ -2,7 +2,7 @@ import pygame
 from lucidity.arrangement import Sequence
 from lucidity.layout import Sizing
 from lucidity.containers import Container
-from lucidity.sprites import Block, TrackLine
+from lucidity.sprites import Block, TrackLine, BarLine
 from lucidity.timing import MusicTimeConverter
 
 class GridSequence:
@@ -90,6 +90,9 @@ class MainGrid(Container):
 
         self.gridItems = pygame.sprite.LayeredDirty()
         self.gridBarLines = pygame.sprite.LayeredDirty()
+        barWidth = self.gridSizer.getBarWidthInPx()
+        for i in range(0, self.gridSequence.widthInBars):
+            self.gridBarLines.add(BarLine(i * 4, (i * barWidth, 0), self.rect.height, skin, self.getSpeed()))
 
         self.gridTrackLines = pygame.sprite.LayeredDirty()
         for i in range(0, Sequence.MAX_TRACKS):
@@ -109,32 +112,41 @@ class MainGrid(Container):
             else:
                 sprite.setPosition(-1)
 
-        self.gridTrackLines.update()
-        updateRects = self.gridTrackLines.draw(self.parentSurface)
-        for rect in updateRects:
-            rect.top += self.originalTop
-        pygame.display.update(updateRects)
-
         # TODO: All other sprites must be repositioned accordingly, uck
 
     def draw(self):
+        self._drawGridItems()
+        self._drawTrackLines()
+        self._drawBarLines()
+
+    def _drawBarLines(self):
+        self.gridBarLines.clear(self.parentSurface, self.background)
+        self.gridBarLines.update()
+        updateRects = self.gridBarLines.draw(self.parentSurface)
+        for rect in updateRects:
+            rect.top += self.originalTop
+        pygame.display.update(updateRects)
+        numBarLines = len(self.gridBarLines.sprites())
+        if numBarLines < self.gridSequence.widthInBars:
+            lastSprite = self.gridBarLines.sprites()[numBarLines - 1]
+            self.gridBarLines.add(BarLine(lastSprite.valueInBeats + 4, (lastSprite.rect.left + self.gridSizer.getBarWidthInPx(), 0),
+                                          self.rect.height, self.skin, self.getSpeed()))
+
+    def _drawGridItems(self):
         self.gridItems.clear(self.parentSurface, self.background)
         self.gridItems.update()
         updateRects = self.gridItems.draw(self.parentSurface)
         for rect in updateRects:
             rect.top += self.originalTop
         pygame.display.update(updateRects)
-        for sprite in self.gridItems.sprites():
-            if not self.rect.colliderect(sprite.rect):
-                sprite.kill()
 
-        self.gridBarLines.clear(self.parentSurface, self.background)
-        self.gridItems.update()
-        updateRects = self.gridBarLines.draw(self.parentSurface)
+    def _drawTrackLines(self):
+        self.gridTrackLines.clear(self.parentSurface, self.background)
+        self.gridTrackLines.update()
+        updateRects = self.gridTrackLines.draw(self.parentSurface)
+        for rect in updateRects:
+            rect.top += self.originalTop
         pygame.display.update(updateRects)
-        for sprite in self.gridBarLines.sprites():
-            if sprite.rect.left <= 0:
-                sprite.kill()
 
     def getSpeed(self):
         return self.rect.width / self.gridTimer.getWidthInSec()
