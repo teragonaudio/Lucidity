@@ -1,0 +1,7 @@
+Grid: 250,231,181
+Bar Line: #000000
+Track Line: #000000
+Background: #424242
+Toolbar: #B9B9B9
+Toolbar Text: #000000
+Toolbar Outline: #000000

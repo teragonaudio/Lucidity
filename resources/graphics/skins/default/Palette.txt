@@ -1,0 +1,120 @@
+Mahogany: 205,74,74
+Fuzzy Wuzzy Brown: 204,102,102
+Chestnut: 188,93,88
+Red Orange: 255,83,73
+Sunset Orange: 253,94,83
+Bittersweet: 253,124,110
+Melon: 253,188,180
+Outrageous Orange: 255,110,74
+Vivid Tangerine: 255,160,137
+Burnt Sienna: 234,126,93
+Brown: 180,103,77
+Sepia: 165,105,79
+Orange: 255,117,56
+Burnt Orange: 255,127,73
+Copper: 221,148,117
+Mango Tango: 255,130,67
+Atomic Tangerine: 255,164,116
+Beaver: 159,129,112
+Antique Brass: 205,149,117
+Desert Sand: 239,205,184
+Raw Sienna: 214,138,89
+Tumbleweed: 222,170,136
+Tan: 250,167,108
+Peach: 255,207,171
+Macaroni and Cheese: 255,189,136
+Apricot: 253,217,181
+Neon Carrot: 255,163,67
+Almond: 239,219,197
+Yellow Orange: 255,182,83
+Gold: 231,198,151
+Shadow: 138,121,93
+Banana Mania: 250,231,181
+Sunglow: 255,207,72
+Goldenrod: 252,217,117
+Dandelion: 253,219,109
+Yellow: 252,232,131
+Green Yellow: 240,232,145
+Spring Green: 236,234,190
+Olive Green: 186,184,108
+Laser Lemon: 253,252,116
+Unmellow Yellow: 253,252,116
+Canary: 255,255,153
+Yellow Green: 197,227,132
+Inch Worm: 178,236,93
+Asparagus: 135,169,107
+Granny Smith Apple: 168,228,160
+Electric Lime: 29,249,20
+Screamin Green: 118,255,122
+Fern: 113,188,120
+Forest Green: 109,174,129
+Sea Green: 159,226,191
+Green: 28,172,120
+Mountain Meadow: 48,186,143
+Shamrock: 69,206,162
+Jungle Green: 59,176,143
+Caribbean Green: 28,211,162
+Tropical Rain Forest: 23,128,109
+Pine Green: 21,128,120
+Robin Egg Blue: 31,206,203
+Aquamarine: 120,219,226
+Turquoise Blue: 119,221,231
+Sky Blue: 128,218,235
+Outer Space: 65,74,76
+Blue Green: 25,158,189
+Pacific Blue: 28,169,201
+Cerulean: 29,172,214
+Cornflower: 154,206,235
+Midnight Blue: 26,72,118
+Navy Blue: 25,116,210
+Denim: 43,108,196
+Blue: 31,117,254
+Periwinkle: 197,208,230
+Cadet Blue: 176,183,198
+Indigo: 93,118,203
+Wild Blue Yonder: 162,173,208
+Manatee: 151,154,170
+Blue Bell: 173,173,214
+Blue Violet: 115,102,189
+Purple Heart: 116,66,200
+Royal Purple: 120,81,169
+Purple Mountains Majesty: 157,129,186
+Violet: 146,110,174
+Wisteria: 205,164,222
+Vivid Violet: 143,80,157
+Fuchsia: 195,100,197
+Shocking Pink: 251,126,253
+Pink Flamingo: 252,116,253
+Plum: 142,69,133
+Hot Magenta: 255,29,206
+Purple Pizzazz: 255,29,206
+Razzle Dazzle Rose: 255,72,208
+Orchid: 230,168,215
+Red Violet: 192,68,143
+Eggplant: 110,81,96
+Cerise: 221,68,146
+Wild Strawberry: 255,67,164
+Magenta: 246,100,175
+Lavender: 252,180,213
+Cotton Candy: 255,188,217
+Violet Red: 247,83,148
+Carnation Pink: 255,170,204
+Razzmatazz: 227,37,107
+Piggy Pink: 253,215,228
+Jazzberry Jam: 202,55,103
+Blush: 222,93,131
+Tickle Me Pink: 252,137,172
+Pink Sherbet: 247,128,161
+Maroon: 200,56,90
+Red: 238,32,77
+Radical Red: 255,73,108
+Mauvelous: 239,152,170
+Wild Watermelon: 252,108,133
+Scarlet: 252,40,71
+Salmon: 255,155,170
+Brick Red: 203,65,84
+White: 237,237,237
+Timberwolf: 219,215,210
+Silver: 205,197,194
+Gray: 149,145,140
+Black: 35,35,35
