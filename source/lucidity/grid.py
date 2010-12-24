@@ -2,6 +2,7 @@ import pygame
 from lucidity.arrangement import Sequence
 from lucidity.layout import Sizing
 from lucidity.containers import Container
+from lucidity.skinning import Skin
 from lucidity.sprites import Block, TrackLine, BarLine
 from lucidity.timing import MusicTimeConverter
 
@@ -68,7 +69,7 @@ class GridTimer:
         return MusicTimeConverter.beatsToSeconds(self.gridSequence.getTempo(), self.gridSequence.widthInBars * 4)
 
 class MainGrid(Container):
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin", sequence:"Sequence"):
+    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:Skin, sequence:"Sequence"):
         Container.__init__(self, parentSurface, rect, skin)
         backgroundColor = skin.guiColor("Background")
         parentSurface.fill(backgroundColor, rect)
@@ -92,11 +93,13 @@ class MainGrid(Container):
         self.gridBarLines = pygame.sprite.LayeredDirty()
         barWidth = self.gridSizer.getBarWidthInPx()
         for i in range(0, self.gridSequence.widthInBars):
-            self.gridBarLines.add(BarLine(i * 4, (i * barWidth, 0), self.rect.height, skin, self.getSpeed()))
+            self.gridBarLines.add(BarLine(i * 4, (i * barWidth, 0),
+                                          self.rect.height, skin.guiColor("Bar Line"),
+                                          self.getSpeed()))
 
         self.gridTrackLines = pygame.sprite.LayeredDirty()
         for i in range(0, Sequence.MAX_TRACKS):
-            self.gridTrackLines.add(TrackLine(i, self.rect.width, skin))
+            self.gridTrackLines.add(TrackLine(i, self.rect.width, skin.guiColor("Track Line")))
         self.repositionTrackLines()
 
     def getPixelHeightPerTrack(self):
@@ -129,8 +132,10 @@ class MainGrid(Container):
         numBarLines = len(self.gridBarLines.sprites())
         if numBarLines < self.gridSequence.widthInBars:
             lastSprite = self.gridBarLines.sprites()[numBarLines - 1]
-            self.gridBarLines.add(BarLine(lastSprite.valueInBeats + 4, (lastSprite.rect.left + self.gridSizer.getBarWidthInPx(), 0),
-                                          self.rect.height, self.skin, self.getSpeed()))
+            self.gridBarLines.add(BarLine(lastSprite.valueInBeats + 4,
+                                          (lastSprite.rect.left + self.gridSizer.getBarWidthInPx(), 0),
+                                          self.rect.height, self.skin.guiColor("Bar Line"),
+                                          self.getSpeed()))
 
     def _drawGridItems(self):
         self.gridItems.clear(self.parentSurface, self.background)
@@ -168,7 +173,10 @@ class MainGrid(Container):
 
         x = position[0] # TODO: Get nearest bar/beat line
         y = nearestTrackLine.rect.top + nearestTrackLine.rect.height
-        block = Block(pygame.image.load("icon.png"), (x, y), self.getSpeed())
+        block = Block((x, y), self.gridSizer.getBarWidthInPx(),
+                      self.gridSizer.getTrackHeightInPx(),
+                      self.skin.nextPaletteColor(),
+                      self.getSpeed())
         self.gridItems.add(block)
 
     def recalculateAnimationSpeeds(self, gridBarWidthBefore):

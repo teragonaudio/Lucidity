@@ -1,7 +1,6 @@
 import pygame
 import time
 from pygame.sprite import DirtySprite
-from lucidity.log import logger
 
 class GridSprite(DirtySprite):
     def __init__(self, rect:"pygame.Rect", speedInPxPerSec:"float"):
@@ -29,27 +28,29 @@ class GridSprite(DirtySprite):
             self.kill()
 
 class Block(GridSprite):
-    def __init__(self, image:"Surface", position:"tuple", speedInPxPerSec:"float"):
-        GridSprite.__init__(self, image.get_rect().move(position[0], position[1]), speedInPxPerSec)
-        self.image = image.convert_alpha()
+    def __init__(self, position:"tuple", width:"int", height:"int", color:tuple, speedInPxPerSec:"float"):
+        GridSprite.__init__(self, pygame.Rect(position[0], position[1], width, height), speedInPxPerSec)
+        self.backgroundColor = color
+        self.image = pygame.Surface((self.rect.width, self.rect.height))
+        self.image.fill(self.backgroundColor)
 
 class BarLine(GridSprite):
-    def __init__(self, valueInBeats:"int", position:"tuple", height:"int", skin:"Skin", speedInPxPerSec:"float"):
+    def __init__(self, valueInBeats:"int", position:"tuple", height:"int", color:tuple, speedInPxPerSec:"float"):
         GridSprite.__init__(self, pygame.Rect(position[0], position[1], 1, height), speedInPxPerSec)
         self.valueInBeats = valueInBeats
-        self.backgroundColor = skin.guiColor("Bar Line")
+        self.backgroundColor = color
         self.image = pygame.Surface((self.rect.width, self.rect.height))
-        self.image.fill(self.backgroundColor, self.rect)
+        self.image.fill(self.backgroundColor)
 
 class TrackLine(DirtySprite):
-    def __init__(self, index:"int", width:"int", skin:"Skin"):
+    def __init__(self, index:"int", width:"int", color:tuple):
         DirtySprite.__init__(self)
         self.index = index
         self.visible = False
-        self.backgroundColor = skin.guiColor("Track Line")
+        self.backgroundColor = color
         self.rect = pygame.Rect(0, -1, width, 1)
         self.image = pygame.Surface((self.rect.width, self.rect.height))
-        self.image.fill(self.backgroundColor, self.rect)
+        self.image.fill(self.backgroundColor)
 
     def setPosition(self, top:"int"):
         self.rect.top = top
