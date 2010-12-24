@@ -32,6 +32,7 @@ class Sqlite3Database(Database):
         connection.close()
 
     def verifyDatabase(self, absolutePath:"str", schemaPath:"str"):
+        # TODO: Add missing columns from schema, max/min values
         pass
 
     def query(self, statement:"str", args:"list"=[], commit:"bool"=False):
