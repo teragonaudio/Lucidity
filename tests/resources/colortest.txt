@@ -1,0 +1,3 @@
+First Color: 255,0,0
+Other Color: 0,255,0
+Third Color: 0,0,255
