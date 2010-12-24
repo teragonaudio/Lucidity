@@ -3,7 +3,6 @@ import pygame
 import time
 from lucidity.arrangement import Sequence
 from lucidity.log import logger
-from lucidity.colors import ColorChooser
 from lucidity.keyboard import KeyHandler
 from lucidity.grid import MainGrid
 from lucidity.layout import PanelSizer
@@ -40,7 +39,7 @@ class MainWindow():
         self._printVideoInfo(pygame.display.Info())
         logger.info("Initialized display with driver: " + pygame.display.get_driver())
 
-        self.surface.fill(self._skin.colorChooser.findColor("Black"))
+        self.surface.fill(self._skin.guiColor("Background"))
         self._initializePanels(self._resolution, self._skin)
         self.setStatusText("Starting Up...")
         pygame.display.flip()
@@ -83,7 +82,7 @@ class MainWindow():
         self._containers.append(mainGrid)
         self.mainDelegate.mainGrid = mainGrid
 
-        toolbarBackgroundColor = self._skin.colorChooser.findColor("Gray")
+        toolbarBackgroundColor = self._skin.guiColor("Toolbar")
         topToolbar = TopToolbar(self.surface,
                                 panelSizer.getTopToolbarRect(resolution[0]),
                                 skin, toolbarBackgroundColor, self.mainDelegate)

@@ -66,8 +66,8 @@ class TopToolbar(Toolbar):
                                       Sizing.toolbarButtonSize)
         self.statusLabel = Label(parentSurface, statusLabelRect,
                                  "resources/graphics/fonts/AtomicClockRadio.ttf",
-                                 skin.colorChooser.findColor("White"), 22,
-                                 True, skin.colorChooser.findColor("Black"),
+                                 skin.guiColor("Toolbar Text"), 22,
+                                 True, skin.guiColor("Toolbar Outline"),
                                  backgroundColor)
         self.addWidget(self.statusLabel)
 

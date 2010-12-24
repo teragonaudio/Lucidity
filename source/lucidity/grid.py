@@ -70,7 +70,7 @@ class GridTimer:
 class MainGrid(Container):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin", sequence:"Sequence"):
         Container.__init__(self, parentSurface, rect, skin)
-        backgroundColor = skin.colorChooser.findColor("Black")
+        backgroundColor = skin.guiColor("Background")
         parentSurface.fill(backgroundColor, rect)
 
         gridRect = pygame.Rect(0, rect.top + Sizing.gridPadding,
@@ -81,7 +81,7 @@ class MainGrid(Container):
         self.parentSurface = parentSurface.subsurface(gridRect)
         self.rect = self.parentSurface.get_rect()
         self.background = pygame.Surface((self.rect.width, self.rect.height))
-        self.background.fill(skin.colorChooser.findColor("Banana Mania"))
+        self.background.fill(skin.guiColor("Grid"))
         self.parentSurface.blit(self.background, self.rect)
 
         self.gridSequence = GridSequence(sequence)
