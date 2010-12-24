@@ -33,11 +33,13 @@ class Block(GridSprite):
         GridSprite.__init__(self, image.get_rect().move(position[0], position[1]), speedInPxPerSec)
         self.image = image.convert_alpha()
 
-class VerticalLine(GridSprite):
-    def __init__(self, valueInBeats:"int", height:"int", skin:"Skin", speedInPxPerSec:"float"):
-        GridSprite.__init__(self, pygame.Rect(-1, 0, 1, height), speedInPxPerSec)
+class BarLine(GridSprite):
+    def __init__(self, valueInBeats:"int", position:"tuple", height:"int", skin:"Skin", speedInPxPerSec:"float"):
+        GridSprite.__init__(self, pygame.Rect(position[0], position[1], 1, height), speedInPxPerSec)
+        self.valueInBeats = valueInBeats
+        self.backgroundColor = skin.colorChooser.findColor("Red")
         self.image = pygame.Surface((self.rect.width, self.rect.height))
-        self.backgroundColor = skin.colorChooser.findColor("Black")
+        self.image.fill(self.backgroundColor, self.rect)
 
 class TrackLine(DirtySprite):
     def __init__(self, index:"int", width:"int", skin:"Skin"):
