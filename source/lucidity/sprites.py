@@ -47,9 +47,10 @@ class Block(GridSprite):
         colorRect.height -= 4
         surface.fill(color, colorRect)
 
-        font = pygame.font.Font(fontName, int(rect.height / 4))
+        font = pygame.font.Font(fontName, int(rect.height / 6))
         fontSurface = font.render(item.label, True, (0,0,0))
         colorRect.left += Sizing.fontPadding
+        colorRect.top += Sizing.fontPadding
         surface.blit(fontSurface, colorRect)
 
         return surface
