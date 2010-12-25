@@ -125,6 +125,8 @@ class MainWindow():
             processFunction(event.dict)
         except AttributeError as exception:
             logger.info("Error handling event '" + eventType + "': " + str(exception))
+        except pygame.error as exception:
+            logger.error("Error from pygame: " + str(exception))
 
     def processMouseButtonDown(self, eventDict):
         # logger.debug("Down at " + str(eventDict['pos']))
