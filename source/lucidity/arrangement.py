@@ -30,5 +30,11 @@ class Sequence:
     def setTempo(self, tempo:"float"):
         self.clock.tempo = tempo
 
+    def getTime(self):
+        return self.clock.currentTime
+
+    def getCurrentBar(self):
+        return self.clock.getBars()
+
     def tick(self):
         self.clock.tick()
