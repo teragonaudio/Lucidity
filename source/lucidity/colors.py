@@ -62,7 +62,7 @@ class ColorChooser:
     def nextColor(self, interval=1):
         nextIndex = self._currentIndex + interval
         if nextIndex >= len(self._colorList):
-            nextIndex = 0
+            nextIndex %= len(self._colorList)
         self._currentIndex = nextIndex
         return self.currentColor()
 
