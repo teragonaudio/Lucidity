@@ -45,9 +45,9 @@ class Label(Widget):
         if drawBorder:
             pygame.draw.rect(self.parentSurface, borderColor, self.rect, 1)
 
-        self.rect = pygame.Rect(rect.left + Sizing.widgetPadding, rect.top + Sizing.widgetPadding,
-                                rect.width - (Sizing.widgetPadding * 2),
-                                rect.height - (Sizing.widgetPadding * 2))
+        self.rect = pygame.Rect(rect.left + Sizing.fontPadding, rect.top + Sizing.fontPadding,
+                                rect.width - (Sizing.fontPadding * 2),
+                                rect.height - (Sizing.fontPadding * 2))
         self.background = pygame.Surface((self.rect.width, self.rect.height))
         self.background.fill(backgroundColor)
         self.backgroundColor = backgroundColor
