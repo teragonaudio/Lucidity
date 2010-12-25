@@ -65,6 +65,7 @@ class GridSizer:
 class GridTimer:
     def __init__(self, gridSequence:"GridSequence"):
         self.gridSequence = gridSequence
+        self.lastTime = time.time()
 
     def getWidthInSec(self):
         return MusicTimeConverter.beatsToSeconds(self.gridSequence.getTempo(), self.gridSequence.widthInBars * 4)
@@ -140,7 +141,12 @@ class MainGrid(Container):
 
     def _drawGridItems(self):
         self.gridItems.clear(self.parentSurface, self.background)
-        self.gridItems.update()
+
+        now = time.time()
+        elapsedTime = now - self.gridTimer.lastTime
+        self.gridItems.update(elapsedTime)
+        self.gridTimer.lastTime = now
+
         updateRects = self.gridItems.draw(self.parentSurface)
         for rect in updateRects:
             rect.top += self.originalTop

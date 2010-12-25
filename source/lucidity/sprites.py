@@ -6,23 +6,19 @@ class GridSprite(DirtySprite):
     def __init__(self, rect:"pygame.Rect", speedInPxPerSec:"float"):
         DirtySprite.__init__(self)
         self.rect = rect
-        self.lastTime = time.time()
-        self.speedInPxPerSec = speedInPxPerSec
-        self.absolutePosition = float(rect.left)
+        self.speedInPxPerSec = float(speedInPxPerSec)
+        self.movePixels = 0
 
     def moveLeft(self, numPixels:"int"):
         self.rect.move_ip(0 - numPixels, 0)
         self.dirty = 1
 
     def update(self, *args):
-        now = time.time()
-        elapsedTime = now - self.lastTime
-        newPosition = self.absolutePosition - (self.speedInPxPerSec * elapsedTime)
-        differenceInPx = self.rect.left - newPosition
-        if differenceInPx > 1.0:
-            self.moveLeft(int(differenceInPx))
-        self.absolutePosition = newPosition
-        self.lastTime = now
+        elapsedTime = float(args[0])
+        self.movePixels += self.speedInPxPerSec * elapsedTime
+        if self.movePixels > 1.0:
+            self.moveLeft(int(self.movePixels))
+            self.movePixels = 0.0
 
         if self.rect.left + self.rect.width < 0:
             self.kill()
