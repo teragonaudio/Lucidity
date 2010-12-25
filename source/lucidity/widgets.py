@@ -52,7 +52,6 @@ class Label(Widget):
         self.background.fill(backgroundColor)
         self.backgroundColor = backgroundColor
 
-        pygame.font.init()
         self._font = pygame.font.Font(fontName, fontSize)
         self._color = fontColor
         self._text = ""

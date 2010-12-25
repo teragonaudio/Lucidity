@@ -27,6 +27,8 @@ class Skin:
 
     def _loadFonts(self, skinPath:"str", fontFileName:"str"):
         result = {}
+
+        pygame.font.init()
         fontFile = open(os.path.join(skinPath, fontFileName))
         import re
         regex = re.compile("([\w\s]+):\s*([\w\.]+)")
