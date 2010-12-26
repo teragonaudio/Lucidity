@@ -154,13 +154,12 @@ class GridSpriteGroup(LayeredDirty):
         self.expandBars()
 
     def moveUp(self):
-        cursorTrack = self.cursor.track.id
-        if cursorTrack > 0:
-            cursorTrack -= 1
-            if cursorTrack <= self.activeTrackCount:
+        nextTrack = self.cursor.track.id - 1
+        if nextTrack >= 0:
+            if nextTrack < self.activeTrackCount:
                 # TODO: Only collapse if the last track has no active sprites
                 self.collapseTracks()
-            self.cursor.moveToTrack(self.trackLines[cursorTrack])
+            self.cursor.moveToTrack(self.trackLines[nextTrack])
 
     def moveDown(self):
         nextTrack = self.cursor.track.id + 1
