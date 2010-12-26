@@ -28,7 +28,7 @@ class GridSpriteGroup(LayeredDirty):
         for i in range(0, Sequence.MAX_TRACKS):
             self.add(TrackLine(i, self.rect.width, skin.guiColor("Track Line")))
 
-        self.cursor = CursorLine(0, (0, 0), self.getTrackHeightInPx(), 4,
+        self.cursor = CursorLine(0, (0, 0), self.getTrackHeightInPx() + 1, 4,
                                  skin.guiColor("Cursor"), self.getSpeed())
         self.cursor.moveToBar(self.barLines[0])
         self.cursor.moveToTrack(self.trackLines[0])
@@ -113,7 +113,7 @@ class GridSpriteGroup(LayeredDirty):
                 trackLine.setTop(-1)
             trackLine.dirty = 1
         self._updateBlockHeights(trackHeightInPx + 1)
-        self.cursor.updateHeight(trackHeightInPx)
+        self.cursor.updateHeight(trackHeightInPx + 1)
 
     def _updateBlockHeights(self, trackHeightInPx:"int"):
         for block in self.blocks:
