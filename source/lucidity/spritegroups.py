@@ -109,6 +109,13 @@ class GridSpriteGroup(LayeredDirty):
             newRect.height = trackHeightInPx
             block.resize(newRect)
 
+    def refreshAllItems(self):
+        for sprite in self.sprites():
+            if isinstance(sprite, Block):
+                track = self.sequence.tracks[sprite.id.track]
+                if not track.contains(sprite.id):
+                    sprite.kill()
+
     def getSpeed(self):
         return self.rect.width / self.getWidthInSec()
 

@@ -259,3 +259,7 @@ class MainDelegate:
 
     def processSettings(self):
         pass
+
+    def processReset(self):
+        logger.info("Reset called")
+        self.mainGrid.reset()

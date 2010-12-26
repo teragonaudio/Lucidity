@@ -53,3 +53,7 @@ class MainGrid(Container):
 
     def moveDown(self):
         self.gridSprites.moveDown()
+
+    def reset(self):
+        self.sequence.clearAllTracks()
+        self.gridSprites.refreshAllItems()

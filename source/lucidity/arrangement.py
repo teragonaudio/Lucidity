@@ -18,6 +18,12 @@ class Track:
     def addItem(self, item:"Item"):
         self.items.append(item)
 
+    def contains(self, item:"Item"):
+        return item in self.items
+
+    def clear(self):
+        self.items = []
+
 class Sequence:
     DEFAULT_TEMPO = 120.0
     MAX_TRACKS = 16
@@ -43,3 +49,7 @@ class Sequence:
 
     def tick(self):
         self.clock.tick()
+
+    def clearAllTracks(self):
+        for track in self.tracks:
+            track.clear()

@@ -53,6 +53,7 @@ ShiftKeyCommands = {
 
 ControlShiftKeyCommands = {
     ord('q'): "Quit",
+    ord('r'): "Reset",
 }
 
 ModifierKeys = {
