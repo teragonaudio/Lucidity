@@ -147,11 +147,25 @@ class GridSpriteGroup(LayeredDirty):
     def setTempo(self, tempo:float):
         self.sequence.setTempo(tempo)
 
+    def _findBarFromId(self, id):
+        for barLine in self.barLines:
+            if barLine.id == id:
+                return barLine
+        return None
+
     def moveLeft(self):
-        self.collapseBars()
+        nextBarId = self.cursor.bar.id - 1
+        nextBar = self._findBarFromId(nextBarId)
+        if nextBar is not None:
+            self.cursor.moveToBar(nextBar)
+        #self.collapseBars()
 
     def moveRight(self):
-        self.expandBars()
+        nextBarId = self.cursor.bar.id + 1
+        nextBar = self._findBarFromId(nextBarId)
+        if nextBar is not None:
+            self.cursor.moveToBar(nextBar)
+        #self.expandBars()
 
     def moveUp(self):
         nextTrack = self.cursor.track.id - 1
