@@ -74,12 +74,18 @@ class GridSpriteGroup(LayeredDirty):
         return updateRects
 
     def update(self, *args):
-        self._updateBarLines()
-
         now = self.sequence.getTime()
         elapsedTime = float(now - self.lastTime)
         super().update(elapsedTime)
         self.lastTime = now
+
+        self._updateBarLines()
+        self._updateCursor()
+
+    def _updateCursor(self):
+        if self.cursor.isOffscreen:
+            self.cursor.moveToBar(self.barLines[1])
+            self.isOffscreen = False
 
     def _updateBarLines(self):
         lastBarLine = self.barLines[len(self.barLines) - 1]
