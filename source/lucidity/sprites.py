@@ -21,7 +21,7 @@ class GridSprite(DirtySprite):
         if self.movePixels > 1.0:
             self.moveLeft(int(self.movePixels))
             self.movePixels = 0.0
-        if self.rect.left + self.rect.width < 0:
+        if self.rect.right < 0:
             self.onOffscreen()
 
     def onOffscreen(self):
