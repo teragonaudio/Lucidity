@@ -66,9 +66,8 @@ class TopToolbar(Toolbar):
                                       Sizing.toolbarButtonSize)
         self.statusLabel = Label(parentSurface, statusLabelRect,
                                  skin.font("Status"),
-                                 skin.guiColor("Toolbar Text"), 22,
-                                 True, skin.guiColor("Toolbar Outline"),
-                                 backgroundColor)
+                                 skin.guiColor("Toolbar Text"), 1,
+                                 skin.guiColor("Toolbar Outline"), backgroundColor)
         self.addWidget(self.statusLabel)
 
     def setStatusText(self, text):
