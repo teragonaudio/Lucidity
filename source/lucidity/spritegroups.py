@@ -85,7 +85,7 @@ class GridSpriteGroup(LayeredDirty):
     def _updateCursor(self):
         if self.cursor.isOffscreen:
             self.cursor.moveToBar(self.barLines[1])
-            self.isOffscreen = False
+            self.cursor.isOffscreen = False
 
     def _updateBarLines(self):
         lastBarLine = self.barLines[len(self.barLines) - 1]
