@@ -100,7 +100,7 @@ class GridSpriteGroup(LayeredDirty):
                 else:
                     trackLine.setTop(-1)
                 trackLine.dirty = 1
-            self._updateBlockHeights(trackHeightInPx)
+            self._updateBlockHeights(trackHeightInPx + 1)
 
     def _updateBlockHeights(self, trackHeightInPx:"int"):
         for block in self.blocks:
