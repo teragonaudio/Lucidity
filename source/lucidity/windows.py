@@ -156,7 +156,7 @@ class MainWindow():
 
     def getStatusProvider(self, settings):
         providerName = settings.getString("gui.statusProvider")
-        if providerName == "usage":
+        if providerName == "system":
             return self._systemUsage
         elif providerName == "obtuse":
             return ObtuseStatusProvider()
