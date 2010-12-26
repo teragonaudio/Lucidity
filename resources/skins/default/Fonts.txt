@@ -1,2 +1,2 @@
-Status: Anonymous.ttf
-Block: Anonymous.ttf
+Status: DroidSansMono.ttf
+Block: DroidSansMono.ttf
