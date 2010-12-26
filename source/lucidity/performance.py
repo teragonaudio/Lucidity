@@ -1,13 +1,22 @@
 import os
 from psutil import Process
 from threading import Thread
+from lucidity.status import StatusProvider
 
-class SystemUsage(Thread):
-    def __init__(self, delegate, pollIntervalInSec=1):
+class SystemUsage(Thread, StatusProvider):
+    def __init__(self, fpsObserver, pollIntervalInSec=1.0):
         Thread.__init__(self, name="SystemUsage")
-        self.delegate = delegate
+        self.delegate = None
+        self.fpsObserver = fpsObserver
         self._pollInterval = pollIntervalInSec
         self._isRunning = False
+        self.cpuUsage = 0.0
+        self.memUsage = 0.0
+
+    def getStatusString(self):
+        memUsedInMb = round(self.memUsage / (1024 * 1024), 2)
+        fps = round(self.fpsObserver.getFramesPerSec(), 1)
+        return "CPU: %g%%, Mem: %gMb, FPS: %g" % (self.cpuUsage, memUsedInMb, fps)
 
     def quit(self):
         self._isRunning = False
@@ -16,7 +25,8 @@ class SystemUsage(Thread):
         self._isRunning = True
         process = Process(os.getpid())
         while self._isRunning:
-            cpuUsage = process.get_cpu_percent(self._pollInterval)
-            memUsage = process.get_memory_info()
-            self.delegate.processCpuUsage(cpuUsage)
-            self.delegate.processMemUsage(memUsage[0])
+            self.cpuUsage = process.get_cpu_percent(self._pollInterval)
+            self.memUsage = process.get_memory_info()[0]
+            if self.delegate is not None:
+                self.delegate.processCpuUsage(self.cpuUsage)
+                self.delegate.processMemUsage(self.memUsage)

@@ -14,4 +14,6 @@ INSERT INTO `settings` (`name`, `value`) VALUES ('gui.opengl', '0');
 INSERT INTO `settings` (`name`, `value`) VALUES ('gui.colorInterval', '4');
 INSERT INTO `settings` (`name`, `value`) VALUES ('gui.maxFps', '30');
 INSERT INTO `settings` (`name`, `value`) VALUES ('gui.skin', 'default');
+INSERT INTO `settings` (`name`, `value`) VALUES ('gui.statusProvider', 'none');
+INSERT INTO `settings` (`name`, `value`) VALUES ('gui.statusInterval', '20');
 INSERT INTO `settings` (`name`, `value`) VALUES ('midi.enable', '1');

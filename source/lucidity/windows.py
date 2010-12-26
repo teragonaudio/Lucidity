@@ -1,6 +1,7 @@
 import os
 import pygame
 import time
+import lucidity
 from lucidity.arrangement import Sequence
 from lucidity.log import logger
 from lucidity.keyboard import KeyHandler
@@ -10,6 +11,7 @@ from lucidity.midi import MidiEventLoop
 from lucidity.paths import PathFinder
 from lucidity.performance import SystemUsage
 from lucidity.settings import Settings
+from lucidity.status import StatusLoop, ObtuseStatusProvider
 from lucidity.toolbars import TopToolbar, BottomToolbar
 from lucidity.skinning import Skin
 
@@ -29,7 +31,32 @@ class MainWindow():
         self._maxFps = self.settings.getFloat("gui.maxFps")
         self._setStatusTextCallback = None
         self._midiEventLoop = MidiEventLoop(self.mainDelegate)
-        self._systemUsage = None
+        self._framesProcessed = 0
+        self._systemUsage = SystemUsage(self)
+        self._statusLoop = StatusLoop()
+
+    def _initializePanels(self, resolution, skin:"Skin"):
+        panelSizer = PanelSizer()
+        mainGrid = MainGrid(self.surface,
+                            panelSizer.getMainGridRect(resolution[0], resolution[1]),
+                            skin, self.sequence)
+        self._containers.append(mainGrid)
+        self.mainDelegate.mainGrid = mainGrid
+
+        toolbarBackgroundColor = self._skin.guiColor("Toolbar")
+        topToolbar = TopToolbar(self.surface,
+                                panelSizer.getTopToolbarRect(resolution[0]),
+                                skin, toolbarBackgroundColor, self.mainDelegate,
+                                self._systemUsage)
+        self._containers.append(topToolbar)
+        self._setStatusTextCallback = topToolbar.onStatusUpdate
+
+        bottomToolbar = BottomToolbar(self.surface,
+                                      panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
+                                      skin, toolbarBackgroundColor, self.mainDelegate)
+        self._containers.append(bottomToolbar)
+        self._systemUsage.delegate = bottomToolbar
+        self._statusLoop.delegate = topToolbar
 
     def run(self):
         """
@@ -46,8 +73,6 @@ class MainWindow():
         self.setStatusText("Starting Up...")
         pygame.display.flip()
 
-        frames = 0
-        initTime = time.time()
         frameRenderTimeInSec = 1 / self._maxFps
 
         midiStarted = False
@@ -56,7 +81,8 @@ class MainWindow():
             midiStarted = True
 
         self._systemUsage.start()
-
+        self._statusLoop.statusProvider = self.getStatusProvider(self.settings)
+        self._statusLoop.start()
         self.setStatusText("Ready")
 
         while not self._shouldQuit:
@@ -71,40 +97,19 @@ class MainWindow():
             sleepTime = frameRenderTimeInSec - (time.time() - startTime)
             if sleepTime > 0:
                 pygame.time.delay(int(sleepTime * 1000))
-            frames += 1
+            self._framesProcessed += 1
 
-        totalTime = time.time() - initTime
-        logger.info("Average FPS: " + str(frames / totalTime))
+        self._statusLoop.quit()
+        self._statusLoop.join()
         self._systemUsage.quit()
         self._systemUsage.join()
 
         if midiStarted:
             self._midiEventLoop.quit()
             self._midiEventLoop.join()
-            
+
         pygame.display.quit()
         pygame.quit()
-
-    def _initializePanels(self, resolution, skin:"Skin"):
-        panelSizer = PanelSizer()
-        mainGrid = MainGrid(self.surface,
-                            panelSizer.getMainGridRect(resolution[0], resolution[1]),
-                            skin, self.sequence)
-        self._containers.append(mainGrid)
-        self.mainDelegate.mainGrid = mainGrid
-
-        toolbarBackgroundColor = self._skin.guiColor("Toolbar")
-        topToolbar = TopToolbar(self.surface,
-                                panelSizer.getTopToolbarRect(resolution[0]),
-                                skin, toolbarBackgroundColor, self.mainDelegate)
-        self._containers.append(topToolbar)
-        self._setStatusTextCallback = topToolbar.setStatusText
-
-        bottomToolbar = BottomToolbar(self.surface,
-                                      panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
-                                      skin, toolbarBackgroundColor, self.mainDelegate)
-        self._containers.append(bottomToolbar)
-        self._systemUsage = SystemUsage(bottomToolbar)
 
     def quit(self):
         logger.info("Lucidity is quitting. Bye-bye!")
@@ -141,6 +146,24 @@ class MainWindow():
         for container in self._containers:
             if container.absRect.collidepoint(clickPosition[0], clickPosition[1]):
                 container.onMouseUp(clickPosition)
+
+    def getFramesPerSec(self):
+        totalTime = self.sequence.getTime() - self.sequence.clock.startTime
+        if totalTime > 0:
+            return self._framesProcessed / totalTime
+        else:
+            return 0.0
+
+    def getStatusProvider(self, settings):
+        providerName = settings.getString("gui.statusProvider")
+        if providerName == "usage":
+            return self._systemUsage
+        elif providerName == "obtuse":
+            return ObtuseStatusProvider()
+        elif providerName == "debug":
+            return lucidity.log.statusHandler
+        else:
+            return None
 
     def getWindowFlags(self, settings):
         windowFlags = 0

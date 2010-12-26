@@ -1,11 +1,12 @@
 import pygame
 from lucidity.layout import Sizing, Positioning
 from lucidity.containers import Toolbar
-from lucidity.widgets import Button, Label, Filmstrip
+from lucidity.status import StatusLoop, StatusDelegate
+from lucidity.widgets import Button, Filmstrip, Label
 
-class TopToolbar(Toolbar):
+class TopToolbar(Toolbar, StatusDelegate):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
-                 skin:"Skin", backgroundColor, delegate):
+                 skin:"Skin", backgroundColor, delegate, statusProvider:StatusLoop):
         Toolbar.__init__(self, parentSurface, rect, skin, backgroundColor)
         firstButtonRect = pygame.Rect(rect.left + Sizing.toolbarPadding,
                                       rect.top + Sizing.toolbarPadding, 0, 0)
@@ -70,9 +71,9 @@ class TopToolbar(Toolbar):
                                  skin.guiColor("Toolbar Outline"), backgroundColor)
         self.addWidget(self.statusLabel)
 
-    def setStatusText(self, text):
-        self.statusLabel.setText(text)
-        
+    def onStatusUpdate(self, status:"str"):
+        self.statusLabel.setText(status)
+
 class BottomToolbar(Toolbar):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin", backgroundColor, delegate):
         Toolbar.__init__(self, parentSurface, rect, skin, backgroundColor)
