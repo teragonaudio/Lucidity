@@ -13,7 +13,7 @@ class GridSprite(DirtySprite):
 
     def moveLeft(self, numPixels:"int"):
         self.rect.move_ip(0 - numPixels, 0)
-        self.dirty = 1
+        self.dirty = True
 
     def update(self, *args):
         elapsedTime = args[0]
@@ -21,9 +21,11 @@ class GridSprite(DirtySprite):
         if self.movePixels > 1.0:
             self.moveLeft(int(self.movePixels))
             self.movePixels = 0.0
-
         if self.rect.left + self.rect.width < 0:
-            self.kill()
+            self.onOffscreen()
+
+    def onOffscreen(self):
+        self.kill()
 
 class Block(GridSprite):
     def __init__(self, id, position:"tuple", width:"int", height:"int",
@@ -56,11 +58,36 @@ class Block(GridSprite):
         return surface
 
 class BarLine(GridSprite):
-    def __init__(self, barCount:"int", position:"tuple", height:"int", color:tuple, speedInPxPerSec:"float"):
-        GridSprite.__init__(self, barCount, pygame.Rect(position[0], position[1], 1, height), speedInPxPerSec)
+    def __init__(self, barCount:"int", position:"tuple", height:"int", width:"int", color:"tuple", speedInPxPerSec:"float"):
+        GridSprite.__init__(self, barCount, pygame.Rect(position[0], position[1], width, height), speedInPxPerSec)
         self.backgroundColor = color
         self.image = pygame.Surface((self.rect.width, self.rect.height))
         self.image.fill(self.backgroundColor)
+
+class CursorLine(BarLine):
+    def __init__(self, barCount:"int", position:"tuple", height:"int", width:"int", color:tuple, speedInPxPerSec:"float"):
+        super().__init__(barCount, position, height, width, color, speedInPxPerSec)
+        self.track = None
+        self.bar = None
+        self.isOffscreen = False
+
+    def onOffscreen(self):
+        self.isOffscreen = True
+
+    def moveToBar(self, barLine:"BarLine"):
+        self.bar = barLine
+        self.rect.left = barLine.rect.right
+        self.dirty = True
+
+    def moveToTrack(self, trackLine:"TrackLine"):
+        self.track = trackLine
+        self.rect.top = trackLine.rect.top
+        self.dirty = True
+
+    def updateHeight(self, trackHeightInPx:"int"):
+        self.rect.height = trackHeightInPx
+        self.top = self.track.rect.top
+        self.dirty = True
 
 class TrackLine(DirtySprite):
     def __init__(self, trackNumber:"int", width:"int", color:tuple):

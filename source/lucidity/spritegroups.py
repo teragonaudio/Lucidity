@@ -2,7 +2,7 @@ import pygame
 from pygame.sprite import LayeredDirty
 from lucidity.arrangement import Sequence, Item
 from lucidity.skinning import Skin
-from lucidity.sprites import Block, BarLine, TrackLine
+from lucidity.sprites import Block, BarLine, TrackLine, CursorLine
 from lucidity.timing import MusicTimeConverter
 
 class GridSpriteGroup(LayeredDirty):
@@ -24,9 +24,16 @@ class GridSpriteGroup(LayeredDirty):
         self.widthInBars = self.DEF_WIDTH_IN_BARS
         self.activeTrackCount = Sequence.MIN_TRACKS
 
-        self.add(BarLine(0, (0, 0), self.rect.height, skin.guiColor("Bar Line"), self.getSpeed()))
+        self.add(BarLine(0, (0, 0), self.rect.height, 1, skin.guiColor("Bar Line"), self.getSpeed()))
         for i in range(0, Sequence.MAX_TRACKS):
             self.add(TrackLine(i, self.rect.width, skin.guiColor("Track Line")))
+
+        self.cursor = CursorLine(0, (0, 0), self.getTrackHeightInPx(), 4,
+                                 skin.guiColor("Cursor"), self.getSpeed())
+        self.cursor.moveToBar(self.barLines[0])
+        self.cursor.moveToTrack(self.trackLines[0])
+        self.add(self.cursor)
+
         self._updateTrackLines()
 
     def add(self, *sprites, **kwargs):
@@ -78,7 +85,7 @@ class GridSpriteGroup(LayeredDirty):
         lastBarLine = self.barLines[len(self.barLines) - 1]
         while lastBarLine.rect.left < self.rect.right:
             nextRect = lastBarLine.rect.move(self.getBarWidthInPx(), 0)
-            barLine = BarLine(lastBarLine.id + 1, (nextRect.left, nextRect.top), self.rect.height,
+            barLine = BarLine(lastBarLine.id + 1, (nextRect.left, nextRect.top), self.rect.height, 1,
                               self.skin.guiColor("Bar Line"), self.getSpeed())
             self.add(barLine)
             lastBarLine = barLine

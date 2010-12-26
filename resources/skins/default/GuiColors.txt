@@ -1,4 +1,5 @@
-Grid: 250,231,181
+Grid: #FAE7B5
+Cursor: #00A3EB
 Bar Line: #797979
 Track Line: #797979
 Background: #424242
