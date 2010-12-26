@@ -98,16 +98,16 @@ class GridSpriteGroup(LayeredDirty):
             sprite.speedInPxPerSec = speed
 
     def _updateTrackLines(self):
-        if len(self.trackLines) != self.activeTrackCount:
-            trackHeightInPx = self.getTrackHeightInPx()
-            for trackLine in self.trackLines:
-                trackLine.visible = trackLine.id < self.activeTrackCount
-                if trackLine.visible:
-                    trackLine.setTop(self.rect.top + trackHeightInPx * trackLine.id)
-                else:
-                    trackLine.setTop(-1)
-                trackLine.dirty = 1
-            self._updateBlockHeights(trackHeightInPx + 1)
+        trackHeightInPx = self.getTrackHeightInPx()
+        for trackLine in self.trackLines:
+            trackLine.visible = trackLine.id < self.activeTrackCount
+            if trackLine.visible:
+                trackLine.setTop(self.rect.top + trackHeightInPx * trackLine.id)
+            else:
+                trackLine.setTop(-1)
+            trackLine.dirty = 1
+        self._updateBlockHeights(trackHeightInPx + 1)
+        self.cursor.updateHeight(trackHeightInPx)
 
     def _updateBlockHeights(self, trackHeightInPx:"int"):
         for block in self.blocks:
