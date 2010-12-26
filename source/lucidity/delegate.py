@@ -31,11 +31,10 @@ class MainDelegate:
         logger.info("Application activated, gain: " + str(gain) + ", state: " + str(state))
 
     def processKeyDown(self, eventDict):
-        pass
+        self.keyHandler.processKeyDown(self, eventDict['key'], eventDict['mod'])
 
     def processKeyUp(self, eventDict):
-        self.keyHandler.processKey(self, eventDict['key'], eventDict['mod'])
-        pass
+        self.keyHandler.processKeyUp(self, eventDict['key'], eventDict['mod'])
 
     def processMouseButtonDown(self, eventDict):
         self.mainWindow.processMouseButtonDown(eventDict)

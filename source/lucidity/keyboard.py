@@ -1,3 +1,4 @@
+from threading import Timer
 from lucidity.log import logger
 
 ##+
@@ -71,7 +72,14 @@ ModifierHashes = {
 }
 
 class KeyHandler:
-    def processKey(self, delegate, key, modifiers = None):
+    def __init__(self):
+        self.handlerFunction = None
+        self.timer = None
+
+    def processKeyUp(self, delegate, key, modifiers = None):
+        self.timer.cancel()
+
+    def processKeyDown(self, delegate, key, modifiers = None):
         try:
             if key in ModifierKeys:
                 return
@@ -80,8 +88,10 @@ class KeyHandler:
             keyHash = ModifierHashes[modifiers]
 
             if key in keyHash:
-                handlerFunction = getattr(delegate, "process" + keyHash[key])
-                handlerFunction()
+                self.handlerFunction = getattr(delegate, "process" + keyHash[key])
+                self.handlerFunction()
+                self.timer = Timer(0.5, self.repeatKey)
+                self.timer.start()
             else:
                 raise UnhandledKeyError(key, modifiers)
         except AttributeError:
@@ -90,6 +100,13 @@ class KeyHandler:
             logger.debug("Unhandled command: " + error.printKey())
         except UnhandledModifierError as error:
             logger.debug("Unhandled modifier: " + error.printKey())
+
+    def repeatKey(self):
+        pass
+        # TODO: I don't think that the cancel() call is being received above
+        #self.handlerFunction()
+        #self.timer = Timer(0.1, self.repeatKey)
+        #self.timer.start()
 
 class KeyError(Exception):
     def __init__(self, key, modifiers):
