@@ -32,25 +32,29 @@ class GridSpriteGroup(LayeredDirty):
                                  skin.guiColor("Cursor"), self.getSpeed())
         self.cursor.moveToBar(self.barLines[0])
         self.cursor.moveToTrack(self.trackLines[0])
-        self.add(self.cursor)
+        self.add(self.cursor, layer="cursor")
+        self.move_to_front(self.cursor)
 
         self._updateTrackLines()
 
     def add(self, *sprites, **kwargs):
-        super().add(*sprites, **kwargs)
         for sprite in sprites:
+            layerName = "grid"
             if isinstance(sprite, Block):
                 self.blocks.append(sprite)
+                layerName = "items"
             elif isinstance(sprite, BarLine):
                 self.barLines.append(sprite)
+                layerName = "barLines"
             elif isinstance(sprite, TrackLine):
                 self.trackLines.append(sprite)
+                layerName = "trackLines"
+            super().add(sprite, layer=layerName)
 
-    def addItem(self, item:Item):
-        firstBar = self.barLines[0]
+
+    def addItem(self, item:Item, barLine:BarLine):
         beatsPerBar = self.sequence.clock.timeSignature.beatsPerMeasure
-        positionX = firstBar.rect.left + (((item.startPositionInBeats / beatsPerBar) -
-                                           firstBar.id) * self.getBarWidthInPx())
+        positionX = barLine.rect.left
         positionY = self.trackLines[item.track].rect.top
         width = ((item.endPositionInBeats - item.startPositionInBeats) / beatsPerBar) * self.getBarWidthInPx()
         self.add(Block(item, (positionX, positionY), width, self.getTrackHeightInPx(),
@@ -216,5 +220,5 @@ class GridSpriteGroup(LayeredDirty):
             if barLine.visible:
                 if position[0] > barLine.rect.left and \
                     position[0] - barLine.rect.left < barWidthInPx:
-                    return barLine.id
-        return -1
+                    return barLine
+        return None

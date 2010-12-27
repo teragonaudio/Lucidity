@@ -1,7 +1,6 @@
 import pygame
 from lucidity.arrangement import Sequence, Item
 from lucidity.layout import Sizing
-from lucidity.log import logger
 from lucidity.containers import Container
 from lucidity.skinning import Skin
 from lucidity.spritegroups import GridSpriteGroup
@@ -37,10 +36,11 @@ class MainGrid(Container):
     def onMouseUp(self, position):
         relativePosition = (position[0] - self.absRect.left, position[1] - self.absRect.top)
         trackNumber = self.gridSprites.getNearestTrackForPosition(relativePosition)
-        barCount = self.gridSprites.getNearestBarForPosition(relativePosition)
-        item = Item(1, trackNumber, "Block", barCount * 4, (barCount + 8) * 4, 0)
-        self.sequence.tracks[trackNumber].addItem(item)
-        self.gridSprites.addItem(item)
+        barLine = self.gridSprites.getNearestBarForPosition(relativePosition)
+        if barLine is not None:
+            item = Item(1, trackNumber, "Block", barLine.id * 4, (barLine.id + 8) * 4, 0)
+            self.sequence.tracks[trackNumber].addItem(item)
+            self.gridSprites.addItem(item, barLine)
 
     def moveLeft(self):
         self.gridSprites.moveLeft()
