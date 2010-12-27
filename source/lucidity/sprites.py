@@ -61,8 +61,12 @@ class BarLine(GridSprite):
     def __init__(self, barCount:"int", position:"tuple", height:"int", width:"int", color:"tuple", speedInPxPerSec:"float"):
         GridSprite.__init__(self, barCount, pygame.Rect(position[0], position[1], width, height), speedInPxPerSec)
         self.backgroundColor = color
-        self.image = pygame.Surface((self.rect.width, self.rect.height))
-        self.image.fill(self.backgroundColor)
+        self.image = self.createBar()
+
+    def createBar(self):
+        surface = pygame.Surface((self.rect.width, self.rect.height))
+        surface.fill(self.backgroundColor)
+        return surface
 
 class CursorLine(BarLine):
     def __init__(self, barCount:"int", position:"tuple", height:"int", width:"int", color:tuple, speedInPxPerSec:"float"):
@@ -87,6 +91,7 @@ class CursorLine(BarLine):
     def updateHeight(self, trackHeightInPx:"int"):
         self.rect.height = trackHeightInPx
         self.top = self.track.rect.top
+        self.image = self.createBar()
         self.dirty = True
 
 class TrackLine(DirtySprite):
