@@ -77,7 +77,8 @@ class KeyHandler:
         self.timer = None
 
     def processKeyUp(self, delegate, key, modifiers = None):
-        self.timer.cancel()
+        #self.timer.cancel()
+        pass
 
     def processKeyDown(self, delegate, key, modifiers = None):
         try:
