@@ -47,6 +47,9 @@ class Sequence:
     def getCurrentBar(self):
         return self.clock.getBars()
 
+    def getCurrentBeat(self):
+        return self.clock.getBeats()
+
     def tick(self):
         self.clock.tick()
 
