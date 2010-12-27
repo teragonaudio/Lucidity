@@ -18,6 +18,12 @@ class Track:
     def addItem(self, item:"Item"):
         self.items.append(item)
 
+    def hasItemsAfterBeat(self, beats:"int"):
+        for item in self.items:
+            if item.endPositionInBeats > beats:
+                return True
+        return False
+
     def contains(self, item:"Item"):
         return item in self.items
 
