@@ -175,8 +175,9 @@ class GridSpriteGroup(LayeredDirty):
         nextTrack = self.cursor.track.id - 1
         if nextTrack >= 0:
             if nextTrack < self.activeTrackCount:
-                # TODO: Only collapse if the last track has no active sprites
-                self.collapseTracks()
+                currentBeat = self.sequence.getCurrentBeat()
+                if not self.sequence.tracks[self.activeTrackCount - 1].hasItemsAfterBeat(currentBeat):
+                    self.collapseTracks()
             self.cursor.moveToTrack(self.trackLines[nextTrack])
 
     def moveDown(self):
