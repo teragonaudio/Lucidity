@@ -24,5 +24,3 @@ logger.addHandler(_consoleHandler)
 
 statusHandler = StatusHandler()
 logger.addHandler(statusHandler)
-
-logger.info("Lucidity initialized. Hello there!")
