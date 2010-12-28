@@ -1,6 +1,6 @@
 import pygame
 from pygame import Surface
-from lucidity.gui.layout import Sizing
+from lucidity.gui.layout import Sizing, FontSizer, Positioning
 
 class Widget:
     def __init__(self, parentSurface:Surface, rect:pygame.Rect):
@@ -44,9 +44,8 @@ class Label(Widget):
         Widget.__init__(self, parentSurface, rect)
         # TODO: Should be a surface, not a drawn rect
         pygame.draw.rect(self.parentSurface, borderColor, rect, 1)
-        self.rect = pygame.Rect(rect.left + Sizing.fontPadding, rect.top + Sizing.fontPadding,
-                                rect.width - (Sizing.fontPadding * 2),
-                                rect.height - (Sizing.fontPadding * 2))
+        self.rect = pygame.Rect(rect.left + 1, rect.top + 1,
+                                rect.width - 2, rect.height - 2)
         self.background = pygame.Surface((self.rect.width, self.rect.height))
         self.background.fill(backgroundColor)
 

@@ -32,3 +32,8 @@ class Positioning:
     def rectToRight(sourceRect:"Rect", padding:"int" = 0):
         return pygame.Rect(sourceRect.left + sourceRect.width + padding, sourceRect.top,
                            sourceRect.width, sourceRect.height)
+
+    @staticmethod
+    def innerRect(sourceRect:pygame.Rect, padding:int):
+        return pygame.Rect(sourceRect.left + padding, sourceRect.top + padding,
+                           sourceRect.width - (padding * 2), sourceRect.height - (padding * 2))
