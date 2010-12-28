@@ -212,7 +212,7 @@ class MediaDatabase:
                 done = True
             else:
                 searchResults.append(self.mediaFiles[row[0]])
-        logger.debug("Found %d results for query '%s'", len(searchResults), searchQuery)
+        #logger.debug("Found %d results for query '%s'", len(searchResults), searchQuery)
 
         return searchResults
 
@@ -226,6 +226,7 @@ class MediaDatabase:
         for filePath in self._scanDirectory(location[1], []):
             mediaFile = MediaFile(filePath)
             if mediaFile.exists:
+                # See if the file is already in the database
                 mediaFileId = None
                 mediaFile.readMetadataFromFile(filePath)
                 mediaFileRelativePath = mediaFile.relativePath(location[1])
@@ -251,7 +252,7 @@ class MediaDatabase:
                         updatedFiles += 1
 
                 self.mediaFiles[mediaFile.id] = mediaFile
-                logger.debug(mediaFile)
+                # logger.debug(mediaFile)
                 totalFilesFound += 1
             else:
                 if filePath in self.mediaFiles.keys():
@@ -268,7 +269,7 @@ class MediaDatabase:
                 if os.path.isdir(fileFullPath):
                     self._scanDirectory(fileFullPath, mediaFileList)
                 elif MediaFile.isValid(fileFullPath):
-                    logger.debug("Found file '%s'", file)
+                    # logger.debug("Found file '%s'", file)
                     mediaFileList.append(fileFullPath)
 
         return mediaFileList
