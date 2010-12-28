@@ -106,6 +106,19 @@ class MidiDeviceList:
         else:
             raise Exception("Device '%s' has unknown type '%s'", device.name, device.type)
 
+    def get(self, name:str, type:str):
+        if type == "Input":
+            deviceList = self._openedInputs
+        elif type == "Output":
+            deviceList = self._openedOutputs
+        else:
+            raise Exception("Invalid device type '" + type + "'")
+
+        for device in deviceList.values():
+            if device.name == name:
+                return device
+        return None
+
     def openedInputs(self):
         return self._openedInputs.values()
 
