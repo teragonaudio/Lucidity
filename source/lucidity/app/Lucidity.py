@@ -346,6 +346,7 @@ from threading import Thread
 from lucidity.app.delegate import MainDelegate
 from lucidity.core.arrangement import Sequence
 from lucidity.gui.windows import MainWindow
+from lucidity.media.library import MediaRequestLoop
 from lucidity.midi.midi import MidiEventLoop
 from lucidity.system.log import logger
 from lucidity.system.paths import PathFinder
@@ -360,14 +361,16 @@ class Lucidity:
         self.mainDelegate.mainApp = self
         self.sequence = Sequence()
         self.settings = Settings(PathFinder.findUserFile('settings.db'))
+        self.mediaRequestLoop = MediaRequestLoop(PathFinder.findUserFile('media.db'))
         self.midiEventLoop = MidiEventLoop(self.mainDelegate)
         self.statusLoop = StatusLoop()
-        self.systemUsage = SystemUsageLoop()
+        self.systemUsageLoop = SystemUsageLoop()
         self.mainWindow = None
 
     def run(self):
         self.mainWindow = MainWindow(self.mainDelegate, self.sequence, self.settings,
-                                     self.midiEventLoop, self.statusLoop, self.systemUsage)
+                                     self.mediaRequestLoop, self.midiEventLoop,
+                                     self.statusLoop, self.systemUsageLoop)
         self.mainWindow.open()
         self.mainWindow.setStatusText("Starting Up...")
         initializer = Initializer(self)
@@ -380,9 +383,12 @@ class Lucidity:
         if self.statusLoop.is_alive():
             self.statusLoop.quit()
             self.statusLoop.join()
-        if self.systemUsage.is_alive():
-            self.systemUsage.quit()
-            self.systemUsage.join()
+        if self.systemUsageLoop.is_alive():
+            self.systemUsageLoop.quit()
+            self.systemUsageLoop.join()
+        if self.mediaRequestLoop.is_alive():
+            self.mediaRequestLoop.quit()
+            self.mediaRequestLoop.join()
         if self.midiEventLoop.is_alive():
             self.midiEventLoop.quit()
             self.midiEventLoop.join()
@@ -397,7 +403,8 @@ class Initializer(Thread):
         # Start background threads
         if self.lucidity.settings.getInt("midi.enable"):
             self.lucidity.midiEventLoop.start()
-        self.lucidity.systemUsage.start()
+        self.lucidity.mediaRequestLoop.start()
+        self.lucidity.systemUsageLoop.start()
         self.lucidity.statusLoop.start()
         self.lucidity.mainWindow.onReady()
         self.lucidity.mainWindow.setStatusText("Ready")

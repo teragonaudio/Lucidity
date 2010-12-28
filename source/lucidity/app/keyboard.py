@@ -37,16 +37,21 @@ from lucidity.system.log import logger
 # the software feels the same on all installations.
 
 RegularKeyCommands = {
-    27: "Quit", # Escape, should be removed later (obviously)
-    276: "MoveLeft",
-    275: "MoveRight",
-    273: "MoveUp",
-    274: "MoveDown",
+    27: "Quit",             # Escape, should be remapped later (obviously)
+    276: "MoveLeft",        # Left arrow
+    275: "MoveRight",       # Right arrow
+    273: "MoveUp",          # Up arrow
+    274: "MoveDown",        # Down arrow
+    32: "Search",           # Space
+    13: "Insert",           # Return
+    301: "MapMidi",         # Caps Lock
+    8: "Delete",            # Delete
 }
 
 ControlKeyCommands = {
-    9: "Minimize", # tab, since SDL traps command + tab
+    9: "Minimize",          # Tab, since SDL traps command + tab
     ord('m'): "Minimize",
+    ord(','): "Settings",
 }
 
 ShiftKeyCommands = {
@@ -58,10 +63,10 @@ ControlShiftKeyCommands = {
 }
 
 ModifierKeys = {
-    304: None, # shift
-    306: None, # control
-    308: None, # alt
-    310: None, # command
+    304: None, # Shift
+    306: None, # Control
+    308: None, # Alt
+    310: None, # Command
 }
 
 ModifierHashes = {

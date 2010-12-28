@@ -73,6 +73,15 @@ class MainDelegate:
     def onSettings(self):
         pass
 
+    def onSearch(self):
+        self.mainWindow.search()
+
+    def onInsert(self):
+        self.mainWindow.insert()
+
+    def onMapMidi(self):
+        pass
+
     def onReset(self):
         logger.info("Reset called")
         self.mainGrid.reset()

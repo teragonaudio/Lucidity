@@ -8,6 +8,7 @@ from lucidity.gui.grid import MainGrid
 from lucidity.gui.layout import PanelSizer
 from lucidity.gui.skinning import Skin
 from lucidity.gui.toolbars import TopToolbar, BottomToolbar
+from lucidity.media.library import MediaRequestLoop, MediaRequest, MediaRequestDelegate
 from lucidity.midi.midi import MidiEventLoop
 from lucidity.system.log import logger
 from lucidity.system.performance import SystemUsageLoop
@@ -16,7 +17,8 @@ from lucidity.system.status import StatusLoop, ObtuseStatusProvider
 
 class MainWindow():
     def __init__(self, delegate:MainDelegate, sequence:Sequence, settings:Settings,
-                 midiEventLoop:MidiEventLoop, statusLoop:StatusLoop, systemUsage:SystemUsageLoop):
+                 mediaRequestLoop:MediaRequestLoop, midiEventLoop:MidiEventLoop,
+                 statusLoop:StatusLoop, systemUsageLoop:SystemUsageLoop):
         # Important variables for delegate, system sequence, settings
         self.mainDelegate = delegate
         self.mainDelegate.mainWindow = self
@@ -24,9 +26,10 @@ class MainWindow():
         self.settings = settings
 
         # References to system threads
+        self._mediaRequestLoop = mediaRequestLoop
         self._midiEventLoop = midiEventLoop
-        self._systemUsage = systemUsage
-        self._systemUsage.fpsProvider = self
+        self._systemUsageLoop = systemUsageLoop
+        self._systemUsageLoop.fpsProvider = self
         self._statusLoop = statusLoop
 
         # Initialize display
@@ -116,7 +119,7 @@ class MainWindow():
                                       panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
                                       skin, toolbarBackgroundColor, self.mainDelegate)
         self._containers.append(bottomToolbar)
-        self._systemUsage.delegate = bottomToolbar
+        self._systemUsageLoop.delegate = bottomToolbar
         self._statusLoop.delegate = topToolbar
 
     def onReady(self):
@@ -128,6 +131,24 @@ class MainWindow():
     def minimize(self):
         logger.debug("Minimizing")
         pygame.display.iconify()
+
+    def insert(self):
+        self.search()
+
+    def search(self):
+        request = MediaRequest(type=MediaRequest.SEARCH, delegate=self, query="Adam Jay")
+        self._mediaRequestLoop.addRequest(request)
+
+    def onRequestComplete(self, request:MediaRequest, args):
+        if request.type == MediaRequest.RESCAN:
+            self.setStatusText(args[0])
+        elif request.type == MediaRequest.SEARCH:
+            if len(args) > 0:
+                mediaFile = args[0]
+                mediaItem = Item(mediaFile.id, self.mainGrid.getCurrentTrack(), mediaFile.title,
+                                 self.mainGrid.getCurrentBar() * 4, 120, 0)
+                self.sequence.tracks[self.mainGrid.getCurrentTrack()].addItem(mediaItem)
+                self.mainGrid.gridSprites.addItem(mediaItem, self.mainGrid.gridSprites.cursor.bar)
 
     def setStatusText(self, text):
         self._setStatusTextFunction(text)
@@ -156,7 +177,7 @@ class MainWindow():
     def getStatusProvider(self, settings):
         providerName = settings.getString("gui.statusProvider")
         if providerName == "system":
-            return self._systemUsage
+            return self._systemUsageLoop
         elif providerName == "obtuse":
             return ObtuseStatusProvider()
         elif providerName == "debug":
