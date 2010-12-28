@@ -1,5 +1,5 @@
 from lucidity.media.media import MediaDatabase
-from lucidity.media.search import MediaFinder
+from lucidity.media.library import MediaFinder
 from time import time
 
 if __name__ == "__main__":
