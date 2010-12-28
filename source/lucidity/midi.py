@@ -1,9 +1,11 @@
 import pygame
 import pygame.midi
+from lucidity.database import Sqlite3Database, Database
 from lucidity.log import logger
 from threading import Thread
 from time import sleep
 from multiprocessing.synchronize import Lock
+from lucidity.paths import PathFinder
 
 class MidiEvent:
     def __init__(self, status, data1, data2, timestamp = 0):
@@ -24,6 +26,7 @@ class MidiDevice:
         self.name = name
         self.type = type
         self.isOpen = isOpen
+        self.port = None
 
     def __str__(self):
         result = "'" + self.name + "', type: " + self.type + ", status: "
@@ -40,26 +43,37 @@ class MidiDevice:
 class MidiInput(MidiDevice):
     def __init__(self, id, name, opened):
         super().__init__(id, name, type = "Input", isOpen = opened)
-        self._inputPort = None
 
     def open(self):
-        logger.info("Opening MIDI input '%s'", self.name)
-        self._inputPort = pygame.midi.Input(self._id)
+        logger.info("Opening MIDI input '" + self.name + "'")
+        self.port = pygame.midi.Input(self._id)
 
     def close(self):
-        logger.info("Closing MIDI input '%s'", self.name)
-        if self._inputPort is not None:
-            self._inputPort.close()
+        logger.info("Closing MIDI input '" + self.name + "'")
+        if self.port is not None:
+            self.port.close()
 
     def poll(self):
-        return self._inputPort.poll()
+        return self.port.poll()
 
     def readEvents(self):
-        return self._inputPort.read(1)
+        return self.port.read(1)
 
 class MidiOutput(MidiDevice):
     def __init__(self, id, name, opened):
         super().__init__(id, name, type = "Output", isOpen = opened)
+
+    def open(self):
+        logger.info("Opening MIDI output '" + self.name + "'")
+        self.port = pygame.midi.Output(self._id)
+
+    def close(self):
+        logger.info("Closing MIDI output '" + self.name + "'")
+        if self.port is not None:
+            self.port.close()
+
+    def write(self, midiEvent:"MidiEvent"):
+        self.port.write_short(midiEvent.status, midiEvent.data1, midiEvent.data2)
 
 class MidiDeviceList:
     def __init__(self):
@@ -204,6 +218,7 @@ class MidiEventLoop(Thread):
 
         logger.debug("MidiEventLoop started")
         self._isRunning = True
+
         while self._isRunning:
             self._lock.acquire(True)
             for device in self.devices.openedInputs():
@@ -217,5 +232,4 @@ class MidiEventLoop(Thread):
     def _parseEvent(self, eventList):
         eventData = eventList[0][0]
         midiEvent = MidiEvent(eventData[0], eventData[1], eventData[2], eventList[0][1])
-        logger.debug("Incoming MIDI message: %s", midiEvent)
-        self.midiMappings.process(midiEvent)
+        self.midiMappings.process(midiEvent, self.delegate)
