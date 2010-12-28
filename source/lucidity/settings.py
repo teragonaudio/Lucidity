@@ -23,11 +23,9 @@ class Settings:
 
     def _readSettings(self, database:"Database"):
         result = {}
-
         cursor = database.query("SELECT `name`, `value` FROM `settings`")
         for (name, value) in cursor:
             result[name] = Setting(name, value)
-
         return result
 
     def get(self, key:"str"):
