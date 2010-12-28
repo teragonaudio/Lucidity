@@ -42,25 +42,22 @@ class Label(Widget):
                  fontName, fontColor, numLines,
                  borderColor, backgroundColor):
         Widget.__init__(self, parentSurface, rect)
-        # TODO: Should be a surface, not a drawn rect
         pygame.draw.rect(self.parentSurface, borderColor, rect, 1)
         self.rect = pygame.Rect(rect.left + 1, rect.top + 1,
                                 rect.width - 2, rect.height - 2)
         self.background = pygame.Surface((self.rect.width, self.rect.height))
         self.background.fill(backgroundColor)
 
-        # TODO: Need to calculate this correctly, with hanging letters (like 'g')
-        # fontSize = int((self.rect.height - (Sizing.fontPadding * 2)) / numLines)
-        fontSize = int(self.rect.height / numLines) - 4
+        self.fontRect = Positioning.innerRect(self.rect, Sizing.fontPadding)
+        fontSize = FontSizer.bestFitSizeInPoints(fontName, self.fontRect.height / numLines)
         self._font = pygame.font.Font(fontName, fontSize)
         self._color = fontColor
         self._text = ""
 
     def draw(self):
-        # TODO: Something is wrong with the way that we're blitting here
         fontSurface = self._font.render(self._text, True, self._color)
         self.parentSurface.blit(self.background, self.rect)
-        self.parentSurface.blit(fontSurface, self.rect)
+        self.parentSurface.blit(fontSurface, self.fontRect)
         pygame.display.update(self.rect)
 
     def setText(self, text:"str"):

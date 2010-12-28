@@ -6,6 +6,25 @@ class Sizing:
     toolbarEmptySpace = 24
     toolbarButtonSize = 32
     fontPadding = 4
+    blockPadding = 6
+
+class FontSizer:
+    MIN_FONT_SIZE_IN_POINTS = 8
+    MAX_FONT_SIZE_IN_POINTS = 32
+
+    @staticmethod
+    def bestFitSizeInPoints(fontName:str, height:int):
+        lastSize = FontSizer.MIN_FONT_SIZE_IN_POINTS
+
+        # TODO: Yes, this is a bit lame.  Probably there is a better way to calculate this
+        for pointSize in range(FontSizer.MIN_FONT_SIZE_IN_POINTS, FontSizer.MAX_FONT_SIZE_IN_POINTS):
+            font = pygame.font.Font(fontName, pointSize)
+            linesizeInPixels = font.get_linesize()
+            if linesizeInPixels > height:
+                break
+            lastSize = pointSize
+
+        return lastSize
 
 class PanelSizer:
     def _topToolbarHeight(self):

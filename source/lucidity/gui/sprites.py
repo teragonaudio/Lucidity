@@ -1,7 +1,8 @@
 import pygame
 from pygame.sprite import DirtySprite
-from lucidity.arrangement import Item
-from lucidity.gui.layout import Sizing
+from lucidity.core.arrangement import Item
+from lucidity.gui.colors import ColorChooser
+from lucidity.gui.layout import Sizing, FontSizer, Positioning
 
 class GridSprite(DirtySprite):
     def __init__(self, id, rect:"pygame.Rect", speedInPxPerSec:"float"):
@@ -28,11 +29,16 @@ class GridSprite(DirtySprite):
         self.kill()
 
 class Block(GridSprite):
+    BORDER_SIZE = 2
+
     def __init__(self, id, position:"tuple", width:"int", height:"int",
                  color:tuple, fontName:str, speedInPxPerSec:"float"):
         GridSprite.__init__(self, id, pygame.Rect(position[0], position[1], width, height), speedInPxPerSec)
         self.backgroundColor = color
         self.fontName = fontName
+        self.fontColor = (0, 0, 0)
+        if ColorChooser.isDarkColor(self.backgroundColor):
+            self.fontColor = (255, 255, 255)
         self.image = self.createBlock(self.rect, color, fontName, id)
 
     def resize(self, newRect:pygame.Rect):
@@ -42,18 +48,17 @@ class Block(GridSprite):
 
     def createBlock(self, rect:pygame.Rect, color:tuple, fontName:str, item:Item):
         surface = pygame.Surface((rect.width, rect.height))
-        colorRect = surface.get_rect()
-        colorRect.top += 2
-        colorRect.left += 2
-        colorRect.width -= 4
-        colorRect.height -= 4
+        colorRect = Positioning.innerRect(surface.get_rect(), Block.BORDER_SIZE)
         surface.fill(color, colorRect)
 
-        font = pygame.font.Font(fontName, int(rect.height / 6))
-        fontSurface = font.render(item.label, True, (0,0,0))
+        fontRect = Positioning.innerRect(colorRect, Sizing.fontPadding)
+        fontRect.left += Sizing.blockPadding
+        fontSize = FontSizer.bestFitSizeInPoints(fontName, rect.height / 4)
+        font = pygame.font.Font(fontName, fontSize)
+        fontSurface = font.render(item.label, True, self.fontColor)
         colorRect.left += Sizing.fontPadding
         colorRect.top += Sizing.fontPadding
-        surface.blit(fontSurface, colorRect)
+        surface.blit(fontSurface, fontRect)
 
         return surface
 
