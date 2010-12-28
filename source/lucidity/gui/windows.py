@@ -41,31 +41,8 @@ class MainWindow():
         self._resolution = (1440, 900)
         self._containers = []
         self._skin = Skin(self.settings.getString("gui.skin"), self.settings.getInt("gui.colorInterval"))
-        self._maxFps = self.settings.getFloat("gui.maxFps")
-        self._setStatusTextCallback = None
+        self._setStatusTextFunction = None
         self._framesProcessed = 0
-
-    def _initializePanels(self, resolution, skin:"Skin"):
-        panelSizer = PanelSizer()
-        mainGrid = MainGrid(self.surface,
-                            panelSizer.getMainGridRect(resolution[0], resolution[1]),
-                            skin, self.sequence)
-        self._containers.append(mainGrid)
-        self.mainDelegate.mainGrid = mainGrid
-
-        toolbarBackgroundColor = self._skin.guiColor("Toolbar")
-        topToolbar = TopToolbar(self.surface,
-                                panelSizer.getTopToolbarRect(resolution[0]),
-                                skin, toolbarBackgroundColor, self.mainDelegate)
-        self._containers.append(topToolbar)
-        self._setStatusTextCallback = topToolbar.onStatusUpdate
-
-        bottomToolbar = BottomToolbar(self.surface,
-                                      panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
-                                      skin, toolbarBackgroundColor, self.mainDelegate)
-        self._containers.append(bottomToolbar)
-        self._systemUsage.delegate = bottomToolbar
-        self._statusLoop.delegate = topToolbar
 
     def open(self):
         """
@@ -84,36 +61,63 @@ class MainWindow():
         self._statusLoop.statusProvider = self.getStatusProvider(self.settings)
 
     def run(self):
-        frameRenderTimeInSec = 1 / self._maxFps
+        maxFps = self.settings.getFloat("gui.maxFps")
+        frameRenderTimeInSec = 1 / maxFps
         while not self._ready:
-            pygame.event.pump()
-
-            self.sequence.tick()
-            for container in self._containers:
-                container.draw()
-                
             startTime = time.time()
-            sleepTime = frameRenderTimeInSec - (time.time() - startTime)
-            if sleepTime > 0:
-                pygame.time.delay(int(sleepTime * 1000))
-            self._framesProcessed += 1
+            pygame.event.pump()
+            self._processFrame(startTime, frameRenderTimeInSec)
 
         while not self._shouldQuit:
             startTime = time.time()
             for event in pygame.event.get():
                 self._processEvent(event)
-
-            self.sequence.tick()
-            for container in self._containers:
-                container.draw()
-
-            sleepTime = frameRenderTimeInSec - (time.time() - startTime)
-            if sleepTime > 0:
-                pygame.time.delay(int(sleepTime * 1000))
-            self._framesProcessed += 1
+            self._processFrame(startTime, frameRenderTimeInSec)
 
         pygame.display.quit()
         pygame.quit()
+
+    def _processFrame(self, startTime, frameRenderTimeInSec):
+        self.sequence.tick()
+        for container in self._containers:
+            container.draw()
+
+        sleepTime = frameRenderTimeInSec - (time.time() - startTime)
+        if sleepTime > 0:
+            pygame.time.delay(int(sleepTime * 1000))
+        self._framesProcessed += 1
+
+    def _processEvent(self, event):
+        eventType = pygame.event.event_name(event.type)
+        try:
+            processFunction = getattr(self.mainDelegate, "on" + eventType)
+            processFunction(event.dict)
+        except AttributeError as exception:
+            logger.info("Error handling event '" + eventType + "': " + str(exception))
+        except pygame.error as exception:
+            logger.error("Error from pygame: " + str(exception))
+
+    def _initializePanels(self, resolution, skin:"Skin"):
+        panelSizer = PanelSizer()
+        mainGrid = MainGrid(self.surface,
+                            panelSizer.getMainGridRect(resolution[0], resolution[1]),
+                            skin, self.sequence)
+        self._containers.append(mainGrid)
+        self.mainDelegate.mainGrid = mainGrid
+
+        toolbarBackgroundColor = self._skin.guiColor("Toolbar")
+        topToolbar = TopToolbar(self.surface,
+                                panelSizer.getTopToolbarRect(resolution[0]),
+                                skin, toolbarBackgroundColor, self.mainDelegate)
+        self._containers.append(topToolbar)
+        self._setStatusTextFunction = topToolbar.onStatusUpdate
+
+        bottomToolbar = BottomToolbar(self.surface,
+                                      panelSizer.getBottomToolbarRect(resolution[0], resolution[1]),
+                                      skin, toolbarBackgroundColor, self.mainDelegate)
+        self._containers.append(bottomToolbar)
+        self._systemUsage.delegate = bottomToolbar
+        self._statusLoop.delegate = topToolbar
 
     def onReady(self):
         self._ready = True
@@ -126,17 +130,7 @@ class MainWindow():
         pygame.display.iconify()
 
     def setStatusText(self, text):
-        self._setStatusTextCallback(text)
-
-    def _processEvent(self, event):
-        eventType = pygame.event.event_name(event.type)
-        try:
-            processFunction = getattr(self.mainDelegate, "on" + eventType)
-            processFunction(event.dict)
-        except AttributeError as exception:
-            logger.info("Error handling event '" + eventType + "': " + str(exception))
-        except pygame.error as exception:
-            logger.error("Error from pygame: " + str(exception))
+        self._setStatusTextFunction(text)
 
     def onMouseButtonDown(self, eventDict):
         # logger.debug("Down at " + str(eventDict['pos']))
