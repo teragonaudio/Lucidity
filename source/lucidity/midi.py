@@ -136,32 +136,58 @@ class MidiDeviceList:
         elif device.type == "Output":
             self._openedOutputs.pop(device._id)
 
-class MidiMappings:
-    def __init__(self, delegate):
-        self.delegate = delegate
-        self.mappingTable = {}
-        self.reloadMappings()
+class MidiMapping:
+    def __init__(self, key:int, value, type:str):
+        self.key = key
+        self.value = value
+        self.type = type
 
-    def reloadMappings(self):
-        pass
+    def isButton(self):
+        return self.type == "button"
 
-    def process(self, midiEvent:"MidiEvent"):
-        if not midiEvent.data2:
-            return
+class MidiMappingTable:
+    def __init__(self, absolutePath):
+        self.absolutePath = absolutePath
+        schemaLocation = PathFinder.findModule("midimappings.sql")
+        self._database = Sqlite3Database(absolutePath, schemaLocation)
+        self.mappingTable = self.loadMappings(self._database)
 
-        mappingKey = (midiEvent.status << 8) + midiEvent.data1
-        if mappingKey in self.mappingTable:
-            if self.mappingTable[mappingKey]:
-                self.mappingTable[mappingKey]()
+    def loadMappings(self, database:Database):
+        mappings = {}
+        cursor = database.query("SELECT `key`, `value`, `type` FROM `midimappings`")
+        for (key, value, type) in cursor:
+            mappings[key] = MidiMapping(key, value, type)
+        return mappings
+
+    def process(self, midiEvent:"MidiEvent", delegate):
+        mappingKey = midiEvent.getMappingKey()
+        try:
+            if mappingKey in self.mappingTable:
+                mapping = self.mappingTable[mappingKey]
+                if mapping.isButton() and not midiEvent.data2:
+                    return
+                handlerFunction = getattr(delegate, "on" + mapping.value)
+                handlerFunction()
+            else:
+                raise UnhandledMidiError(midiEvent)
+        except AttributeError:
+            logger.error("Delegate does not handle MIDI command")
+        except UnhandledMidiError as error:
+            logger.debug("Unhandled midi event: " + str(error.midiEvent))
+
+class UnhandledMidiError(Exception):
+    def __init__(self, midiEvent):
+        self.midiEvent = midiEvent
 
 class MidiEventLoop(Thread):
     def __init__(self, delegate, pollIntervalInMs = 25):
         Thread.__init__(self, name = "MidiEventLoop")
         self._lock = Lock()
         self._isRunning = False
+        self.delegate = delegate
         self._pollInterval = pollIntervalInMs / 1000
         self.devices = None
-        self.midiMappings = MidiMappings(delegate)
+        self.midiMappings = MidiMappingTable(PathFinder.findUserFile('midimappings.sql'))
 
     def quit(self):
         self._lock.acquire(True)
