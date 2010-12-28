@@ -39,6 +39,7 @@ class MainWindow():
 
         # Variables related to display
         self.surface = None
+        self.mainGrid = None
         self._ready = False
         self._shouldQuit = False
         self._resolution = (1440, 900)
@@ -102,11 +103,11 @@ class MainWindow():
 
     def _initializePanels(self, resolution, skin:"Skin"):
         panelSizer = PanelSizer()
-        mainGrid = MainGrid(self.surface,
-                            panelSizer.getMainGridRect(resolution[0], resolution[1]),
-                            skin, self.sequence)
-        self._containers.append(mainGrid)
-        self.mainDelegate.mainGrid = mainGrid
+        self.mainGrid = MainGrid(self.surface,
+                                 panelSizer.getMainGridRect(resolution[0], resolution[1]),
+                                 skin, self.sequence)
+        self._containers.append(self.mainGrid)
+        self.mainDelegate.mainGrid = self.mainGrid
 
         toolbarBackgroundColor = self._skin.guiColor("Toolbar")
         topToolbar = TopToolbar(self.surface,
