@@ -16,6 +16,8 @@ class ColorChooser:
                 colorChooser.addColor(lineColor[0], lineColor[1])
 
         definitionFile.close()
+        # Randomize first index
+        colorChooser.randomColor()
         return colorChooser
 
     @staticmethod
@@ -37,6 +39,17 @@ class ColorChooser:
             return colorName, colorTuple
 
         return None
+
+    @staticmethod
+    def isDarkColor(color:"tuple"):
+        # Convert RGB to luminosity
+        # http://en.wikipedia.org/wiki/HSL_and_HSV#Lightness
+        # Since RGB values go from 0- 255, I have divided each of those coefficients
+        # by 255 rather than converting each value.
+        luminosity = (float(color[0]) * 0.001176470588235 +
+                      float(color[1]) * 0.002313725490196 +
+                      float(color[2]) * 0.00043137254902)
+        return luminosity < 0.5
 
     def __init__(self):
         self._currentIndex = 0
