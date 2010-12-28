@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from lucidity.system.log import logger
 
 #noinspection PyDefaultArgument
 class Database:
@@ -36,8 +37,11 @@ class Sqlite3Database(Database):
         pass
 
     def query(self, statement:"str", args:"list"=[], commit:"bool"=False):
-        cursor = self._connection.cursor()
-        cursor.execute(statement, args)
-        if commit:
-            self._connection.commit()
-        return cursor
+        try:
+            cursor = self._connection.cursor()
+            cursor.execute(statement, args)
+            if commit:
+                self._connection.commit()
+            return cursor
+        except sqlite3.InterfaceError as error:
+            logger.error("Error in query '" + statement + "': " + str(error))
