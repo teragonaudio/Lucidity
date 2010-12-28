@@ -1,13 +1,14 @@
-from lucidity.timing import MusicalClock
+from lucidity.core.timing import MusicalClock
 
 class Item:
-    def __init__(self, id, track:"int", label:"str", startPositionInBeats:"int",
-                 endPositionInBeats:"int", stackPosition:"int"):
+    def __init__(self, id, track:"int", label:"str",
+                 startPositionInBeats:"int", lengthInBeats:"int",
+                 stackPosition:"int"):
         self.id = id
         self.track = track
         self.label = label
         self.startPositionInBeats = startPositionInBeats
-        self.endPositionInBeats = endPositionInBeats
+        self.endPositionInBeats = self.startPositionInBeats + lengthInBeats
         self.stackPosition = stackPosition
 
 class Track:
