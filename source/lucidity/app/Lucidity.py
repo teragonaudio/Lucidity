@@ -342,23 +342,66 @@
 # @subsection MIDI Device Configuration
 # @subsection Plug-In Configuration
 
+from threading import Thread
 from lucidity.arrangement import Sequence
 from lucidity.app.delegate import MainDelegate
 from lucidity.gui.windows import MainWindow
 from lucidity.midi.midi import MidiEventLoop
+from lucidity.system.log import logger
 from lucidity.system.paths import PathFinder
 from lucidity.system.performance import SystemUsageLoop
 from lucidity.system.settings import Settings
 from lucidity.system.status import StatusLoop
 
-if __name__ == '__main__':
-    mainDelegate = MainDelegate()
-    sequence = Sequence()
-    settings = Settings(PathFinder.findUserFile('settings.db'))
-    midiEventLoop = MidiEventLoop(mainDelegate)
-    statusLoop = StatusLoop()
-    systemUsage = SystemUsageLoop()
+class Lucidity:
+    def __init__(self):
+        logger.info("Lucidity initialized. Hello there!")
+        self.mainDelegate = MainDelegate()
+        self.mainDelegate.mainApp = self
+        self.sequence = Sequence()
+        self.settings = Settings(PathFinder.findUserFile('settings.db'))
+        self.midiEventLoop = MidiEventLoop(self.mainDelegate)
+        self.statusLoop = StatusLoop()
+        self.systemUsage = SystemUsageLoop()
+        self.mainWindow = None
 
-    mainWindow = MainWindow(mainDelegate, sequence, settings,
-                            midiEventLoop, statusLoop, systemUsage)
-    mainWindow.run()
+    def run(self):
+        self.mainWindow = MainWindow(self.mainDelegate, self.sequence, self.settings,
+                                     self.midiEventLoop, self.statusLoop, self.systemUsage)
+        self.mainWindow.open()
+        self.mainWindow.setStatusText("Starting Up...")
+        initializer = Initializer(self)
+        initializer.start()
+        self.mainWindow.run()
+
+    def quit(self):
+        logger.info("Lucidity is quitting. Bye-bye!")
+        self.mainWindow.setStatusText("Shutting Down...")
+        if self.statusLoop.is_alive():
+            self.statusLoop.quit()
+            self.statusLoop.join()
+        if self.systemUsage.is_alive():
+            self.systemUsage.quit()
+            self.systemUsage.join()
+        if self.midiEventLoop.is_alive():
+            self.midiEventLoop.quit()
+            self.midiEventLoop.join()
+        self.mainWindow.quit()
+
+class Initializer(Thread):
+    def __init__(self, lucidity:Lucidity):
+        Thread.__init__(self, name="Initializer")
+        self.lucidity = lucidity
+
+    def run(self):
+        # Start background threads
+        if self.lucidity.settings.getInt("midi.enable"):
+            self.lucidity.midiEventLoop.start()
+        self.lucidity.systemUsage.start()
+        self.lucidity.statusLoop.start()
+        self.lucidity.mainWindow.onReady()
+        self.lucidity.mainWindow.setStatusText("Ready")
+
+if __name__ == '__main__':
+    app = Lucidity()
+    app.run()

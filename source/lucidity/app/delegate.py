@@ -6,6 +6,7 @@ from lucidity.app.keyboard import KeyHandler
 #noinspection PyUnusedLocal
 class MainDelegate:
     def __init__(self):
+        self.mainApp = None
         self.mainWindow = None
         self.mainGrid = None
         self.keyHandler = KeyHandler()
@@ -49,7 +50,7 @@ class MainDelegate:
         self.mainWindow.minimize()
 
     def onQuit(self, eventDict = None):
-        self.mainWindow.quit()
+        self.mainApp.quit()
 
     def onUndo(self):
         pass

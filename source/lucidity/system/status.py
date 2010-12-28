@@ -1,3 +1,4 @@
+import lucidity
 import random
 from threading import Thread
 from time import sleep

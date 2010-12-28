@@ -36,6 +36,7 @@ class MainWindow():
 
         # Variables related to display
         self.surface = None
+        self._ready = False
         self._shouldQuit = False
         self._resolution = (1440, 900)
         self._containers = []
@@ -66,7 +67,7 @@ class MainWindow():
         self._systemUsage.delegate = bottomToolbar
         self._statusLoop.delegate = topToolbar
 
-    def run(self):
+    def open(self):
         """
         Open up the window for the application.  This must, sadly, be done in the main
         thread, or else the window will not properly respond to events.
@@ -78,20 +79,24 @@ class MainWindow():
 
         self.surface.fill(self._skin.guiColor("Background"))
         self._initializePanels(self._resolution, self._skin)
-        self.setStatusText("Starting Up...")
         pygame.display.flip()
 
-        frameRenderTimeInSec = 1 / self._maxFps
-
-        midiStarted = False
-        if self.settings.getInt("midi.enable"):
-            self._midiEventLoop.start()
-            midiStarted = True
-
-        self._systemUsage.start()
         self._statusLoop.statusProvider = self.getStatusProvider(self.settings)
-        self._statusLoop.start()
-        self.setStatusText("Ready")
+
+    def run(self):
+        frameRenderTimeInSec = 1 / self._maxFps
+        while not self._ready:
+            pygame.event.pump()
+
+            self.sequence.tick()
+            for container in self._containers:
+                container.draw()
+                
+            startTime = time.time()
+            sleepTime = frameRenderTimeInSec - (time.time() - startTime)
+            if sleepTime > 0:
+                pygame.time.delay(int(sleepTime * 1000))
+            self._framesProcessed += 1
 
         while not self._shouldQuit:
             startTime = time.time()
@@ -107,21 +112,13 @@ class MainWindow():
                 pygame.time.delay(int(sleepTime * 1000))
             self._framesProcessed += 1
 
-        self._statusLoop.quit()
-        self._statusLoop.join()
-        self._systemUsage.quit()
-        self._systemUsage.join()
-
-        if midiStarted:
-            self._midiEventLoop.quit()
-            self._midiEventLoop.join()
-
         pygame.display.quit()
         pygame.quit()
 
+    def onReady(self):
+        self._ready = True
+
     def quit(self):
-        logger.info("Lucidity is quitting. Bye-bye!")
-        self.setStatusText("Shutting down...")
         self._shouldQuit = True
 
     def minimize(self):
