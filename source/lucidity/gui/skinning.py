@@ -1,7 +1,7 @@
 import pygame
 import os
-from lucidity.colors import ColorChooser
-from lucidity.paths import PathFinder
+from lucidity.gui.colors import ColorChooser
+from lucidity.system.paths import PathFinder
 
 class Skin:
     def __init__(self, name:str, interval:int):

@@ -1,7 +1,7 @@
 import pygame
 from pygame.sprite import DirtySprite
 from lucidity.arrangement import Item
-from lucidity.layout import Sizing
+from lucidity.gui.layout import Sizing
 
 class GridSprite(DirtySprite):
     def __init__(self, id, rect:"pygame.Rect", speedInPxPerSec:"float"):

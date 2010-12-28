@@ -1,9 +1,9 @@
 import pygame
 from lucidity.arrangement import Sequence, Item
-from lucidity.layout import Sizing
-from lucidity.containers import Container
-from lucidity.skinning import Skin
-from lucidity.spritegroups import GridSpriteGroup
+from lucidity.gui.layout import Sizing
+from lucidity.gui.containers import Container
+from lucidity.gui.skinning import Skin
+from lucidity.gui.spritegroups import GridSpriteGroup
 
 class MainGrid(Container):
     def __init__(self, parentSurface:pygame.Surface, rect:pygame.Rect, skin:Skin, sequence:Sequence):

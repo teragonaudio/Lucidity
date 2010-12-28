@@ -1,5 +1,5 @@
-from lucidity.database import Sqlite3Database
-from lucidity.paths import PathFinder
+from lucidity.db.database import Sqlite3Database
+from lucidity.system.paths import PathFinder
 
 class Setting:
     def __init__(self, name:"str", value:"str"):

@@ -1,9 +1,9 @@
 import pygame
 import pygame.mixer
-from lucidity.log import logger
-from threading import Thread
 from multiprocessing.synchronize import Lock
+from threading import Thread
 from time import sleep, clock
+from lucidity.system.log import logger
 import wave
 
 class AudioDevice:

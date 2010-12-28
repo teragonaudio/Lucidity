@@ -1,7 +1,7 @@
 import os
 from psutil import Process
 from threading import Thread
-from lucidity.status import StatusProvider
+from lucidity.system.status import StatusProvider
 
 class SystemUsage(Thread, StatusProvider):
     def __init__(self, fpsObserver, pollIntervalInSec=1.0):

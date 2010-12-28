@@ -342,7 +342,7 @@
 # @subsection MIDI Device Configuration
 # @subsection Plug-In Configuration
 
-from lucidity.windows import MainWindow
+from lucidity.gui.windows import MainWindow
 
 if __name__ == '__main__':
     mainWindow = MainWindow()

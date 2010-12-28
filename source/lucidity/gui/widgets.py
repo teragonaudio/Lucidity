@@ -1,6 +1,6 @@
 import pygame
 from pygame import Surface
-from lucidity.layout import Sizing
+from lucidity.gui.layout import Sizing
 
 class Widget:
     def __init__(self, parentSurface:Surface, rect:pygame.Rect):

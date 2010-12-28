@@ -1,5 +1,5 @@
 import unittest
-from lucidity.colors import ColorChooser
+from lucidity.gui.colors import ColorChooser
 
 class ColorsTests(unittest.TestCase):
     def test_create_empty_chooser(self):

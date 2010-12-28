@@ -1,11 +1,11 @@
 import pygame
 import pygame.midi
-from lucidity.database import Sqlite3Database, Database
-from lucidity.log import logger
+from multiprocessing.synchronize import Lock
 from threading import Thread
 from time import sleep
-from multiprocessing.synchronize import Lock
-from lucidity.paths import PathFinder
+from lucidity.db.database import Sqlite3Database, Database
+from lucidity.system.log import logger
+from lucidity.system.paths import PathFinder
 
 class MidiEvent:
     def __init__(self, status, data1, data2, timestamp = 0):

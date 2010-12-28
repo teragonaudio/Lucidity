@@ -1,9 +1,9 @@
 import os
 import time
 from id3reader import id3reader
-from lucidity.database import Sqlite3Database
-from lucidity.log import logger
-from lucidity.paths import PathFinder
+from lucidity.db.database import Sqlite3Database
+from lucidity.system.log import logger
+from lucidity.system.paths import PathFinder
 
 class MediaFile:
     @staticmethod

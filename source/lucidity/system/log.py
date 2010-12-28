@@ -1,5 +1,5 @@
 import logging
-from lucidity.status import StatusProvider
+from lucidity.system.status import StatusProvider
 
 class StatusHandler(logging.Handler, StatusProvider):
     def __init__(self, level=logging.DEBUG):

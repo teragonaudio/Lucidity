@@ -1,4 +1,4 @@
-from lucidity.midi import MidiEventLoop
+from lucidity.midi.midi import MidiEventLoop
 from time import sleep
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import random
 from threading import Thread
 from time import sleep
-from lucidity.paths import PathFinder
+from lucidity.system.paths import PathFinder
 
 class StatusDelegate:
     def onStatusUpdate(self, status:"str"): pass

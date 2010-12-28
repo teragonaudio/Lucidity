@@ -2,18 +2,18 @@ import os
 import pygame
 import time
 import lucidity
+from lucidity.app.delegate import MainDelegate
 from lucidity.arrangement import Sequence
-from lucidity.delegate import MainDelegate
-from lucidity.log import logger
-from lucidity.grid import MainGrid
-from lucidity.layout import PanelSizer
-from lucidity.midi import MidiEventLoop
-from lucidity.paths import PathFinder
-from lucidity.performance import SystemUsage
-from lucidity.settings import Settings
-from lucidity.status import StatusLoop, ObtuseStatusProvider
-from lucidity.toolbars import TopToolbar, BottomToolbar
-from lucidity.skinning import Skin
+from lucidity.gui.grid import MainGrid
+from lucidity.gui.layout import PanelSizer
+from lucidity.gui.skinning import Skin
+from lucidity.gui.toolbars import TopToolbar, BottomToolbar
+from lucidity.midi.midi import MidiEventLoop
+from lucidity.system.log import logger
+from lucidity.system.paths import PathFinder
+from lucidity.system.performance import SystemUsage
+from lucidity.system.settings import Settings
+from lucidity.system.status import StatusLoop, ObtuseStatusProvider
 
 class MainWindow():
     def __init__(self):
@@ -46,8 +46,7 @@ class MainWindow():
         toolbarBackgroundColor = self._skin.guiColor("Toolbar")
         topToolbar = TopToolbar(self.surface,
                                 panelSizer.getTopToolbarRect(resolution[0]),
-                                skin, toolbarBackgroundColor, self.mainDelegate,
-                                self._systemUsage)
+                                skin, toolbarBackgroundColor, self.mainDelegate)
         self._containers.append(topToolbar)
         self._setStatusTextCallback = topToolbar.onStatusUpdate
 
@@ -161,7 +160,7 @@ class MainWindow():
         elif providerName == "obtuse":
             return ObtuseStatusProvider()
         elif providerName == "debug":
-            return lucidity.log.statusHandler
+            return lucidity.system.log.statusHandler
         else:
             return None
 

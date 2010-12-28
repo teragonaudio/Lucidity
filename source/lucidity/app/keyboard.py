@@ -1,5 +1,5 @@
 from threading import Timer
-from lucidity.log import logger
+from lucidity.system.log import logger
 
 ##+
 # Lucidity recognizes the following key commands:
@@ -76,6 +76,7 @@ class KeyHandler:
         self.handlerFunction = None
         self.timer = None
 
+    #noinspection PyUnusedLocal
     def onKeyUp(self, delegate, key, modifiers = None):
         #self.timer.cancel()
         pass

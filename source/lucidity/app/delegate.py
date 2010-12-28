@@ -1,5 +1,5 @@
-from lucidity.log import logger
-from lucidity.keyboard import KeyHandler
+from lucidity.system.log import logger
+from lucidity.app.keyboard import KeyHandler
 
 # Avoid warnings about unused locals, which is necessary for the event handlers to work
 # properly via reflection

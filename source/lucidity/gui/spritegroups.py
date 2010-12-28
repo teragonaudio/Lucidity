@@ -1,9 +1,9 @@
 import pygame
 from pygame.sprite import LayeredDirty
 from lucidity.arrangement import Sequence, Item
-from lucidity.skinning import Skin
-from lucidity.sprites import Block, BarLine, TrackLine, CursorLine
 from lucidity.timing import MusicTimeConverter
+from lucidity.gui.skinning import Skin
+from lucidity.gui.sprites import Block, BarLine, TrackLine, CursorLine
 
 class GridSpriteGroup(LayeredDirty):
     MIN_WIDTH_IN_BARS = 32   # 1 minute @ 120 BPM
