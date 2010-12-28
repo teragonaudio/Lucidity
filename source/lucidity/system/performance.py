@@ -3,11 +3,11 @@ from psutil import Process
 from threading import Thread
 from lucidity.system.status import StatusProvider
 
-class SystemUsage(Thread, StatusProvider):
-    def __init__(self, fpsObserver, pollIntervalInSec=1.0):
+class SystemUsageLoop(Thread, StatusProvider):
+    def __init__(self, pollIntervalInSec=1.0):
         Thread.__init__(self, name="SystemUsage")
         self.delegate = None
-        self.fpsObserver = fpsObserver
+        self.fpsProvider = None
         self._pollInterval = pollIntervalInSec
         self._isRunning = False
         self.cpuUsage = 0.0
@@ -15,7 +15,7 @@ class SystemUsage(Thread, StatusProvider):
 
     def getStatusString(self):
         memUsedInMb = round(self.memUsage / (1024 * 1024), 2)
-        fps = round(self.fpsObserver.getFramesPerSec(), 1)
+        fps = round(self.fpsProvider.getFramesPerSec(), 1)
         return "CPU: %g%%, Mem: %gMb, FPS: %g" % (self.cpuUsage, memUsedInMb, fps)
 
     def quit(self):

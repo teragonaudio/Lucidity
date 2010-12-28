@@ -10,30 +10,39 @@ from lucidity.gui.skinning import Skin
 from lucidity.gui.toolbars import TopToolbar, BottomToolbar
 from lucidity.midi.midi import MidiEventLoop
 from lucidity.system.log import logger
-from lucidity.system.paths import PathFinder
-from lucidity.system.performance import SystemUsage
+from lucidity.system.performance import SystemUsageLoop
 from lucidity.system.settings import Settings
 from lucidity.system.status import StatusLoop, ObtuseStatusProvider
 
 class MainWindow():
-    def __init__(self):
+    def __init__(self, delegate:MainDelegate, sequence:Sequence, settings:Settings,
+                 midiEventLoop:MidiEventLoop, statusLoop:StatusLoop, systemUsage:SystemUsageLoop):
+        # Important variables for delegate, system sequence, settings
+        self.mainDelegate = delegate
+        self.mainDelegate.mainWindow = self
+        self.sequence = sequence
+        self.settings = settings
+
+        # References to system threads
+        self._midiEventLoop = midiEventLoop
+        self._systemUsage = systemUsage
+        self._systemUsage.fpsProvider = self
+        self._statusLoop = statusLoop
+
+        # Initialize display
         pygame.display.init()
         pygame.display.set_caption("Lucidity")
         pygame.display.set_icon(pygame.image.load(os.path.join(".", "icon.png")))
-        self.mainDelegate = MainDelegate(self)
+
+        # Variables related to display
         self.surface = None
-        self.sequence = Sequence()
-        self.settings = Settings(PathFinder.findUserFile('settings.db'))
         self._shouldQuit = False
         self._resolution = (1440, 900)
         self._containers = []
         self._skin = Skin(self.settings.getString("gui.skin"), self.settings.getInt("gui.colorInterval"))
         self._maxFps = self.settings.getFloat("gui.maxFps")
         self._setStatusTextCallback = None
-        self._midiEventLoop = MidiEventLoop(self.mainDelegate)
         self._framesProcessed = 0
-        self._systemUsage = SystemUsage(self)
-        self._statusLoop = StatusLoop()
 
     def _initializePanels(self, resolution, skin:"Skin"):
         panelSizer = PanelSizer()

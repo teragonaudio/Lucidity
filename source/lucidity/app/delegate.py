@@ -5,8 +5,8 @@ from lucidity.app.keyboard import KeyHandler
 # properly via reflection
 #noinspection PyUnusedLocal
 class MainDelegate:
-    def __init__(self, mainWindow:"MainWindow"):
-        self.mainWindow = mainWindow
+    def __init__(self):
+        self.mainWindow = None
         self.mainGrid = None
         self.keyHandler = KeyHandler()
 

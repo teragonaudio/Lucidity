@@ -342,8 +342,23 @@
 # @subsection MIDI Device Configuration
 # @subsection Plug-In Configuration
 
+from lucidity.arrangement import Sequence
+from lucidity.app.delegate import MainDelegate
 from lucidity.gui.windows import MainWindow
+from lucidity.midi.midi import MidiEventLoop
+from lucidity.system.paths import PathFinder
+from lucidity.system.performance import SystemUsageLoop
+from lucidity.system.settings import Settings
+from lucidity.system.status import StatusLoop
 
 if __name__ == '__main__':
-    mainWindow = MainWindow()
+    mainDelegate = MainDelegate()
+    sequence = Sequence()
+    settings = Settings(PathFinder.findUserFile('settings.db'))
+    midiEventLoop = MidiEventLoop(mainDelegate)
+    statusLoop = StatusLoop()
+    systemUsage = SystemUsageLoop()
+
+    mainWindow = MainWindow(mainDelegate, sequence, settings,
+                            midiEventLoop, statusLoop, systemUsage)
     mainWindow.run()
