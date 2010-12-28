@@ -12,8 +12,11 @@ class MidiEvent:
         self.data2 = data2
         self.timestamp = timestamp
 
+    def getMappingKey(self):
+        return (self.status << 8) + self.data1
+
     def __str__(self):
-        return hex(self.status) + ", " + hex(self.data1) + ", " + hex(self.data2)
+        return str(self.getMappingKey()) + ", " + hex(self.data2)
 
 class MidiDevice:
     def __init__(self, id, name, type = None, isOpen = False):
