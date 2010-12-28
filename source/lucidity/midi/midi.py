@@ -162,7 +162,7 @@ class MidiMapping:
 class MidiMappingTable:
     def __init__(self, absolutePath):
         self.absolutePath = absolutePath
-        schemaLocation = PathFinder.findModule("midimappings.sql")
+        schemaLocation = PathFinder.findSchemaFile("midimappings.sql")
         self._database = Sqlite3Database(absolutePath, schemaLocation)
         self.mappingTable = self.loadMappings(self._database)
 

@@ -74,7 +74,7 @@ class MediaFile:
 class MediaDatabase:
     def __init__(self, databaseLocation):
         self._filesColumns = {}
-        schemaFileLocation = PathFinder.findModule("media.sql")
+        schemaFileLocation = PathFinder.findSchemaFile("media.sql")
         self._database = Sqlite3Database(databaseLocation, schemaFileLocation)
         self.locations = self._loadLocationsFromDatabase()
         self.mediaFiles = self._loadFilesFromDatabase()

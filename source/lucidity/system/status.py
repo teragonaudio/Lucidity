@@ -1,4 +1,3 @@
-import lucidity
 import random
 from threading import Thread
 from time import sleep
@@ -45,7 +44,7 @@ class ObtuseStatusProvider(StatusProvider):
     def _readLinesFromText(self):
         result = []
 
-        linesFile = open(PathFinder.findResource("text/Obtuse.txt"), 'r')
+        linesFile = open(PathFinder.findResource("text", "Obtuse.txt"), 'r')
         for line in linesFile:
             result.append(line.strip())
         linesFile.close()

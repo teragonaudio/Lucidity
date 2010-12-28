@@ -17,7 +17,7 @@ class Setting:
 class Settings:
     def __init__(self, absolutePath):
         self.absolutePath = absolutePath
-        schemaLocation = PathFinder.findModule("settings.sql")
+        schemaLocation = PathFinder.findSchemaFile("settings.sql")
         self._database = Sqlite3Database(absolutePath, schemaLocation)
         self._settingsKeys = self._readSettings(self._database)
 

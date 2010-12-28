@@ -1,19 +1,26 @@
 import os
 import platform
+import lucidity
 
 class PathFinder:
     @staticmethod
-    def findModule(name:"str"):
-        return os.path.join(os.path.dirname(__file__), name)
+    def findModule(packageName:str, moduleName:str):
+        packageDir = os.path.join(os.path.dirname(lucidity.__file__), packageName)
+        return os.path.join(packageDir, moduleName)
 
     @staticmethod
-    def findResource(name:"str"):
+    def findResource(type:str, name:str):
         # TODO: This should probably be located somewhere else
-        return os.path.join("resources", name)
+        resourceDir = os.path.join("resources", type)
+        return os.path.join(resourceDir, name)
 
     @staticmethod
-    def findSkin(name:"str"):
-        skinPath = PathFinder.findResource("skins/" + name)
+    def findSchemaFile(name:str):
+        return PathFinder.findModule("db", name)
+
+    @staticmethod
+    def findSkin(name:str):
+        skinPath = PathFinder.findResource("skins", name)
         if not os.path.exists(skinPath):
             raise Exception("Skins path '" + skinPath + "' does not exist")
         return skinPath
