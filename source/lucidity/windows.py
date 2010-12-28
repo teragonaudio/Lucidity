@@ -126,21 +126,21 @@ class MainWindow():
     def _processEvent(self, event):
         eventType = pygame.event.event_name(event.type)
         try:
-            processFunction = getattr(self.mainDelegate, "process" + eventType)
+            processFunction = getattr(self.mainDelegate, "on" + eventType)
             processFunction(event.dict)
         except AttributeError as exception:
             logger.info("Error handling event '" + eventType + "': " + str(exception))
         except pygame.error as exception:
             logger.error("Error from pygame: " + str(exception))
 
-    def processMouseButtonDown(self, eventDict):
+    def onMouseButtonDown(self, eventDict):
         # logger.debug("Down at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
         for container in self._containers:
             if container.absRect.collidepoint(clickPosition[0], clickPosition[1]):
                 container.onMouseDown(clickPosition)
 
-    def processMouseButtonUp(self, eventDict):
+    def onMouseButtonUp(self, eventDict):
         # logger.debug("Up at " + str(eventDict['pos']))
         clickPosition = eventDict['pos']
         for container in self._containers:

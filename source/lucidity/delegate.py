@@ -10,68 +10,68 @@ class MainDelegate:
         self.mainGrid = None
         self.keyHandler = KeyHandler()
 
-    def processCue(self):
+    def onCue(self):
         pass
 
-    def processMoveLeft(self):
+    def onMoveLeft(self):
         self.mainGrid.moveLeft()
 
-    def processMoveRight(self):
+    def onMoveRight(self):
         self.mainGrid.moveRight()
 
-    def processMoveUp(self):
+    def onMoveUp(self):
         self.mainGrid.moveUp()
 
-    def processMoveDown(self):
+    def onMoveDown(self):
         self.mainGrid.moveDown()
 
-    def processActiveEvent(self, eventDict):
+    def onActiveEvent(self, eventDict):
         gain = eventDict['gain']
         state = eventDict['state']
         logger.info("Application activated, gain: " + str(gain) + ", state: " + str(state))
 
-    def processKeyDown(self, eventDict):
-        self.keyHandler.processKeyDown(self, eventDict['key'], eventDict['mod'])
+    def onKeyDown(self, eventDict):
+        self.keyHandler.onKeyDown(self, eventDict['key'], eventDict['mod'])
 
-    def processKeyUp(self, eventDict):
-        self.keyHandler.processKeyUp(self, eventDict['key'], eventDict['mod'])
+    def onKeyUp(self, eventDict):
+        self.keyHandler.onKeyUp(self, eventDict['key'], eventDict['mod'])
 
-    def processMouseButtonDown(self, eventDict):
-        self.mainWindow.processMouseButtonDown(eventDict)
+    def onMouseButtonDown(self, eventDict):
+        self.mainWindow.onMouseButtonDown(eventDict)
 
-    def processMouseButtonUp(self, eventDict):
-        self.mainWindow.processMouseButtonUp(eventDict)
+    def onMouseButtonUp(self, eventDict):
+        self.mainWindow.onMouseButtonUp(eventDict)
 
-    def processMouseMotion(self, eventDict):
+    def onMouseMotion(self, eventDict):
         pass
 
-    def processMinimize(self, eventDict = None):
+    def onMinimize(self, eventDict = None):
         self.mainWindow.minimize()
 
-    def processQuit(self, eventDict = None):
+    def onQuit(self, eventDict = None):
         self.mainWindow.quit()
 
-    def processUndo(self):
+    def onUndo(self):
         pass
 
-    def processRedo(self):
+    def onRedo(self):
         pass
 
-    def processSelect(self):
+    def onSelect(self):
         pass
 
-    def processDelete(self):
+    def onDelete(self):
         pass
 
-    def processClone(self):
+    def onClone(self):
         pass
 
-    def processSave(self):
+    def onSave(self):
         pass
 
-    def processSettings(self):
+    def onSettings(self):
         pass
 
-    def processReset(self):
+    def onReset(self):
         logger.info("Reset called")
         self.mainGrid.reset()

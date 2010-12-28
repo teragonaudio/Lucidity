@@ -76,11 +76,11 @@ class KeyHandler:
         self.handlerFunction = None
         self.timer = None
 
-    def processKeyUp(self, delegate, key, modifiers = None):
+    def onKeyUp(self, delegate, key, modifiers = None):
         #self.timer.cancel()
         pass
 
-    def processKeyDown(self, delegate, key, modifiers = None):
+    def onKeyDown(self, delegate, key, modifiers = None):
         try:
             if key in ModifierKeys:
                 return
@@ -89,7 +89,7 @@ class KeyHandler:
             keyHash = ModifierHashes[modifiers]
 
             if key in keyHash:
-                self.handlerFunction = getattr(delegate, "process" + keyHash[key])
+                self.handlerFunction = getattr(delegate, "on" + keyHash[key])
                 self.handlerFunction()
                 self.timer = Timer(0.5, self.repeatKey)
                 self.timer.start()

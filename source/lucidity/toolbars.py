@@ -13,52 +13,52 @@ class TopToolbar(Toolbar, StatusDelegate):
         leftButton = Button(parentSurface, firstButtonRect,
                             skin.images["Left-Arrow-Up"],
                             skin.images["Left-Arrow-Down"],
-                            delegate.processMoveLeft)
+                            delegate.onMoveLeft)
         self.addWidget(leftButton)
         rightButton = Button(parentSurface, Positioning.rectToRight(leftButton.rect, Sizing.toolbarPadding),
                              skin.images["Right-Arrow-Up"],
                              skin.images["Right-Arrow-Down"],
-                             delegate.processMoveRight)
+                             delegate.onMoveRight)
         self.addWidget(rightButton)
         upButton = Button(parentSurface, Positioning.rectToRight(rightButton.rect, Sizing.toolbarPadding),
                           skin.images["Up-Arrow-Up"],
                           skin.images["Up-Arrow-Down"],
-                          delegate.processMoveUp)
+                          delegate.onMoveUp)
         self.addWidget(upButton)
         downButton = Button(parentSurface, Positioning.rectToRight(upButton.rect, Sizing.toolbarPadding),
                             skin.images["Down-Arrow-Up"],
                             skin.images["Down-Arrow-Down"],
-                            delegate.processMoveDown)
+                            delegate.onMoveDown)
         self.addWidget(downButton)
 
         placeholderUp = skin.images["Placeholder-Up"]
         placeholderDown = skin.images["Placeholder-Down"]
         cueButton = Button(parentSurface, Positioning.rectToRight(downButton.rect, Sizing.toolbarEmptySpace),
-                           placeholderUp, placeholderDown, delegate.processCue)
+                           placeholderUp, placeholderDown, delegate.onCue)
         self.addWidget(cueButton)
         undoButton = Button(parentSurface, Positioning.rectToRight(cueButton.rect, Sizing.toolbarPadding),
-                            placeholderUp, placeholderDown, delegate.processUndo)
+                            placeholderUp, placeholderDown, delegate.onUndo)
         self.addWidget(undoButton)
         redoButton = Button(parentSurface, Positioning.rectToRight(undoButton.rect, Sizing.toolbarPadding),
-                            placeholderUp, placeholderDown, delegate.processRedo)
+                            placeholderUp, placeholderDown, delegate.onRedo)
         self.addWidget(redoButton)
 
         selectButton = Button(parentSurface, Positioning.rectToRight(redoButton.rect, Sizing.toolbarEmptySpace),
-                              placeholderUp, placeholderDown, delegate.processSelect)
+                              placeholderUp, placeholderDown, delegate.onSelect)
         self.addWidget(selectButton)
         deleteButton = Button(parentSurface, Positioning.rectToRight(selectButton.rect, Sizing.toolbarPadding),
-                              placeholderUp, placeholderDown, delegate.processDelete)
+                              placeholderUp, placeholderDown, delegate.onDelete)
         self.addWidget(deleteButton)
         cloneButton = Button(parentSurface, Positioning.rectToRight(deleteButton.rect, Sizing.toolbarPadding),
-                             placeholderUp, placeholderDown, delegate.processClone)
+                             placeholderUp, placeholderDown, delegate.onClone)
         self.addWidget(cloneButton)
         saveButton = Button(parentSurface, Positioning.rectToRight(cloneButton.rect, Sizing.toolbarPadding),
-                            placeholderUp, placeholderDown, delegate.processSave)
+                            placeholderUp, placeholderDown, delegate.onSave)
         self.addWidget(saveButton)
 
         lastButtonRect = pygame.Rect(rect.right - Sizing.toolbarPadding - Sizing.toolbarButtonSize,
                                      rect.top + Sizing.toolbarPadding, 0, 0)
-        settingsButton = Button(parentSurface, lastButtonRect, placeholderUp, placeholderDown, delegate.processSettings)
+        settingsButton = Button(parentSurface, lastButtonRect, placeholderUp, placeholderDown, delegate.onSettings)
         self.addWidget(settingsButton)
 
         statusLabelLeft = saveButton.rect.right + Sizing.toolbarEmptySpace
