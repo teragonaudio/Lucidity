@@ -343,8 +343,8 @@
 # @subsection Plug-In Configuration
 
 from threading import Thread
-from lucidity.arrangement import Sequence
 from lucidity.app.delegate import MainDelegate
+from lucidity.core.arrangement import Sequence
 from lucidity.gui.windows import MainWindow
 from lucidity.midi.midi import MidiEventLoop
 from lucidity.system.log import logger
