@@ -1,6 +1,6 @@
 import os
-import platform
 import lucidity
+from lucidity.system.platforms import Platform
 
 class PathFinder:
     @staticmethod
@@ -27,8 +27,8 @@ class PathFinder:
 
     @staticmethod
     def findUserFile(name:"str"):
-        platformName = platform.system()
-        if platformName == "Darwin":
+        platformName = Platform.getName()
+        if platformName == Platform.MACOSX:
             libraryPath = os.path.expanduser("~/Library/Application Support/Lucidity")
             if not os.path.exists(libraryPath):
                 os.mkdir(libraryPath)
