@@ -55,6 +55,7 @@ ControlKeyCommands = {
     ord('f'): "Fullscreen",
     ord('m'): "Minimize",
     ord(','): "Settings",
+    ord('q'): "QuitHelp",
 }
 
 ShiftKeyCommands = {
