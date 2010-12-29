@@ -54,4 +54,10 @@ class MainGrid(Container):
 
     def reset(self):
         self.sequence.clearAllTracks()
-        self.gridSprites.refreshAllItems()
+        self.gridSprites.reset()
+
+    def getCurrentBar(self):
+        return self.gridSprites.cursor.bar.id
+
+    def getCurrentTrack(self):
+        return self.gridSprites.cursor.track.id
