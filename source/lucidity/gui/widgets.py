@@ -4,25 +4,40 @@ from lucidity.gui.drawing import Border
 from lucidity.gui.layout import Padding, FontSizer, Positioning
 
 class Widget:
-    def __init__(self, parentSurface:Surface, rect:pygame.Rect):
+    def __init__(self, parentSurface:Surface, rect:pygame.Rect, onClickHandler):
         self.parentSurface = parentSurface
         self.rect = rect
+        self.onClickHandler = onClickHandler
 
+    def onStartMidiMapping(self):
+        self.draw()
+        if self.onClickHandler is not None:
+            overlay = pygame.Surface((self.rect.width, self.rect.height), flags=pygame.SRCALPHA)
+            overlay.fill((255, 0, 0, 100))
+            self.parentSurface.blit(overlay, self.rect)
+            pygame.display.update(self.rect)
+
+    def onStopMidiMapping(self):
+        self.draw()
+
+    def getSurface(self): pass
     def onMouseDown(self): pass
     def onMouseUp(self): pass
-    def draw(self): pass
+
+    def draw(self):
+        self.parentSurface.blit(self.getSurface(), self.rect)
+        pygame.display.update(self.rect)
 
 class Button(Widget):
     def __init__(self, parentSurface:Surface, rect:pygame.Rect,
                  upImage:Surface, downImage:Surface,
                  onClickHandler):
-        Widget.__init__(self, parentSurface, rect)
+        Widget.__init__(self, parentSurface, rect, onClickHandler)
         self.upImage = upImage
         self.downImage = downImage
         self.activeImage = upImage
         self.rect.width = self.activeImage.get_width()
         self.rect.height = self.activeImage.get_height()
-        self.onClickHandler = onClickHandler
         self.draw()
 
     def onMouseDown(self):
@@ -34,30 +49,36 @@ class Button(Widget):
         self.onClickHandler()
         self.draw()
 
-    def draw(self):
-        self.parentSurface.blit(self.activeImage, self.rect)
-        pygame.display.update(self.rect)
+    def getSurface(self):
+        return self.activeImage
 
 class Label(Widget):
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
+    def __init__(self, parentSurface:Surface, rect:pygame.Rect,
                  fontName, fontColor, numLines,
                  borderColor, backgroundColor):
-        Widget.__init__(self, parentSurface, rect)
-        self.background = pygame.Surface((self.rect.width, self.rect.height))
-        self.background.fill(backgroundColor)
-        Border.draw(self.background, borderColor)
+        Widget.__init__(self, parentSurface, rect, None)
+        self.borderColor = borderColor
+        self.backgroundColor = backgroundColor
+        self.surface = self.getBackgroundSurface()
 
-        self.fontRect = Positioning.innerRect(self.rect, Padding.LABEL)
+        self.fontRect = Positioning.innerRect(self.surface.get_rect(), Padding.LABEL)
         fontSize = FontSizer.bestFitSizeInPoints(fontName, self.fontRect.height / numLines)
         self._font = pygame.font.Font(fontName, fontSize)
         self._color = fontColor
         self._text = ""
+        self.draw()
 
-    def draw(self):
+    def getBackgroundSurface(self):
+        surface = pygame.Surface((self.rect.width, self.rect.height))
+        surface.fill(self.backgroundColor)
+        Border.draw(surface, self.borderColor)
+        return surface
+
+    def getSurface(self):
         fontSurface = self._font.render(self._text, True, self._color)
-        self.parentSurface.blit(self.background, self.rect)
-        self.parentSurface.blit(fontSurface, self.fontRect)
-        pygame.display.update(self.rect)
+        self.surface = self.getBackgroundSurface()
+        self.surface.blit(fontSurface, self.fontRect)
+        return self.surface
 
     def setText(self, text:"str"):
         self._text = text
@@ -65,7 +86,7 @@ class Label(Widget):
 
 class Filmstrip(Widget):
     def __init__(self, parentSurface:Surface, rect:pygame.Rect, filmstrip:Surface):
-        Widget.__init__(self, parentSurface, rect)
+        Widget.__init__(self, parentSurface, rect, None)
         self.images = []
         self.numImages = int(filmstrip.get_rect().height / filmstrip.get_rect().width)
         self.currentImage = 0
@@ -75,9 +96,8 @@ class Filmstrip(Widget):
             clipRect.move_ip(0, rect.height)
         self.draw()
 
-    def draw(self):
-        self.parentSurface.blit(self.images[self.currentImage], self.rect)
-        pygame.display.update(self.rect)
+    def getSurface(self):
+        return self.images[self.currentImage]
 
     def setImage(self, percent:float):
         self.currentImage = int((self.numImages - 1) * (percent / 100.0))
@@ -85,4 +105,4 @@ class Filmstrip(Widget):
 
 class ItemPanel(Widget):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect"):
-        Widget.__init__(self, parentSurface, rect)
+        Widget.__init__(self, parentSurface, rect, None)
