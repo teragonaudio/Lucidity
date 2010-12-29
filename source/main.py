@@ -379,8 +379,7 @@ class Lucidity:
             initializer.start()
             self.mainWindow.run()
         except BaseException:
-            stacktrace = traceback.format_exc()
-            logger.error(stacktrace.strip())
+            logger.error(traceback.format_exc().strip())
             try:
                 self.quit()
             except BaseException as error:
