@@ -103,8 +103,8 @@ class KeyHandler:
                 self.timer.start()
             else:
                 raise UnhandledKeyError(key, modifiers)
-        except AttributeError:
-            logger.error("Delegate does not handle key command")
+        except AttributeError as error:
+            logger.error("Error handling key command: " + str(error))
         except UnhandledKeyError as error:
             logger.debug("Unhandled command: " + error.printKey())
         except UnhandledModifierError as error:
