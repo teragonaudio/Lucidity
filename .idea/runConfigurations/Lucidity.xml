@@ -10,7 +10,7 @@
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="IS_MODULE_SDK" value="true" />
     <module name="Lucidity" />
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/source/lucidity/app/Lucidity.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/source/Lucidity.py" />
     <option name="PARAMETERS" value="" />
     <RunnerSettings RunnerId="PyDebugRunner" />
     <RunnerSettings RunnerId="PythonRunner" />
