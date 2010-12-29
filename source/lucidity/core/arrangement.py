@@ -29,6 +29,9 @@ class Track:
     def clear(self):
         self.items = []
 
+class SequenceObserver:
+    def onItemAdded(self, item:Item): pass
+
 class Sequence:
     DEFAULT_TEMPO = 120.0
     MAX_TRACKS = 16
@@ -36,9 +39,18 @@ class Sequence:
 
     def __init__(self, tempo:float=DEFAULT_TEMPO):
         self.clock = MusicalClock(tempo)
+        self.observers = []
         self.tracks = []
         for i in range(0, self.MAX_TRACKS):
             self.tracks.append(Track(i))
+
+    def addItem(self, item:Item):
+        self.tracks[item.track].addItem(item)
+        for observer in self.observers:
+            observer.onItemAdded(item)
+
+    def addObserver(self, observer:SequenceObserver):
+        self.observers.append(observer)
 
     def getTempo(self):
         return self.clock.tempo

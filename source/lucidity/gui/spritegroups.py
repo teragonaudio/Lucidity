@@ -1,11 +1,11 @@
 import pygame
 from pygame.sprite import LayeredDirty
-from lucidity.arrangement import Sequence, Item
-from lucidity.timing import MusicTimeConverter
+from lucidity.core.arrangement import Sequence, SequenceObserver, Item
+from lucidity.core.timing import MusicTimeConverter
 from lucidity.gui.skinning import Skin
 from lucidity.gui.sprites import Block, BarLine, TrackLine, CursorLine
 
-class GridSpriteGroup(LayeredDirty):
+class GridSpriteGroup(LayeredDirty, SequenceObserver):
     MIN_WIDTH_IN_BARS = 32   # 1 minute @ 120 BPM
     MAX_WIDTH_IN_BARS = 1024 # 30 minutes @ 120 BPM
     #DEF_WIDTH_IN_BARS = 120  # 4 minutes @ 120 BPM
@@ -14,6 +14,7 @@ class GridSpriteGroup(LayeredDirty):
     def __init__(self, sequence:Sequence, offset:tuple, rect:pygame.Rect, skin:Skin):
         LayeredDirty.__init__(self)
         self.sequence = sequence
+        self.sequence.addObserver(self)
         self.offset = offset
         self.rect = rect
         self.skin = skin
@@ -52,13 +53,27 @@ class GridSpriteGroup(LayeredDirty):
             super().add(sprite, layer=layerName)
 
 
-    def addItem(self, item:Item, barLine:BarLine):
-        beatsPerBar = self.sequence.clock.timeSignature.beatsPerMeasure
-        positionX = barLine.rect.left
-        positionY = self.trackLines[item.track].rect.top
-        width = ((item.endPositionInBeats - item.startPositionInBeats) / beatsPerBar) * self.getBarWidthInPx()
-        self.add(Block(item, (positionX, positionY), width, self.getTrackHeightInPx(),
-                       self.skin.nextPaletteColor(), self.skin.font("Block"), self.getSpeed()))
+    def onItemAdded(self, item:Item):
+        self.addItem(item)
+
+    def addItem(self, item:Item):
+        #positionX = barLine.rect.left
+        #positionY = self.trackLines[item.track].rect.top
+        #width = ((item.endPositionInBeats - item.startPositionInBeats) / beatsPerBar) * self.getBarWidthInPx()
+        # TODO: Ugh, dirty hack!  Do NOT keep hardcoding with 4/4
+        itemBar = self.findSpriteFromId(int(item.startPositionInBeats / 4), self.barLines)
+        if itemBar is None:
+            logger.warn("Could not place item in grid")
+            return
+        itemTrack = self.trackLines[item.track]
+        width = (item.lengthInBeats / 4) * self.getBarWidthInPx()
+        self.add(Block(item, (itemBar.rect.left, itemTrack.rect.top),
+                       width, self.getTrackHeightInPx(),
+                       self.skin.nextPaletteColor(), self.skin.font("Block"),
+                       self.getSpeed()))
+
+        # TODO: This really shouldn't be necessary...
+        self.move_to_front(self.cursor)
 
     def remove_internal(self, sprite):
         super().remove_internal(sprite)
