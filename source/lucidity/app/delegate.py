@@ -117,8 +117,7 @@ class MainDelegate:
         """Make a copy of the item directly under the cursor directly after the item"""
         pass
 
-    # TODO: Rename feature to "bounce"
-    def onSave(self):
+    def onBounce(self):
         """Bounce the selection under the cursor to a new file"""
         pass
 

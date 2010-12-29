@@ -52,16 +52,16 @@ class TopToolbar(Toolbar, StatusDelegate):
         cloneButton = Button(parentSurface, Positioning.rectToRight(deleteButton.rect, Padding.TOOLBAR),
                              placeholderUp, placeholderDown, delegate.onClone)
         self.addWidget(cloneButton)
-        saveButton = Button(parentSurface, Positioning.rectToRight(cloneButton.rect, Padding.TOOLBAR),
-                            placeholderUp, placeholderDown, delegate.onSave)
-        self.addWidget(saveButton)
+        bounceButton = Button(parentSurface, Positioning.rectToRight(cloneButton.rect, Padding.TOOLBAR),
+                              placeholderUp, placeholderDown, delegate.onBounce)
+        self.addWidget(bounceButton)
 
         lastButtonRect = pygame.Rect(rect.right - Padding.TOOLBAR - Sizing.TOOLBAR_BUTTON,
                                      rect.top + Padding.TOOLBAR, 0, 0)
         settingsButton = Button(parentSurface, lastButtonRect, placeholderUp, placeholderDown, delegate.onSettings)
         self.addWidget(settingsButton)
 
-        statusLabelLeft = saveButton.rect.right + Spacing.TOOLBAR_BUTTON_GAP
+        statusLabelLeft = bounceButton.rect.right + Spacing.TOOLBAR_BUTTON_GAP
         statusLabelRect = pygame.Rect(statusLabelLeft, rect.top + Padding.TOOLBAR,
                                       lastButtonRect.left - Spacing.TOOLBAR_BUTTON_GAP - statusLabelLeft,
                                       Sizing.TOOLBAR_BUTTON)
