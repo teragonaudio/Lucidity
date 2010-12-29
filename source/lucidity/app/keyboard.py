@@ -32,10 +32,9 @@ from lucidity.system.log import logger
 # <tr><td>Ctrl+Arrow</td><td>Moves the cursor 4x in the given direction</td></tr>
 # </table>
 #
-# Note that the "Ctrl" key listed above also refers to the "Control" key on Mac
-# keyboards, not "Command".
+# Note that the "Ctrl" key listed above refers to the "Command" key on Mac OSX.
 #
-# Lucidity does not allow the user to remap the key commands.  This is done so that
+# Lucidity does not allow the user to remap the key commands.  This is so that
 # the software feels the same on all installations.
 
 RegularKeyCommands = {
