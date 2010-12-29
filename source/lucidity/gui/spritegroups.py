@@ -2,8 +2,11 @@ import pygame
 from pygame.sprite import LayeredDirty
 from lucidity.core.arrangement import Sequence, SequenceObserver, Item
 from lucidity.core.timing import MusicTimeConverter
+from lucidity.gui.colors import ColorChooser
+from lucidity.gui.popups import Popup
 from lucidity.gui.skinning import Skin
 from lucidity.gui.sprites import Block, BarLine, TrackLine, CursorLine
+from lucidity.system.log import logger
 
 class GridSpriteGroup(LayeredDirty, SequenceObserver):
     MIN_WIDTH_IN_BARS = 32   # 1 minute @ 120 BPM
@@ -175,22 +178,22 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
     def setTempo(self, tempo:float):
         self.sequence.setTempo(tempo)
 
-    def _findBarFromId(self, id):
-        for barLine in self.barLines:
-            if barLine.id == id:
-                return barLine
+    def findSpriteFromId(self, id, gridSpriteList):
+        for gridSprite in gridSpriteList:
+            if gridSprite.id == id:
+                return gridSprite
         return None
 
     def moveLeft(self):
         nextBarId = self.cursor.bar.id - 1
-        nextBar = self._findBarFromId(nextBarId)
+        nextBar = self.findSpriteFromId(nextBarId, self.barLines)
         if nextBar is not None:
             self.cursor.moveToBar(nextBar)
         #self.collapseBars()
 
     def moveRight(self):
         nextBarId = self.cursor.bar.id + 1
-        nextBar = self._findBarFromId(nextBarId)
+        nextBar = self.findSpriteFromId(nextBarId, self.barLines)
         if nextBar is not None:
             self.cursor.moveToBar(nextBar)
         #self.expandBars()
@@ -200,7 +203,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
         if nextTrack >= 0:
             if nextTrack < self.activeTrackCount:
                 currentBeat = self.sequence.getCurrentBeat()
-                if not self.sequence.tracks[self.activeTrackCount - 1].hasItemsAfterBeat(currentBeat):
+                if not self.sequence.hasItemsAfterPosition(self.activeTrackCount - 1, currentBeat):
                     self.collapseTracks()
             self.cursor.moveToTrack(self.trackLines[nextTrack])
 
@@ -236,8 +239,8 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
             if trackLine.visible:
                 if position[1] > trackLine.rect.top and \
                     position[1] - trackLine.rect.top < trackHeightInPx:
-                    return trackLine.id
-        return -1
+                    return trackLine
+        return None
 
     def getNearestBarForPosition(self, position:"tuple"):
         barWidthInPx = self.getBarWidthInPx()
