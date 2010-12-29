@@ -1,6 +1,8 @@
 import queue
 from threading import Thread
-from lucidity.media.media import MediaDatabase
+from lucidity.core.arrangement import Item
+from lucidity.core.timing import MusicTimeConverter
+from lucidity.media.media import MediaDatabase, MediaFile
 from lucidity.system.log import logger
 
 #noinspection PyUnusedLocal
@@ -74,3 +76,11 @@ class MediaRequestLoop(Thread):
 
     def _rescanLibrary(self):
         self._mediaDatabase.rescan()
+
+class MediaFileConverter:
+    @staticmethod
+    def getItemForMediaFile(mediaFile:MediaFile, track:int,
+                            startingPositionInBeats:int, tempo:float):
+        lengthInBeats = MusicTimeConverter.secondsToBeats(tempo, mediaFile.getLength())
+        return Item(mediaFile.id, track, mediaFile.getLabel(),
+                    startingPositionInBeats, lengthInBeats, 0)
