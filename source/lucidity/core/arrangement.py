@@ -67,6 +67,9 @@ class Sequence:
     def getCurrentBeat(self):
         return self.clock.getBeats()
 
+    def hasItemsAfterPosition(self, trackNumber:int, positionInBeats:int):
+        return self.tracks[trackNumber].hasItemsAfterPosition(positionInBeats)
+
     def tick(self):
         self.clock.tick()
 
