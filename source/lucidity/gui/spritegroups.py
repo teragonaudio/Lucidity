@@ -88,7 +88,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
                        self.getSpeed()))
 
         # TODO: This really shouldn't be necessary...
-        self.move_to_front(self.cursor)
+        self.change_layer(self.cursor, 2)
 
     def remove_internal(self, sprite):
         super().remove_internal(sprite)
