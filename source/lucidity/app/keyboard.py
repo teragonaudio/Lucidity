@@ -1,4 +1,5 @@
 from threading import Timer
+import traceback
 from lucidity.system.log import logger
 
 ##+
@@ -103,8 +104,9 @@ class KeyHandler:
                 self.timer.start()
             else:
                 raise UnhandledKeyError(key, modifiers)
-        except AttributeError as error:
-            logger.error("Error handling key command: " + str(error))
+        except AttributeError:
+            logger.error("Error handling key command")
+            logger.error(traceback.format_exc().strip())
         except UnhandledKeyError as error:
             logger.debug("Unhandled command: " + error.printKey())
         except UnhandledModifierError as error:
