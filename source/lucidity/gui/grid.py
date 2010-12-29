@@ -1,7 +1,8 @@
 import pygame
-from lucidity.core.arrangement import Sequence, Item
-from lucidity.gui.layout import Sizing
+from lucidity.core.arrangement import Sequence
+from lucidity.gui.layout import Sizing, Positioning
 from lucidity.gui.containers import Container
+from lucidity.gui.popups import SearchPopup
 from lucidity.gui.skinning import Skin
 from lucidity.gui.spritegroups import GridSpriteGroup
 
@@ -24,6 +25,7 @@ class MainGrid(Container):
 
         self.gridSprites = GridSpriteGroup(sequence, (gridRect.left, gridRect.top),
                                            self.rect, skin)
+        self.activePopup = None
 
     def draw(self):
         self.gridSprites.clear(self.parentSurface, self.background)
@@ -61,3 +63,15 @@ class MainGrid(Container):
 
     def getCurrentTrack(self):
         return self.gridSprites.cursor.track.id
+
+    def showSearchPopup(self):
+        rect = Positioning.innerRect(self.gridSprites.rect, Sizing.searchPopupPadding)
+        searchPopup = SearchPopup(self.parentSurface, rect, self.skin)
+        self.gridSprites.add(searchPopup)
+        searchPopup.show()
+        self.activePopup = searchPopup
+
+    def hidePopup(self):
+        if self.activePopup is not None:
+            self.activePopup.hide()
+            self.activePopup = None
