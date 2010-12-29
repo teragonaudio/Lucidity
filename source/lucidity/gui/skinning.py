@@ -20,7 +20,10 @@ class Skin:
         return self._guiColors.findColor(itemName)
 
     def nextPaletteColor(self):
-        return self._palette.nextColor(self.interval)
+        if self.interval <= 0:
+            return self._palette.randomColor()
+        else:
+            return self._palette.nextColor(self.interval)
 
     def _loadColors(self, skinPath:"str", colorFileName:"str"):
         return ColorChooser.createFromDefinition(os.path.join(skinPath, colorFileName))
