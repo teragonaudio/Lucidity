@@ -343,6 +343,7 @@
 # @subsection Plug-In Configuration
 
 from threading import Thread
+import traceback
 from lucidity.app.delegate import MainDelegate
 from lucidity.core.arrangement import Sequence
 from lucidity.gui.windows import MainWindow
@@ -368,14 +369,23 @@ class Lucidity:
         self.mainWindow = None
 
     def run(self):
-        self.mainWindow = MainWindow(self.mainDelegate, self.sequence, self.settings,
-                                     self.mediaRequestLoop, self.midiEventLoop,
-                                     self.statusLoop, self.systemUsageLoop)
-        self.mainWindow.open()
-        self.mainWindow.setStatusText("Starting Up...")
-        initializer = Initializer(self)
-        initializer.start()
-        self.mainWindow.run()
+        try:
+            self.mainWindow = MainWindow(self.mainDelegate, self.sequence, self.settings,
+                                         self.mediaRequestLoop, self.midiEventLoop,
+                                         self.statusLoop, self.systemUsageLoop)
+            self.mainWindow.open()
+            self.mainWindow.setStatusText("Starting Up...")
+            initializer = Initializer(self)
+            initializer.start()
+            self.mainWindow.run()
+        except BaseException:
+            stacktrace = traceback.format_exc()
+            logger.error(stacktrace.strip())
+            try:
+                self.quit()
+            except BaseException as error:
+                logger.error("Unable to shut down cleanly: " + str(error))
+                exit()
 
     def quit(self):
         logger.info("Lucidity is quitting. Bye-bye!")
