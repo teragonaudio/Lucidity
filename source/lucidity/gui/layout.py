@@ -1,13 +1,17 @@
 import pygame
 
+class Padding:
+    GRID = 24
+    TOOLBAR = 6
+    LABEL = 4
+    BLOCK = 6
+    SEARCH_POPUP = 100
+    
+class Spacing:
+    TOOLBAR_BUTTON_GAP = 24
+
 class Sizing:
-    gridPadding = 24
-    toolbarPadding = 6
-    toolbarEmptySpace = 24
-    toolbarButtonSize = 32
-    fontPadding = 4
-    blockPadding = 6
-    searchPopupPadding = 100
+    TOOLBAR_BUTTON = 32
 
 class FontSizer:
     MIN_FONT_SIZE_IN_POINTS = 8
@@ -29,14 +33,14 @@ class FontSizer:
 
 class PanelSizer:
     def _topToolbarHeight(self):
-        return Sizing.toolbarButtonSize + (Sizing.toolbarPadding * 2)
+        return Sizing.TOOLBAR_BUTTON + (Padding.TOOLBAR * 2)
 
     def getTopToolbarRect(self, screenWidth):
         toolbarHeight = self._topToolbarHeight()
         return pygame.Rect(0, 0, screenWidth, toolbarHeight)
 
     def _bottomToolbarHeight(self):
-        toolbarHeight = (Sizing.toolbarButtonSize * 2) + (Sizing.toolbarPadding * 2)
+        toolbarHeight = (Sizing.TOOLBAR_BUTTON * 2) + (Padding.TOOLBAR * 2)
         return toolbarHeight
 
     def getBottomToolbarRect(self, screenWidth, screenHeight):

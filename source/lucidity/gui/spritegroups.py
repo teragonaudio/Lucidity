@@ -2,7 +2,6 @@ import pygame
 from pygame.sprite import LayeredDirty
 from lucidity.core.arrangement import Sequence, SequenceObserver, Item
 from lucidity.core.timing import MusicTimeConverter
-from lucidity.gui.colors import ColorChooser
 from lucidity.gui.popups import Popup
 from lucidity.gui.skinning import Skin
 from lucidity.gui.sprites import Block, BarLine, TrackLine, CursorLine

@@ -1,6 +1,6 @@
 import pygame
 from lucidity.gui.containers import Toolbar
-from lucidity.gui.layout import Sizing, Positioning
+from lucidity.gui.layout import Padding, Positioning, Spacing, Sizing
 from lucidity.gui.widgets import Button, Filmstrip, Label
 from lucidity.system.status import StatusDelegate
 
@@ -8,24 +8,24 @@ class TopToolbar(Toolbar, StatusDelegate):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect",
                  skin:"Skin", backgroundColor, delegate):
         Toolbar.__init__(self, parentSurface, rect, skin, backgroundColor)
-        firstButtonRect = pygame.Rect(rect.left + Sizing.toolbarPadding,
-                                      rect.top + Sizing.toolbarPadding, 0, 0)
+        firstButtonRect = pygame.Rect(rect.left + Padding.TOOLBAR,
+                                      rect.top + Padding.TOOLBAR, 0, 0)
         leftButton = Button(parentSurface, firstButtonRect,
                             skin.images["Left-Arrow-Up"],
                             skin.images["Left-Arrow-Down"],
                             delegate.onMoveLeft)
         self.addWidget(leftButton)
-        rightButton = Button(parentSurface, Positioning.rectToRight(leftButton.rect, Sizing.toolbarPadding),
+        rightButton = Button(parentSurface, Positioning.rectToRight(leftButton.rect, Padding.TOOLBAR),
                              skin.images["Right-Arrow-Up"],
                              skin.images["Right-Arrow-Down"],
                              delegate.onMoveRight)
         self.addWidget(rightButton)
-        upButton = Button(parentSurface, Positioning.rectToRight(rightButton.rect, Sizing.toolbarPadding),
+        upButton = Button(parentSurface, Positioning.rectToRight(rightButton.rect, Padding.TOOLBAR),
                           skin.images["Up-Arrow-Up"],
                           skin.images["Up-Arrow-Down"],
                           delegate.onMoveUp)
         self.addWidget(upButton)
-        downButton = Button(parentSurface, Positioning.rectToRight(upButton.rect, Sizing.toolbarPadding),
+        downButton = Button(parentSurface, Positioning.rectToRight(upButton.rect, Padding.TOOLBAR),
                             skin.images["Down-Arrow-Up"],
                             skin.images["Down-Arrow-Down"],
                             delegate.onMoveDown)
@@ -33,38 +33,38 @@ class TopToolbar(Toolbar, StatusDelegate):
 
         placeholderUp = skin.images["Placeholder-Up"]
         placeholderDown = skin.images["Placeholder-Down"]
-        cueButton = Button(parentSurface, Positioning.rectToRight(downButton.rect, Sizing.toolbarEmptySpace),
+        cueButton = Button(parentSurface, Positioning.rectToRight(downButton.rect, Spacing.TOOLBAR_BUTTON_GAP),
                            placeholderUp, placeholderDown, delegate.onCue)
         self.addWidget(cueButton)
-        undoButton = Button(parentSurface, Positioning.rectToRight(cueButton.rect, Sizing.toolbarPadding),
+        undoButton = Button(parentSurface, Positioning.rectToRight(cueButton.rect, Padding.TOOLBAR),
                             placeholderUp, placeholderDown, delegate.onUndo)
         self.addWidget(undoButton)
-        redoButton = Button(parentSurface, Positioning.rectToRight(undoButton.rect, Sizing.toolbarPadding),
+        redoButton = Button(parentSurface, Positioning.rectToRight(undoButton.rect, Padding.TOOLBAR),
                             placeholderUp, placeholderDown, delegate.onRedo)
         self.addWidget(redoButton)
 
-        selectButton = Button(parentSurface, Positioning.rectToRight(redoButton.rect, Sizing.toolbarEmptySpace),
+        selectButton = Button(parentSurface, Positioning.rectToRight(redoButton.rect, Spacing.TOOLBAR_BUTTON_GAP),
                               placeholderUp, placeholderDown, delegate.onSelect)
         self.addWidget(selectButton)
-        deleteButton = Button(parentSurface, Positioning.rectToRight(selectButton.rect, Sizing.toolbarPadding),
+        deleteButton = Button(parentSurface, Positioning.rectToRight(selectButton.rect, Padding.TOOLBAR),
                               placeholderUp, placeholderDown, delegate.onDelete)
         self.addWidget(deleteButton)
-        cloneButton = Button(parentSurface, Positioning.rectToRight(deleteButton.rect, Sizing.toolbarPadding),
+        cloneButton = Button(parentSurface, Positioning.rectToRight(deleteButton.rect, Padding.TOOLBAR),
                              placeholderUp, placeholderDown, delegate.onClone)
         self.addWidget(cloneButton)
-        saveButton = Button(parentSurface, Positioning.rectToRight(cloneButton.rect, Sizing.toolbarPadding),
+        saveButton = Button(parentSurface, Positioning.rectToRight(cloneButton.rect, Padding.TOOLBAR),
                             placeholderUp, placeholderDown, delegate.onSave)
         self.addWidget(saveButton)
 
-        lastButtonRect = pygame.Rect(rect.right - Sizing.toolbarPadding - Sizing.toolbarButtonSize,
-                                     rect.top + Sizing.toolbarPadding, 0, 0)
+        lastButtonRect = pygame.Rect(rect.right - Padding.TOOLBAR - Sizing.TOOLBAR_BUTTON,
+                                     rect.top + Padding.TOOLBAR, 0, 0)
         settingsButton = Button(parentSurface, lastButtonRect, placeholderUp, placeholderDown, delegate.onSettings)
         self.addWidget(settingsButton)
 
-        statusLabelLeft = saveButton.rect.right + Sizing.toolbarEmptySpace
-        statusLabelRect = pygame.Rect(statusLabelLeft, rect.top + Sizing.toolbarPadding,
-                                      lastButtonRect.left - Sizing.toolbarEmptySpace - statusLabelLeft,
-                                      Sizing.toolbarButtonSize)
+        statusLabelLeft = saveButton.rect.right + Spacing.TOOLBAR_BUTTON_GAP
+        statusLabelRect = pygame.Rect(statusLabelLeft, rect.top + Padding.TOOLBAR,
+                                      lastButtonRect.left - Spacing.TOOLBAR_BUTTON_GAP - statusLabelLeft,
+                                      Sizing.TOOLBAR_BUTTON)
         self.statusLabel = Label(parentSurface, statusLabelRect,
                                  skin.font("Status"),
                                  skin.guiColor("Toolbar Text"), 1,
@@ -79,9 +79,9 @@ class BottomToolbar(Toolbar):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin", backgroundColor, delegate):
         Toolbar.__init__(self, parentSurface, rect, skin, backgroundColor)
 
-        lastButtonRect = pygame.Rect(rect.right - Sizing.toolbarButtonSize - Sizing.toolbarPadding,
-                                     rect.bottom - Sizing.toolbarButtonSize - Sizing.toolbarPadding,
-                                     Sizing.toolbarButtonSize, Sizing.toolbarButtonSize)
+        lastButtonRect = pygame.Rect(rect.right - Sizing.TOOLBAR_BUTTON - Padding.TOOLBAR,
+                                     rect.bottom - Sizing.TOOLBAR_BUTTON - Padding.TOOLBAR,
+                                     Sizing.TOOLBAR_BUTTON, Sizing.TOOLBAR_BUTTON)
         self.cpuUsageButton = Filmstrip(parentSurface, lastButtonRect, skin.images["CPU-Usage"])
         self.addWidget(self.cpuUsageButton)
 

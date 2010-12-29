@@ -2,7 +2,7 @@ import pygame
 from pygame.sprite import DirtySprite
 from lucidity.core.arrangement import Item
 from lucidity.gui.colors import ColorChooser
-from lucidity.gui.layout import Sizing, FontSizer, Positioning
+from lucidity.gui.layout import Padding, FontSizer, Positioning
 
 class GridSprite(DirtySprite):
     def __init__(self, id, rect:"pygame.Rect", speedInPxPerSec:"float"):
@@ -51,13 +51,13 @@ class Block(GridSprite):
         colorRect = Positioning.innerRect(surface.get_rect(), Block.BORDER_SIZE)
         surface.fill(color, colorRect)
 
-        fontRect = Positioning.innerRect(colorRect, Sizing.fontPadding)
-        fontRect.left += Sizing.blockPadding
+        fontRect = Positioning.innerRect(colorRect, Padding.LABEL)
+        fontRect.left += Padding.BLOCK
         fontSize = FontSizer.bestFitSizeInPoints(fontName, rect.height / 4)
         font = pygame.font.Font(fontName, fontSize)
         fontSurface = font.render(item.label, True, self.fontColor)
-        colorRect.left += Sizing.fontPadding
-        colorRect.top += Sizing.fontPadding
+        colorRect.left += Padding.LABEL
+        colorRect.top += Padding.LABEL
         surface.blit(fontSurface, fontRect)
 
         return surface

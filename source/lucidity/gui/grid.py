@@ -1,6 +1,6 @@
 import pygame
 from lucidity.core.arrangement import Sequence
-from lucidity.gui.layout import Sizing, Positioning
+from lucidity.gui.layout import Padding, Positioning
 from lucidity.gui.containers import Container
 from lucidity.gui.popups import SearchPopup
 from lucidity.gui.skinning import Skin
@@ -13,9 +13,9 @@ class MainGrid(Container):
         parentSurface.fill(backgroundColor, rect)
         self.sequence = sequence
 
-        gridRect = pygame.Rect(0, rect.top + Sizing.gridPadding,
+        gridRect = pygame.Rect(0, rect.top + Padding.GRID,
                                rect.width,
-                               rect.height - (Sizing.gridPadding * 2))
+                               rect.height - (Padding.GRID * 2))
 
         self.parentSurface = parentSurface.subsurface(gridRect)
         self.rect = self.parentSurface.get_rect()
@@ -65,7 +65,7 @@ class MainGrid(Container):
         return self.gridSprites.cursor.track.id
 
     def showSearchPopup(self):
-        rect = Positioning.innerRect(self.gridSprites.rect, Sizing.searchPopupPadding)
+        rect = Positioning.innerRect(self.gridSprites.rect, Padding.SEARCH_POPUP)
         searchPopup = SearchPopup(self.parentSurface, rect, self.skin)
         self.gridSprites.add(searchPopup)
         searchPopup.show()

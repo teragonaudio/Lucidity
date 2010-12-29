@@ -1,7 +1,7 @@
 import pygame
 from pygame import Surface
 from lucidity.gui.drawing import Border
-from lucidity.gui.layout import Sizing, FontSizer, Positioning
+from lucidity.gui.layout import Padding, FontSizer, Positioning
 
 class Widget:
     def __init__(self, parentSurface:Surface, rect:pygame.Rect):
@@ -47,7 +47,7 @@ class Label(Widget):
         self.background.fill(backgroundColor)
         Border.draw(self.background, borderColor)
 
-        self.fontRect = Positioning.innerRect(self.rect, Sizing.fontPadding)
+        self.fontRect = Positioning.innerRect(self.rect, Padding.LABEL)
         fontSize = FontSizer.bestFitSizeInPoints(fontName, self.fontRect.height / numLines)
         self._font = pygame.font.Font(fontName, fontSize)
         self._color = fontColor
