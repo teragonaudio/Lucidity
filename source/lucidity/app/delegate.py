@@ -19,6 +19,7 @@ class MainDelegate:
         self.mainWindow = None
         self.mainGrid = None
         self.keyHandler = KeyHandler()
+        self.popupActive = False
 
     def onCue(self):
         """Play the audio directly under the cursor point out of the cue output"""
@@ -52,11 +53,26 @@ class MainDelegate:
         a keyboard is not a multitouch device -- it is capable of only sending a single
         keystroke at a time.
         """
-        self.keyHandler.onKeyDown(self, eventDict['key'], eventDict['mod'])
+        key = eventDict['key']
+        modifiers = eventDict['mod']
+
+        if modifiers:
+            # Always process control keys
+            self.keyHandler.onKeyDown(self, key, modifiers)
+        elif self.popupActive:
+            # Escape pressed -- hide the popup
+            if key == 27:
+                self.mainGrid.hidePopup()
+                self.popupActive = False
+            else:
+                # TODO: Send key to popup
+                pass
+        else:
+            self.keyHandler.onKeyDown(self, key, modifiers)
 
     def onKeyUp(self, eventDict):
         """Key released"""
-        self.keyHandler.onKeyUp(self, eventDict['key'], eventDict['mod'])
+        pass
 
     def onMouseButtonDown(self, eventDict):
         """Mouse button pressed"""
@@ -112,7 +128,8 @@ class MainDelegate:
 
     def onSearch(self):
         """Open the search window"""
-        self.mainWindow.search()
+        self.mainGrid.showSearchPopup()
+        self.popupActive = True
 
     def onInsert(self):
         """Insert the currently selected media file into the arrangement under the cursor"""
