@@ -9,7 +9,8 @@ from lucidity.system.log import logger
 # <tr><td>Spacebar</td><td>Opens the search window</td></tr>
 # <tr><td>Caps Lock</td><td>Turns on/off MIDI mapping mode</td></tr>
 # <tr><td>Esc</td><td>Closes any current pop-up window</td></tr>
-# <tr><td>Ctrl+P</td><td>Start/Stop playback</td></tr>
+# <tr><td>Ctrl+Shift+P</td><td>Start/Stop playback</td></tr>
+# <tr><td>Ctrl+Shift+R</td><td>Reset the arrangement</td></tr>
 # <tr><td>Enter</td><td>Inserts the search selection at the cursor position</td></tr>
 # <tr><td>Shift+Enter</td><td>Preview playing at the cursor position</td></tr>
 # <tr><td>Ctrl+1</td><td>Inserts the search selection at the cursor position in track 1</td></tr>
@@ -22,6 +23,7 @@ from lucidity.system.log import logger
 # <tr><td>Ctrl+8</td><td>Inserts the search selection at the cursor position in track 8</td></tr>
 # <tr><td>Ctrl+9</td><td>Inserts the search selection at the cursor position in track 9</td></tr>
 # <tr><td>Ctrl+F</td><td>Fullscreen mode</td></tr>
+# <tr><td>Ctrl+,</td><td>Open the preferences window</td></tr>
 # <tr><td>Up Arrow</td><td>Moves cursor up, automatically deleting any tracks below the cursor without music or mappings</td></tr>
 # <tr><td>Down Arrow</td><td>Moves cursor down, automatically adding a new track if at the bottom of the screen</td></tr>
 # <tr><td>Left Arrow</td><td>Moves cursor left, automatically zooming in if at the far right of the screen</td></tr>
