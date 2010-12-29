@@ -25,33 +25,45 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
         self.widthInBars = self.DEF_WIDTH_IN_BARS
         self.activeTrackCount = Sequence.MIN_TRACKS
 
-        self.add(BarLine(0, (0, 0), self.rect.height, 1, skin.guiColor("Bar Line"), self.getSpeed()))
-        for i in range(0, Sequence.MAX_TRACKS):
-            self.add(TrackLine(i, self.rect.width, skin.guiColor("Track Line")))
+        self._initializeGridSprites()
 
+    def _initializeGridSprites(self):
+        # We already know the maximum number of track lines, so go ahead and add them all now
+        for i in range(0, Sequence.MAX_TRACKS):
+            self.add(TrackLine(i, self.rect.width, self.skin.guiColor("Track Line")))
+
+        # Add a few empty sprites for these groups
+        # This is necessary so that the layers are properly sorted for this sprite
+        # group, and also so that grid can be efficiently created by there being at
+        # least one item to compare the current time with.
+        self.add(BarLine(0, (0, 0), self.rect.height, 1, self.skin.guiColor("Bar Line"), self.getSpeed()))
+
+        # Finally, add the cursor object, which should always be on the very top
         self.cursor = CursorLine(0, (0, 0), self.getTrackHeightInPx() + 1, 4,
-                                 skin.guiColor("Cursor"), self.getSpeed())
+                                 self.skin.guiColor("Cursor"), self.getSpeed())
         self.cursor.moveToBar(self.barLines[0])
         self.cursor.moveToTrack(self.trackLines[0])
-        self.add(self.cursor, layer="cursor")
-        self.move_to_front(self.cursor)
+        self.add(self.cursor, layer=3)
 
         self._updateTrackLines()
 
     def add(self, *sprites, **kwargs):
         for sprite in sprites:
-            layerName = "grid"
+            layer = 0
             if isinstance(sprite, Block):
                 self.blocks.append(sprite)
-                layerName = "items"
+                layer = 1
             elif isinstance(sprite, BarLine):
                 self.barLines.append(sprite)
-                layerName = "barLines"
+                layer = 0
             elif isinstance(sprite, TrackLine):
                 self.trackLines.append(sprite)
-                layerName = "trackLines"
-            super().add(sprite, layer=layerName)
-
+                layer = 0
+            elif isinstance(sprite, Popup):
+                layer = 3
+            elif isinstance(sprite, CursorLine):
+                layer = 2
+            super().add(sprite, layer=layer)
 
     def onItemAdded(self, item:Item):
         self.addItem(item)
