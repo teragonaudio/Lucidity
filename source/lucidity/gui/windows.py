@@ -3,14 +3,13 @@ import pygame
 import time
 import lucidity
 from lucidity.app.delegate import MainDelegate
-from lucidity.core.arrangement import Sequence, Item
+from lucidity.core.arrangement import Sequence
 from lucidity.gui.grid import MainGrid
-from lucidity.gui.layout import PanelSizer, Positioning
-from lucidity.gui.popups import SearchPopup
+from lucidity.gui.layout import PanelSizer
 from lucidity.gui.skinning import Skin
 from lucidity.gui.toolbars import TopToolbar, BottomToolbar
-from lucidity.media.library import MediaRequestLoop, MediaRequest, MediaRequestDelegate, MediaFileConverter, MediaFileConverter
-from lucidity.media.media import MediaFile, MediaFile
+from lucidity.media.library import MediaRequestLoop, MediaRequest, MediaRequestDelegate, MediaFileConverter
+from lucidity.media.media import MediaFile
 from lucidity.midi.midi import MidiEventLoop
 from lucidity.system.log import logger
 from lucidity.system.performance import SystemUsageLoop
@@ -139,7 +138,7 @@ class MainWindow(MediaRequestDelegate):
     # TODO: This should be replaced by a method in the bottom toolbar
     def getCurrentItem(self):
         file = MediaFile("/foo/bar")
-        file.title = "Pookie"
+        file.title = "Sample Block"
         file.timeInSeconds = 30.0
         return file
 
