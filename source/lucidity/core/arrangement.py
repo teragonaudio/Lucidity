@@ -16,17 +16,14 @@ class Track:
         self.items = []
         self.id = id
 
-    def addItem(self, item:"Item"):
+    def addItem(self, item:Item):
         self.items.append(item)
 
-    def hasItemsAfterBeat(self, beats:"int"):
+    def hasItemsAfterPosition(self, positionInBeats:int):
         for item in self.items:
-            if item.endPositionInBeats > beats:
+            if item.endPositionInBeats > positionInBeats:
                 return True
         return False
-
-    def contains(self, item:"Item"):
-        return item in self.items
 
     def clear(self):
         self.items = []
