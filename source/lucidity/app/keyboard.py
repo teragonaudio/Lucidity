@@ -51,6 +51,7 @@ RegularKeyCommands = {
 
 ControlKeyCommands = {
     9: "Minimize",          # Tab, since SDL traps command + tab
+    ord('f'): "Fullscreen",
     ord('m'): "Minimize",
     ord(','): "Settings",
 }
