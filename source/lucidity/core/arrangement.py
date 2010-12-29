@@ -9,6 +9,7 @@ class Item:
         self.label = label
         self.startPositionInBeats = startPositionInBeats
         self.endPositionInBeats = self.startPositionInBeats + lengthInBeats
+        self.lengthInBeats = lengthInBeats
         self.stackPosition = stackPosition
 
 class Track:
