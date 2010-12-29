@@ -7,6 +7,7 @@ class Sizing:
     toolbarButtonSize = 32
     fontPadding = 4
     blockPadding = 6
+    searchPopupPadding = 100
 
 class FontSizer:
     MIN_FONT_SIZE_IN_POINTS = 8
