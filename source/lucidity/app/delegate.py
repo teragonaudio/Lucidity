@@ -1,11 +1,11 @@
 from lucidity.system.log import logger
 from lucidity.app.keyboard import KeyHandler
 
+from lucidity.system.platforms import Naming
+
 # Avoid warnings about unused locals, which is necessary for the event handlers to work
 # properly via reflection
 #noinspection PyUnusedLocal
-from lucidity.system.platforms import Naming
-
 class MainDelegate:
     """This class serves as the main dispatcher point for the application.  The primary
     objects in the app, such as the main window, grid, and app must register themselves
