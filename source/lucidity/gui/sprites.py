@@ -83,6 +83,10 @@ class CursorLine(BarLine):
     def onOffscreen(self):
         self.isOffscreen = True
 
+    def moveTo(self, barLine:"BarLine", trackLine:"TrackLine"):
+        self.moveToBar(barLine)
+        self.moveToTrack(trackLine)
+
     def moveToBar(self, barLine:"BarLine"):
         self.bar = barLine
         self.rect.left = barLine.rect.right
