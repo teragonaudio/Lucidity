@@ -70,6 +70,19 @@ class MediaFile:
         sliceFromIndex = len(location) + 1
         return self.absolutePath[sliceFromIndex:]
 
+    def getLabel(self):
+        if hasattr(self, "title"):
+            return getattr(self, "title")
+        else:
+            return os.path.basename(self.absolutePath)
+
+    def getLength(self):
+        if hasattr(self, "timeInSeconds"):
+            return getattr(self, "timeInSeconds")
+        else:
+            timeInSeconds = 60.0
+            setattr(self, "timeInSeconds", timeInSeconds)
+            return timeInSeconds
 
 class MediaDatabase:
     def __init__(self, databaseLocation):
