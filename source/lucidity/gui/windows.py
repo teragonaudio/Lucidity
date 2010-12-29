@@ -3,19 +3,21 @@ import pygame
 import time
 import lucidity
 from lucidity.app.delegate import MainDelegate
-from lucidity.arrangement import Sequence
+from lucidity.core.arrangement import Sequence, Item
 from lucidity.gui.grid import MainGrid
-from lucidity.gui.layout import PanelSizer
+from lucidity.gui.layout import PanelSizer, Positioning
+from lucidity.gui.popups import SearchPopup
 from lucidity.gui.skinning import Skin
 from lucidity.gui.toolbars import TopToolbar, BottomToolbar
-from lucidity.media.library import MediaRequestLoop, MediaRequest, MediaRequestDelegate
+from lucidity.media.library import MediaRequestLoop, MediaRequest, MediaRequestDelegate, MediaFileConverter, MediaFileConverter
+from lucidity.media.media import MediaFile, MediaFile
 from lucidity.midi.midi import MidiEventLoop
 from lucidity.system.log import logger
 from lucidity.system.performance import SystemUsageLoop
 from lucidity.system.settings import Settings
 from lucidity.system.status import StatusLoop, ObtuseStatusProvider
 
-class MainWindow():
+class MainWindow(MediaRequestDelegate):
     def __init__(self, delegate:MainDelegate, sequence:Sequence, settings:Settings,
                  mediaRequestLoop:MediaRequestLoop, midiEventLoop:MidiEventLoop,
                  statusLoop:StatusLoop, systemUsageLoop:SystemUsageLoop):
@@ -46,6 +48,7 @@ class MainWindow():
         self._containers = []
         self._skin = Skin(self.settings.getString("gui.skin"), self.settings.getInt("gui.colorInterval"))
         self._setStatusTextFunction = None
+        self._getCurrentItemProvider = self.getCurrentItem
         self._framesProcessed = 0
 
     def open(self):
@@ -133,23 +136,25 @@ class MainWindow():
         logger.debug("Minimizing")
         pygame.display.iconify()
 
-    def insert(self):
-        self.search()
+    # TODO: This should be replaced by a method in the bottom toolbar
+    def getCurrentItem(self):
+        file = MediaFile("/foo/bar")
+        file.title = "Pookie"
+        file.timeInSeconds = 30.0
+        return file
 
-    def search(self):
-        request = MediaRequest(type=MediaRequest.SEARCH, delegate=self, query="Adam Jay")
-        self._mediaRequestLoop.addRequest(request)
+    def insert(self):
+        mediaFile = self._getCurrentItemProvider()
+        item = MediaFileConverter.getItemForMediaFile(mediaFile, self.mainGrid.getCurrentTrack(),
+                                                      self.mainGrid.getCurrentBar() * 4,
+                                                      self.sequence.getTempo())
+        self.sequence.addItem(item)
 
     def onRequestComplete(self, request:MediaRequest, args):
         if request.type == MediaRequest.RESCAN:
             self.setStatusText(args[0])
         elif request.type == MediaRequest.SEARCH:
-            if len(args) > 0:
-                mediaFile = args[0]
-                mediaItem = Item(mediaFile.id, self.mainGrid.getCurrentTrack(), mediaFile.title,
-                                 self.mainGrid.getCurrentBar() * 4, 120, 0)
-                self.sequence.tracks[self.mainGrid.getCurrentTrack()].addItem(mediaItem)
-                self.mainGrid.gridSprites.addItem(mediaItem, self.mainGrid.gridSprites.cursor.bar)
+            pass
 
     def setStatusText(self, text):
         self._setStatusTextFunction(text)
