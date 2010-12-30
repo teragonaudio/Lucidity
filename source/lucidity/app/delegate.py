@@ -95,6 +95,7 @@ class MainDelegate:
         self.mainApp.quit()
 
     def onQuitHelp(self, eventDict = None):
+        """Displayed when the user tries to quit the app the old fashioned way"""
         self.mainWindow.setStatusText("Press %s + shift + Q to quit" % Naming.commandKeyName())
 
     def onUndo(self):
