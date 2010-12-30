@@ -172,6 +172,14 @@ class MainWindow(MediaRequestDelegate):
             if container.absRect.collidepoint(clickPosition[0], clickPosition[1]):
                 container.onMouseUp(clickPosition)
 
+    def onStartMidiMapping(self):
+        for container in self._containers:
+            container.onStartMidiMapping()
+
+    def onStopMidiMapping(self):
+        for container in self._containers:
+            container.onStopMidiMapping()
+
     def getFramesPerSec(self):
         totalTime = self.sequence.getTime() - self.sequence.clock.startTime
         if totalTime > 0:

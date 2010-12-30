@@ -15,6 +15,14 @@ class Container:
     def width(self): return self.rect.width
     def height(self): return self.rect.height
 
+    def onStartMidiMapping(self):
+        for widget in self._widgets:
+            widget.onStartMidiMapping()
+
+    def onStopMidiMapping(self):
+        for widget in self._widgets:
+            widget.onStopMidiMapping()
+
     def draw(self): pass
     def onMouseDown(self, position): pass
     def onMouseUp(self, position): pass
