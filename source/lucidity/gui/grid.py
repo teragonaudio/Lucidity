@@ -40,13 +40,14 @@ class MainGrid(Container):
         nearestTrack = self.gridSprites.getNearestTrackForPosition(relativePosition)
         nearestBar = self.gridSprites.getNearestBarForPosition(relativePosition)
         if nearestBar and nearestTrack:
-            self.gridSprites.cursor.moveTo(nearestBar, nearestTrack)
+            self.gridSprites.cursor.moveToBeat(nearestBar.id.beats, nearestBar.rect.right)
+            self.gridSprites.cursor.moveToTrack(nearestTrack.id, nearestTrack.rect.bottom)
 
     def moveLeft(self):
-        self.gridSprites.moveLeft()
+        self.gridSprites.moveCursorLeft(4)
 
     def moveRight(self):
-        self.gridSprites.moveRight()
+        self.gridSprites.moveCursorRight(4)
 
     def moveUp(self):
         self.gridSprites.moveUp()
@@ -58,11 +59,11 @@ class MainGrid(Container):
         self.sequence.clearAllTracks()
         self.gridSprites.reset()
 
-    def getCurrentBar(self):
-        return self.gridSprites.cursor.bar.id
+    def getCursorPosition(self):
+        return self.gridSprites.cursor.id
 
-    def getCurrentTrack(self):
-        return self.gridSprites.cursor.track.id
+    def getCursorTrack(self):
+        return self.gridSprites.cursor.track
 
     def showSearchPopup(self):
         rect = Positioning.innerRect(self.gridSprites.rect, Padding.SEARCH_POPUP)

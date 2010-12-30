@@ -1,16 +1,22 @@
-from lucidity.core.timing import MusicalClock
+from lucidity.core.timing import *
 
 class Item:
-    def __init__(self, id, track:"int", label:"str",
-                 startPositionInBeats:"int", lengthInBeats:"int",
-                 stackPosition:"int"):
+    def __init__(self, id, track:int, label:str,
+                 startPosition:Position, lengthInSec:int, tempo:float):
         self.id = id
         self.track = track
         self.label = label
-        self.startPositionInBeats = startPositionInBeats
-        self.endPositionInBeats = self.startPositionInBeats + lengthInBeats
-        self.lengthInBeats = lengthInBeats
-        self.stackPosition = stackPosition
+        self.startPosition = startPosition
+        self.lengthInSec = lengthInSec
+        self.endPosition = Position()
+        self.setTempo(tempo)
+
+    def getLengthInBeats(self):
+        return self.endPosition.beats - self.startPosition.beats
+
+    def setTempo(self, tempo:float):
+        self.endPosition.beats = self.startPosition.beats + \
+                                 MusicTimeConverter.secondsToBeats(tempo, self.lengthInSec)
 
 class Track:
     def __init__(self, id:int):
@@ -20,9 +26,9 @@ class Track:
     def addItem(self, item:Item):
         self.items.append(item)
 
-    def hasItemsAfterPosition(self, positionInBeats:int):
+    def hasItemsAfterBeat(self, beat:int):
         for item in self.items:
-            if item.endPositionInBeats > positionInBeats:
+            if item.endPosition.beats > beat:
                 return True
         return False
 
@@ -37,8 +43,9 @@ class Sequence:
     MAX_TRACKS = 16
     MIN_TRACKS = 4
 
-    def __init__(self, tempo:float=DEFAULT_TEMPO):
-        self.clock = MusicalClock(tempo)
+    def __init__(self, tempo:float=DEFAULT_TEMPO, timeSignature:TimeSignature=DEFAULT_TIME_SIGNATURE):
+        self.timeSignature = timeSignature
+        self.clock = MusicalClock(tempo, self.timeSignature)
         self.observers = []
         self.tracks = []
         for i in range(0, self.MAX_TRACKS):
@@ -55,8 +62,11 @@ class Sequence:
     def getTempo(self):
         return self.clock.tempo
 
-    def setTempo(self, tempo:"float"):
+    def setTempo(self, tempo:float):
         self.clock.tempo = tempo
+        for track in self.tracks:
+            for item in track.items:
+                item.setTempo(tempo)
 
     def getTime(self):
         return self.clock.currentTime
@@ -67,8 +77,14 @@ class Sequence:
     def getCurrentBeat(self):
         return self.clock.getBeats()
 
-    def hasItemsAfterPosition(self, trackNumber:int, positionInBeats:int):
-        return self.tracks[trackNumber].hasItemsAfterPosition(positionInBeats)
+    def hasItemsAfterBeat(self, beat:int, trackNumber:int=None):
+        if trackNumber is not None:
+            return self.tracks[trackNumber].hasItemsAfterBeat(beat)
+        else:
+            for i in range(0, len(self.tracks)):
+                if self.hasItemsAfterBeat(trackNumber):
+                    return True
+            return False
 
     def tick(self):
         self.clock.tick()

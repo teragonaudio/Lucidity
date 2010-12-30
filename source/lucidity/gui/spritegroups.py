@@ -1,7 +1,7 @@
 import pygame
 from pygame.sprite import LayeredDirty
 from lucidity.core.arrangement import Sequence, SequenceObserver, Item
-from lucidity.core.timing import MusicTimeConverter
+from lucidity.core.timing import MusicTimeConverter, Position
 from lucidity.gui.popups import Popup
 from lucidity.gui.skinning import Skin
 from lucidity.gui.sprites import Block, BarLine, TrackLine, CursorLine
@@ -24,7 +24,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
         self.trackLines = []
         self.barLines = []
         self.lastTime = sequence.getTime()
-        self.widthInBars = self.DEF_WIDTH_IN_BARS
+        self.widthInBeats = sequence.timeSignature.getBeatsForBars(self.DEF_WIDTH_IN_BARS)
         self.activeTrackCount = Sequence.MIN_TRACKS
 
         self._initializeGridSprites()
@@ -38,15 +38,14 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
         # This is necessary so that the layers are properly sorted for this sprite
         # group, and also so that grid can be efficiently created by there being at
         # least one item to compare the current time with.
-        self.add(BarLine(0, (0, 0), self.rect.height, 1, self.skin.guiColor("Bar Line"), self.getSpeed()))
+        self.add(BarLine(Position(0), (0, 0), self.rect.height, 1, self.skin.guiColor("Bar Line"), self.getSpeed()))
 
         # Finally, add the cursor object, which should always be on the very top
-        self.cursor = CursorLine(0, (0, 0), self.getTrackHeightInPx() + 1, 4,
+        self.cursor = CursorLine(Position(0), (0, 1), self.getTrackHeightInPx() + 1, 4,
                                  self.skin.guiColor("Cursor"), self.getSpeed())
-        self.cursor.moveToBar(self.barLines[0])
-        self.cursor.moveToTrack(self.trackLines[0])
         self.add(self.cursor, layer=3)
 
+        self._updateBarLines()
         self._updateTrackLines()
 
     def add(self, *sprites, **kwargs):
@@ -55,6 +54,8 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
             if isinstance(sprite, Block):
                 self.blocks.append(sprite)
                 layer = 1
+            elif isinstance(sprite, CursorLine):
+                layer = 2
             elif isinstance(sprite, BarLine):
                 self.barLines.append(sprite)
                 layer = 0
@@ -63,25 +64,19 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
                 layer = 0
             elif isinstance(sprite, Popup):
                 layer = 3
-            elif isinstance(sprite, CursorLine):
-                layer = 2
             super().add(sprite, layer=layer)
 
     def onItemAdded(self, item:Item):
         self.addItem(item)
 
     def addItem(self, item:Item):
-        #positionX = barLine.rect.left
-        #positionY = self.trackLines[item.track].rect.top
-        #width = ((item.endPositionInBeats - item.startPositionInBeats) / beatsPerBar) * self.getBarWidthInPx()
-        # TODO: Ugh, dirty hack!  Do NOT keep hardcoding with 4/4
-        itemBar = self.findSpriteFromId(int(item.startPositionInBeats / 4), self.barLines)
-        if itemBar is None:
-            logger.warn("Could not place item in grid")
-            return
-        itemTrack = self.trackLines[item.track]
-        width = (item.lengthInBeats / 4) * self.getBarWidthInPx()
-        self.add(Block(item, (itemBar.rect.left, itemTrack.rect.top),
+        beatWidth = self.getBeatWidthInPx()
+        firstBar = self.barLines[0]
+        positionX = firstBar.rect.left + (item.startPosition.beats - firstBar.id.beats) * beatWidth
+        positionY = self.trackLines[item.track].rect.top
+        width = item.getLengthInBeats() * beatWidth
+
+        self.add(Block(item, (positionX, positionY),
                        width, self.getTrackHeightInPx(),
                        self.skin.nextPaletteColor(), self.skin.font("Block"),
                        self.getSpeed()))
@@ -117,14 +112,16 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
 
     def _updateCursor(self):
         if self.cursor.isOffscreen:
-            self.cursor.moveToBar(self.barLines[1])
+            nextBar = self.barLines[0]
+            self.cursor.moveToBeat(nextBar.id.beats, nextBar.rect.right)
             self.cursor.isOffscreen = False
 
     def _updateBarLines(self):
-        lastBarLine = self.barLines[len(self.barLines) - 1]
+        numBarLines = len(self.barLines)
+        lastBarLine = self.barLines[numBarLines - 1]
         while lastBarLine.rect.left < self.rect.right:
             nextRect = lastBarLine.rect.move(self.getBarWidthInPx(), 0)
-            barLine = BarLine(lastBarLine.id + 1, (nextRect.left, nextRect.top), self.rect.height, 1,
+            barLine = BarLine(Position(lastBarLine.id.beats + 4), (nextRect.left, nextRect.top), self.rect.height, 1,
                               self.skin.guiColor("Bar Line"), self.getSpeed())
             self.add(barLine)
             lastBarLine = barLine
@@ -146,7 +143,8 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
                 trackLine.setTop(-1)
             trackLine.dirty = 1
         self._updateBlockHeights(trackHeightInPx + 1)
-        self.cursor.updateHeight(trackHeightInPx + 1)
+        # TODO: 1 is used here for the track line height, but this should not be hardcoded
+        self.cursor.updateHeight(trackHeightInPx - 1)
 
     def _updateBlockHeights(self, trackHeightInPx:"int"):
         for block in self.blocks:
@@ -165,11 +163,17 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
     def getTrackHeightInPx(self):
         return self.rect.height / self.activeTrackCount
 
+    def getBeatWidthInPx(self):
+        return self.rect.width / self.widthInBeats
+
     def getBarWidthInPx(self):
-        return self.rect.width / self.widthInBars
+        return self.rect.width / self.getWidthInBars()
+
+    def getWidthInBars(self):
+        return self.sequence.timeSignature.getBarsForBeats(self.widthInBeats)
 
     def getWidthInSec(self):
-        return MusicTimeConverter.beatsToSeconds(self.getTempo(), self.widthInBars * 4)
+        return MusicTimeConverter.beatsToSeconds(self.getTempo(), self.widthInBeats)
 
     def getTempo(self):
         return self.sequence.getTempo()
@@ -183,35 +187,31 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
                 return gridSprite
         return None
 
-    def moveLeft(self):
-        nextBarId = self.cursor.bar.id - 1
-        nextBar = self.findSpriteFromId(nextBarId, self.barLines)
-        if nextBar is not None:
-            self.cursor.moveToBar(nextBar)
+    def moveCursorLeft(self, beats:int):
+        self.cursor.moveToBeat(self.cursor.id.beats - beats,
+                               self.cursor.rect.left - self.getBeatWidthInPx() * beats)
         #self.collapseBars()
 
-    def moveRight(self):
-        nextBarId = self.cursor.bar.id + 1
-        nextBar = self.findSpriteFromId(nextBarId, self.barLines)
-        if nextBar is not None:
-            self.cursor.moveToBar(nextBar)
+    def moveCursorRight(self, beats:int):
+        self.cursor.moveToBeat(self.cursor.id.beats + beats,
+                               self.cursor.rect.left + self.getBeatWidthInPx() * beats)
         #self.expandBars()
 
     def moveUp(self):
-        nextTrack = self.cursor.track.id - 1
+        nextTrack = self.cursor.track - 1
         if nextTrack >= 0:
             if nextTrack < self.activeTrackCount:
                 currentBeat = self.sequence.getCurrentBeat()
-                if not self.sequence.hasItemsAfterPosition(self.activeTrackCount - 1, currentBeat):
+                if not self.sequence.hasItemsAfterBeat(currentBeat, self.activeTrackCount - 1):
                     self.collapseTracks()
-            self.cursor.moveToTrack(self.trackLines[nextTrack])
+            self.cursor.moveToTrack(nextTrack, self.trackLines[nextTrack].rect.bottom)
 
     def moveDown(self):
-        nextTrack = self.cursor.track.id + 1
+        nextTrack = self.cursor.track + 1
         if nextTrack < Sequence.MAX_TRACKS:
             if nextTrack >= self.activeTrackCount:
                 self.expandTracks()
-            self.cursor.moveToTrack(self.trackLines[nextTrack])
+            self.cursor.moveToTrack(nextTrack, self.trackLines[nextTrack].rect.bottom)
 
     def expandTracks(self):
         self.activeTrackCount += 1
@@ -223,16 +223,16 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
             self._updateTrackLines()
 
     def expandBars(self):
-        if self.widthInBars < self.MAX_WIDTH_IN_BARS:
-            self.widthInBars += 4
+        if self.getWidthInBars() < self.MAX_WIDTH_IN_BARS:
+            self.widthInBeats += self.sequence.timeSignature.beatsPerMeasure
             self._updateGridItemSpeeds()
 
     def collapseBars(self):
-        if self.widthInBars > self.MIN_WIDTH_IN_BARS:
-            self.widthInBars -= 4
+        if self.getWidthInBars() > self.MIN_WIDTH_IN_BARS:
+            self.widthInBeats -= self.sequence.timeSignature.beatsPerMeasure
             self._updateGridItemSpeeds()
 
-    def getNearestTrackForPosition(self, position:"tuple"):
+    def getNearestTrackForPosition(self, position:tuple):
         trackHeightInPx = self.getTrackHeightInPx()
         for trackLine in self.trackLines:
             if trackLine.visible:
@@ -241,7 +241,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
                     return trackLine
         return None
 
-    def getNearestBarForPosition(self, position:"tuple"):
+    def getNearestBarForPosition(self, position:tuple):
         barWidthInPx = self.getBarWidthInPx()
         for barLine in self.barLines:
             if barLine.visible:
