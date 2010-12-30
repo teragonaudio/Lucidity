@@ -20,6 +20,7 @@ class MainDelegate:
         self.mainGrid = None
         self.keyHandler = KeyHandler()
         self.popupActive = False
+        self.midiMappingActive = False
 
     def onCue(self):
         """Play the audio directly under the cursor point out of the cue output"""
@@ -135,10 +136,18 @@ class MainDelegate:
         """Insert the currently selected media file into the arrangement under the cursor"""
         self.mainWindow.insert()
 
-    # TODO: Split into onStartMidiMapping/onStopMidiMapping
-    def onMapMidi(self):
-        pass
+    def onMidiMapping(self):
+        #if not self.midiMappingActive:
+        #    self.mainWindow.onStartMidiMapping()
+        #else:
+        #    self.mainWindow.onStopMidiMapping()
+        #self.midiMappingActive = not self.midiMappingActive
 
+        # Ugh, for some stupid reason, we are only being sent a key event when caps lock
+        # is pressed on, but not when it is pressed again to turn it off.  So this won't
+        # work for the time being.
+        pass
+        
     def onReset(self):
         """Remove all items from the arrangement"""
         logger.info("Reset called")

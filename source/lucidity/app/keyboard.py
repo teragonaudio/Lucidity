@@ -46,7 +46,8 @@ RegularKeyCommands = {
     274: "MoveDown",        # Down arrow
     32: "Search",           # Space
     13: "Insert",           # Return
-    301: "MapMidi",         # Caps Lock
+    304: "MidiMapping",     # ENTERING CAPS LOCK
+    301: "MidiMapping",     # leaving caps lock
     8: "Delete",            # Delete
 }
 
@@ -77,7 +78,8 @@ ModifierHashes = {
     0: RegularKeyCommands,
     1: ShiftKeyCommands,
     1024: ControlKeyCommands,
-    1025: ControlShiftKeyCommands
+    1025: ControlShiftKeyCommands,
+    8192: RegularKeyCommands # Caps lock uses this modifier for some reason
 }
 
 class KeyHandler:
@@ -91,6 +93,7 @@ class KeyHandler:
         pass
 
     def onKeyDown(self, delegate, key, modifiers = None):
+        #logger.debug("Got key: " + str(key) + ", mods: " + str(modifiers))
         try:
             if key in ModifierKeys:
                 return
