@@ -7,9 +7,10 @@ from lucidity.gui.skinning import Skin
 from lucidity.gui.sprites import Block, BarLine, TrackLine, CursorLine
 
 class GridSpriteGroup(LayeredDirty, SequenceObserver):
-    MIN_WIDTH_IN_BARS = 32   # 1 minute @ 120 BPM
-    MAX_WIDTH_IN_BARS = 1024 # 30 minutes @ 120 BPM
-    DEF_WIDTH_IN_BARS = MIN_WIDTH_IN_BARS
+    class Width:
+        MIN_WIDTH_IN_BARS = 32   # 1 minute @ 120 BPM
+        MAX_WIDTH_IN_BARS = 1024 # 30 minutes @ 120 BPM
+        DEF_WIDTH_IN_BARS = MIN_WIDTH_IN_BARS
 
     class Layers:
         GRID = 0
@@ -29,7 +30,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
         self.trackLines = []
         self.barLines = []
         self.lastTime = sequence.getTime()
-        self.widthInBeats = sequence.timeSignature.getBeatsForBars(self.DEF_WIDTH_IN_BARS)
+        self.widthInBeats = sequence.timeSignature.getBeatsForBars(self.Width.DEF_WIDTH_IN_BARS)
         self.activeTrackCount = Sequence.MIN_TRACKS
 
         self._initializeGridSprites()
@@ -202,7 +203,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
 
     def moveCursorRight(self, beats:int):
         nextBeat = self.cursor.position.beats + beats
-        if nextBeat < self.sequence.timeSignature.getBeatsForBars(self.MAX_WIDTH_IN_BARS):
+        if nextBeat < self.sequence.timeSignature.getBeatsForBars(self.Width.MAX_WIDTH_IN_BARS):
             if nextBeat - self.barLines[0].position.beats >= self.widthInBeats:
                 self.expandBars(beats)
             self.cursor.moveToBeat(nextBeat, self.getOffsetFromFirstBarLine(nextBeat))
@@ -252,7 +253,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
             block.resize(newRect)
 
     def collapseBars(self):
-        if self.getWidthInBars() > self.MIN_WIDTH_IN_BARS:
+        if self.getWidthInBars() > self.Width.MIN_WIDTH_IN_BARS:
             self.widthInBeats -= self.sequence.timeSignature.beatsPerMeasure
             self._updateGridItemSpeeds()
 
