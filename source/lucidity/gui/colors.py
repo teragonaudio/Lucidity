@@ -56,7 +56,7 @@ class ColorChooser:
         self._colors = {}
         self._colorList = []
 
-    def addColor(self, name:"str", value:"tuple"):
+    def addColor(self, name:str, value:tuple):
         self._colors[name] = value
         self._colorList.append(value)
 
@@ -70,7 +70,7 @@ class ColorChooser:
         try:
             return self._colors[colorName]
         except KeyError:
-            return self.DEFAULT_COLOR
+            return None
 
     def nextColor(self, interval=1):
         nextIndex = self._currentIndex + interval
