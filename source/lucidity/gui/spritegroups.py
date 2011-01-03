@@ -9,8 +9,14 @@ from lucidity.gui.sprites import Block, BarLine, TrackLine, CursorLine
 class GridSpriteGroup(LayeredDirty, SequenceObserver):
     MIN_WIDTH_IN_BARS = 32   # 1 minute @ 120 BPM
     MAX_WIDTH_IN_BARS = 1024 # 30 minutes @ 120 BPM
-    #DEF_WIDTH_IN_BARS = 120  # 4 minutes @ 120 BPM
     DEF_WIDTH_IN_BARS = MIN_WIDTH_IN_BARS
+
+    class Layers:
+        GRID = 0
+        BLOCKS = 1
+        CURSOR = 2
+        POPUPS = 3
+        DEFAULT = GRID
 
     def __init__(self, sequence:Sequence, offset:tuple, rect:pygame.Rect, skin:Skin):
         LayeredDirty.__init__(self)
@@ -51,20 +57,20 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
 
     def add(self, *sprites, **kwargs):
         for sprite in sprites:
-            layer = 0
+            layer = GridSpriteGroup.Layers.DEFAULT
             if isinstance(sprite, Block):
                 self.blocks.append(sprite)
-                layer = 1
+                layer = GridSpriteGroup.Layers.BLOCKS
             elif isinstance(sprite, CursorLine):
-                layer = 2
+                layer = GridSpriteGroup.Layers.CURSOR
             elif isinstance(sprite, BarLine):
                 self.barLines.append(sprite)
-                layer = 0
+                layer = GridSpriteGroup.Layers.GRID
             elif isinstance(sprite, TrackLine):
                 self.trackLines.append(sprite)
-                layer = 0
+                layer = GridSpriteGroup.Layers.GRID
             elif isinstance(sprite, Popup):
-                layer = 3
+                layer = GridSpriteGroup.Layers.POPUPS
             super().add(sprite, layer=layer)
 
     def onItemAdded(self, item:Item):
@@ -81,7 +87,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
                        self.getSpeed()))
 
         # TODO: This really shouldn't be necessary...
-        self.change_layer(self.cursor, 2)
+        self.change_layer(self.cursor, GridSpriteGroup.Layers.CURSOR)
 
     def remove_internal(self, sprite):
         super().remove_internal(sprite)
