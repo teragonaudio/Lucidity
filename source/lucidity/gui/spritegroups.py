@@ -70,11 +70,9 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
         self.addItem(item)
 
     def addItem(self, item:Item):
-        beatWidth = self.getBeatWidthInPx()
-        firstBar = self.barLines[0]
-        positionX = firstBar.rect.left + (item.startPosition.beats - firstBar.id.beats) * beatWidth
+        positionX = self.getOffsetFromFirstBarLine(item.startPosition.beats)
         positionY = self.trackLines[item.track].rect.top
-        width = item.getLengthInBeats() * beatWidth
+        width = item.getLengthInBeats() * self.getBeatWidthInPx()
 
         self.add(Block(item, (positionX, positionY),
                        width, self.getTrackHeightInPx(),
@@ -126,12 +124,21 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
             self.add(barLine)
             lastBarLine = barLine
 
+    def _updateBarLineWidths(self):
+        barWidth = self.getBarWidthInPx()
+        startingBarX = self.barLines[0].rect.left
+        for i in range(1, len(self.barLines)):
+            barLine = self.barLines[i]
+            barLine.rect.left = startingBarX + (barWidth * i)
+            barLine.dirty = True
+
     def _updateGridItemSpeeds(self):
         speed = self.getSpeed()
         for sprite in self.barLines:
             sprite.speedInPxPerSec = speed
         for sprite in self.blocks:
             sprite.speedInPxPerSec = speed
+        self.cursor.speedInPxPerSec = speed
 
     def _updateTrackLines(self):
         trackHeightInPx = self.getTrackHeightInPx()
@@ -146,7 +153,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
         # TODO: 1 is used here for the track line height, but this should not be hardcoded
         self.cursor.updateHeight(trackHeightInPx - 1)
 
-    def _updateBlockHeights(self, trackHeightInPx:"int"):
+    def _updateBlockHeights(self, trackHeightInPx:int):
         for block in self.blocks:
             newRect = block.rect
             newRect.top = self.trackLines[block.id.track].rect.top
@@ -188,14 +195,20 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
         return None
 
     def moveCursorLeft(self, beats:int):
-        self.cursor.moveToBeat(self.cursor.id.beats - beats,
-                               self.cursor.rect.left - self.getBeatWidthInPx() * beats)
-        #self.collapseBars()
+        nextBeat = self.cursor.id.beats - beats
+        if nextBeat >= self.barLines[0].id.beats:
+            self.cursor.moveToBeat(nextBeat, self.getOffsetFromFirstBarLine(nextBeat))
 
     def moveCursorRight(self, beats:int):
-        self.cursor.moveToBeat(self.cursor.id.beats + beats,
-                               self.cursor.rect.left + self.getBeatWidthInPx() * beats)
-        #self.expandBars()
+        nextBeat = self.cursor.id.beats + beats
+        if nextBeat < self.sequence.timeSignature.getBeatsForBars(self.MAX_WIDTH_IN_BARS):
+            if nextBeat - self.barLines[0].id.beats >= self.widthInBeats:
+                self.expandBars(beats)
+            self.cursor.moveToBeat(nextBeat, self.getOffsetFromFirstBarLine(nextBeat))
+
+    def getOffsetFromFirstBarLine(self, beats:int):
+        return self.barLines[0].rect.left + \
+               ((beats - self.barLines[0].id.beats) * self.getBeatWidthInPx())
 
     def moveUp(self):
         nextTrack = self.cursor.track - 1
@@ -222,10 +235,20 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
             self.activeTrackCount -= 1
             self._updateTrackLines()
 
-    def expandBars(self):
-        if self.getWidthInBars() < self.MAX_WIDTH_IN_BARS:
-            self.widthInBeats += self.sequence.timeSignature.beatsPerMeasure
-            self._updateGridItemSpeeds()
+    def expandBars(self, widthInBeats:int):
+        self.widthInBeats += widthInBeats
+        self._updateBarLineWidths()
+        self._updateBarLines()
+        self._updateBlockSizes()
+        self._updateGridItemSpeeds()
+
+    def _updateBlockSizes(self):
+        beatWidth = self.getBeatWidthInPx()
+        for block in self.blocks:
+            block.rect.left = self.getOffsetFromFirstBarLine(block.id.startPosition.beats)
+            newRect = pygame.Rect(block.rect.left, block.rect.top,
+                                  block.id.getLengthInBeats() * beatWidth, block.rect.height)
+            block.resize(newRect)
 
     def collapseBars(self):
         if self.getWidthInBars() > self.MIN_WIDTH_IN_BARS:
