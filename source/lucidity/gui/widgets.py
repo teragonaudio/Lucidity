@@ -4,9 +4,11 @@ from lucidity.gui.drawing import Border
 from lucidity.gui.layout import Padding, FontSizer, Positioning
 
 class Widget:
-    def __init__(self, parentSurface:Surface, rect:pygame.Rect, onClickHandler):
+    def __init__(self, parentSurface:Surface, rect:pygame.Rect, borderColor:tuple,
+                 onClickHandler):
         self.parentSurface = parentSurface
         self.rect = rect
+        self.borderColor = borderColor
         self.onClickHandler = onClickHandler
 
     def onStartMidiMapping(self):
@@ -25,14 +27,17 @@ class Widget:
     def onMouseUp(self): pass
 
     def draw(self):
-        self.parentSurface.blit(self.getSurface(), self.rect)
+        surface = self.getSurface()
+        self.parentSurface.blit(surface, self.rect)
+        if self.borderColor is not None:
+            Border.draw(surface, self.borderColor)
         pygame.display.update(self.rect)
 
 class Button(Widget):
     def __init__(self, parentSurface:Surface, rect:pygame.Rect,
-                 upImage:Surface, downImage:Surface,
+                 upImage:Surface, downImage:Surface, borderColor:tuple,
                  onClickHandler):
-        Widget.__init__(self, parentSurface, rect, onClickHandler)
+        Widget.__init__(self, parentSurface, rect, borderColor, onClickHandler)
         self.upImage = upImage
         self.downImage = downImage
         self.activeImage = upImage
@@ -54,10 +59,9 @@ class Button(Widget):
 
 class Label(Widget):
     def __init__(self, parentSurface:Surface, rect:pygame.Rect,
-                 fontName, fontColor, numLines,
-                 borderColor, backgroundColor):
-        Widget.__init__(self, parentSurface, rect, None)
-        self.borderColor = borderColor
+                 fontName:str, fontColor:tuple, numLines:int,
+                 borderColor:tuple, backgroundColor:tuple):
+        Widget.__init__(self, parentSurface, rect, borderColor, None)
         self.backgroundColor = backgroundColor
         self.surface = self.getBackgroundSurface()
 
@@ -70,8 +74,8 @@ class Label(Widget):
 
     def getBackgroundSurface(self):
         surface = pygame.Surface((self.rect.width, self.rect.height))
-        surface.fill(self.backgroundColor)
-        Border.draw(surface, self.borderColor)
+        if self.backgroundColor:
+            surface.fill(self.backgroundColor)
         return surface
 
     def getSurface(self):
@@ -85,8 +89,8 @@ class Label(Widget):
         self.draw()
 
 class Filmstrip(Widget):
-    def __init__(self, parentSurface:Surface, rect:pygame.Rect, filmstrip:Surface):
-        Widget.__init__(self, parentSurface, rect, None)
+    def __init__(self, parentSurface:Surface, rect:pygame.Rect, filmstrip:Surface, borderColor:tuple):
+        Widget.__init__(self, parentSurface, rect, borderColor, None)
         self.images = []
         self.numImages = int(filmstrip.get_rect().height / filmstrip.get_rect().width)
         self.currentImage = 0
@@ -105,4 +109,4 @@ class Filmstrip(Widget):
 
 class ItemPanel(Widget):
     def __init__(self, parentSurface:"Surface", rect:"pygame.Rect"):
-        Widget.__init__(self, parentSurface, rect, None)
+        Widget.__init__(self, parentSurface, rect, None, None)
