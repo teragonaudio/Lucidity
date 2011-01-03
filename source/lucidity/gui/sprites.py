@@ -6,9 +6,9 @@ from lucidity.gui.colors import ColorChooser
 from lucidity.gui.layout import Padding, FontSizer, Positioning
 
 class GridSprite(DirtySprite):
-    def __init__(self, id, rect:pygame.Rect, speedInPxPerSec:float):
+    def __init__(self, position:Position, rect:pygame.Rect, speedInPxPerSec:float):
         DirtySprite.__init__(self)
-        self.id = id
+        self.position = position
         self.rect = rect
         self.speedInPxPerSec = float(speedInPxPerSec)
         self.movePixels = 0
@@ -32,19 +32,22 @@ class GridSprite(DirtySprite):
 class Block(GridSprite):
     BORDER_SIZE = 2
 
-    def __init__(self, id, position:tuple, width:int, height:int,
+    def __init__(self, item:Item, location:tuple, width:int, height:int,
                  color:tuple, fontName:str, speedInPxPerSec:float):
-        GridSprite.__init__(self, id, pygame.Rect(position[0], position[1], width, height), speedInPxPerSec)
+        GridSprite.__init__(self, item.position,
+                            pygame.Rect(location[0], location[1], width, height),
+                            speedInPxPerSec)
+        self.item = item
         self.backgroundColor = color
         self.fontName = fontName
         self.fontColor = (0, 0, 0)
         if ColorChooser.isDarkColor(self.backgroundColor):
             self.fontColor = (255, 255, 255)
-        self.image = self.createBlock(self.rect, color, fontName, id)
+        self.image = self.createBlock(self.rect, color, fontName, item)
 
     def resize(self, newRect:pygame.Rect):
         self.rect = newRect
-        self.image = self.createBlock(newRect, self.backgroundColor, self.fontName, self.id)
+        self.image = self.createBlock(newRect, self.backgroundColor, self.fontName, self.item)
         self.dirty = True
 
     def createBlock(self, rect:pygame.Rect, color:tuple, fontName:str, item:Item):
@@ -64,11 +67,11 @@ class Block(GridSprite):
         return surface
 
 class BarLine(GridSprite):
-    def __init__(self, sequencePosition:Position, gridPosition:tuple,
+    def __init__(self, position:Position, location:tuple,
                  height:int, width:int, color:tuple, speedInPxPerSec:float):
-        GridSprite.__init__(self, sequencePosition,
-                            pygame.Rect(gridPosition[0], gridPosition[1],
-                                        width, height), speedInPxPerSec)
+        GridSprite.__init__(self, position,
+                            pygame.Rect(location[0], location[1], width, height),
+                            speedInPxPerSec)
         self.backgroundColor = color
         self.image = self.createBar()
 
@@ -78,9 +81,9 @@ class BarLine(GridSprite):
         return surface
 
 class CursorLine(BarLine):
-    def __init__(self, sequencePosition:Position, gridPosition:tuple,
+    def __init__(self, position:Position, location:tuple,
                  height:int, width:int, color:tuple, speedInPxPerSec:float):
-        super().__init__(sequencePosition, gridPosition, height, width,
+        BarLine.__init__(self, position, location, height, width,
                          color, speedInPxPerSec)
         self.track = 0
         self.isOffscreen = False
@@ -89,7 +92,7 @@ class CursorLine(BarLine):
         self.isOffscreen = True
 
     def moveToBeat(self, beat:int, positionX:int):
-        self.id.beats = beat
+        self.position.beats = beat
         self.rect.left = positionX
         self.dirty = True
 
@@ -106,7 +109,7 @@ class CursorLine(BarLine):
 class TrackLine(DirtySprite):
     def __init__(self, trackNumber:int, width:int, color:tuple):
         DirtySprite.__init__(self)
-        self.id = trackNumber
+        self.track = trackNumber
         self.visible = False
         self.backgroundColor = color
         self.rect = pygame.Rect(0, -1, width, 1)

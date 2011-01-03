@@ -60,7 +60,7 @@ class MainGrid(Container):
         self.gridSprites.reset()
 
     def getCursorPosition(self):
-        return self.gridSprites.cursor.id
+        return self.gridSprites.cursor.position
 
     def getCursorTrack(self):
         return self.gridSprites.cursor.track

@@ -2,20 +2,20 @@ from lucidity.core.timing import *
 
 class Item:
     def __init__(self, id, track:int, label:str,
-                 startPosition:Position, lengthInSec:int, tempo:float):
+                 position:Position, lengthInSec:int, tempo:float):
         self.id = id
         self.track = track
         self.label = label
-        self.startPosition = startPosition
+        self.position = position
         self.lengthInSec = lengthInSec
         self.endPosition = Position()
         self.setTempo(tempo)
 
     def getLengthInBeats(self):
-        return self.endPosition.beats - self.startPosition.beats
+        return self.endPosition.beats - self.position.beats
 
     def setTempo(self, tempo:float):
-        self.endPosition.beats = self.startPosition.beats + \
+        self.endPosition.beats = self.position.beats + \
                                  MusicTimeConverter.secondsToBeats(tempo, self.lengthInSec)
 
 class Track:
