@@ -10,9 +10,10 @@ class MediaRequestDelegate:
     def onRequestComplete(self, request:"MediaRequest", args): pass
 
 class MediaRequest:
-    RESCAN = "rescan"
-    SEARCH = "search"
-    QUIT = "quit"
+    class Operations:
+        RESCAN = "rescan"
+        SEARCH = "search"
+        QUIT = "quit"
 
     def __init__(self, type:str=None, delegate:MediaRequestDelegate=None, query:str=None):
         self.type = type
@@ -52,18 +53,18 @@ class MediaRequestLoop(Thread):
             logger.warn("Failed adding request, queue is full")
 
     def quit(self):
-        self.addRequest(MediaRequest(type=MediaRequest.QUIT))
+        self.addRequest(MediaRequest(type=MediaRequest.Operations.QUIT))
 
     def _processRequest(self, request:MediaRequest):
-        if request.type == MediaRequest.SEARCH:
+        if request.type == MediaRequest.Operations.SEARCH:
             results = self._search(request.query)
             if request.delegate is not None:
                 request.delegate.onRequestComplete(request, results)
-        elif request.type == MediaRequest.RESCAN:
+        elif request.type == MediaRequest.Operations.RESCAN:
             self._rescanLibrary()
             if request.delegate is not None:
                 request.delegate.onRequestComplete(request, "Rescan finished")
-        elif request.type == MediaRequest.QUIT:
+        elif request.type == MediaRequest.Operations.QUIT:
             self._isRunning = False
         else:
             logger.info("Unknown media request type '" + request.type + "'")
