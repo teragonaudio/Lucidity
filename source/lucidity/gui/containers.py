@@ -1,7 +1,8 @@
 import pygame
+from lucidity.gui.skinning import Skin
 
 class Container:
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin"):
+    def __init__(self, parentSurface:pygame.Surface, rect:pygame.Rect, skin:Skin):
         self.parentSurface = parentSurface
         self.rect = rect
         self.absRect = rect
@@ -28,7 +29,7 @@ class Container:
     def onMouseUp(self, position): pass
 
 class Toolbar(Container):
-    def __init__(self, parentSurface:"Surface", rect:"pygame.Rect", skin:"Skin", backgroundColor):
+    def __init__(self, parentSurface:pygame.Surface, rect:pygame.Rect, skin:Skin, backgroundColor:tuple):
         Container.__init__(self, parentSurface, rect, skin)
         self.background = pygame.Surface((self.rect.width, self.rect.height))
         self.background.fill(backgroundColor)
