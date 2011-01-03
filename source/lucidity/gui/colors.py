@@ -3,6 +3,9 @@ import re
 
 class ColorChooser:
     DEFAULT_COLOR = (0, 0, 0)
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    TEST = (255, 0, 0)
     REGEX_RGB_DECIMAL = re.compile('([\w\s]+):\s*(\d+)\s*,(\d+)\s*,(\d+)')
     REGEX_RGB_HEX = re.compile('([\w\s]+):\s*#(\w\w)(\w\w)(\w\w)')
 
