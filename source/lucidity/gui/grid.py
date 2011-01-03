@@ -40,8 +40,8 @@ class MainGrid(Container):
         nearestTrack = self.gridSprites.getNearestTrackLineAt(relativePosition)
         nearestBar = self.gridSprites.getNearestBarLineAt(relativePosition)
         if nearestBar and nearestTrack:
-            self.gridSprites.cursor.moveToBeat(nearestBar.id.beats, nearestBar.rect.right)
-            self.gridSprites.cursor.moveToTrack(nearestTrack.id, nearestTrack.rect.bottom)
+            self.gridSprites.cursor.moveToBeat(nearestBar.position.beats, nearestBar.rect.right)
+            self.gridSprites.cursor.moveToTrack(nearestTrack.track, nearestTrack.rect.bottom)
 
     def moveLeft(self):
         self.gridSprites.moveCursorLeft(4)
