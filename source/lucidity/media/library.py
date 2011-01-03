@@ -80,6 +80,6 @@ class MediaRequestLoop(Thread):
 class MediaFileConverter:
     @staticmethod
     def getItemForMediaFile(mediaFile:MediaFile, track:int,
-                            startingPosition:Position, tempo:float):
+                            beats:int, tempo:float):
         return Item(mediaFile.id, track, mediaFile.getLabel(),
-                    startingPosition, mediaFile.getLength(), tempo)
+                    Position(beats), mediaFile.getLength(), tempo)

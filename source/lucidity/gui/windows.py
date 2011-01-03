@@ -144,8 +144,9 @@ class MainWindow(MediaRequestDelegate):
 
     def insert(self):
         mediaFile = self._getCurrentItemProvider()
+        cursorPosition = self.mainGrid.getCursorPosition()
         item = MediaFileConverter.getItemForMediaFile(mediaFile, self.mainGrid.getCursorTrack(),
-                                                      self.mainGrid.getCursorPosition(),
+                                                      cursorPosition.beats,
                                                       self.sequence.getTempo())
         self.sequence.addItem(item)
 
