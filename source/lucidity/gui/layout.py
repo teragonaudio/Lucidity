@@ -53,7 +53,7 @@ class PanelSizer:
 
 class Positioning:
     @staticmethod
-    def rectToRight(sourceRect:"Rect", padding:"int" = 0):
+    def rectToRight(sourceRect:pygame.Rect, padding:int=0):
         return pygame.Rect(sourceRect.left + sourceRect.width + padding, sourceRect.top,
                            sourceRect.width, sourceRect.height)
 
