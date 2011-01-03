@@ -37,8 +37,8 @@ class MainGrid(Container):
 
     def onMouseUp(self, position):
         relativePosition = (position[0] - self.absRect.left, position[1] - self.absRect.top)
-        nearestTrack = self.gridSprites.getNearestTrackForPosition(relativePosition)
-        nearestBar = self.gridSprites.getNearestBarForPosition(relativePosition)
+        nearestTrack = self.gridSprites.getNearestTrackLineAt(relativePosition)
+        nearestBar = self.gridSprites.getNearestBarLineAt(relativePosition)
         if nearestBar and nearestTrack:
             self.gridSprites.cursor.moveToBeat(nearestBar.id.beats, nearestBar.rect.right)
             self.gridSprites.cursor.moveToTrack(nearestTrack.id, nearestTrack.rect.bottom)

@@ -232,7 +232,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
             self.widthInBeats -= self.sequence.timeSignature.beatsPerMeasure
             self._updateGridItemSpeeds()
 
-    def getNearestTrackForPosition(self, position:tuple):
+    def getNearestTrackLineAt(self, position:tuple):
         trackHeightInPx = self.getTrackHeightInPx()
         for trackLine in self.trackLines:
             if trackLine.visible:
@@ -241,7 +241,7 @@ class GridSpriteGroup(LayeredDirty, SequenceObserver):
                     return trackLine
         return None
 
-    def getNearestBarForPosition(self, position:tuple):
+    def getNearestBarLineAt(self, position:tuple):
         barWidthInPx = self.getBarWidthInPx()
         for barLine in self.barLines:
             if barLine.visible:
