@@ -14,6 +14,11 @@ class Popup(DirtySprite):
         self.image.fill(skin.guiColor("Popup Background"))
         self.rect = rect
         self.contentRect = Positioning.innerRect(self.image.get_rect(), Padding.POPUP_WINDOW_FRAME)
+        toolbarHeight = (Padding.POPUP_WINDOW_FRAME * 2) + Sizing.POPUP_WINDOW_FRAME_BUTTON
+        self.contentRect = pygame.Rect(Padding.POPUP_WINDOW_FRAME,
+                                       toolbarHeight,
+                                       rect.width - (Padding.POPUP_WINDOW_FRAME * 2),
+                                       rect.height - toolbarHeight - Padding.POPUP_WINDOW_FRAME)
         self.skin = skin
         self.visible = False
 
