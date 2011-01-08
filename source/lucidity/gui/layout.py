@@ -62,4 +62,5 @@ class Positioning:
     @staticmethod
     def innerRect(sourceRect:pygame.Rect, padding:int):
         return pygame.Rect(sourceRect.left + padding, sourceRect.top + padding,
-                           sourceRect.width - (padding * 2), sourceRect.height - (padding * 2))
+                           sourceRect.width - (padding * 2),
+                           sourceRect.height - (padding * 2))
