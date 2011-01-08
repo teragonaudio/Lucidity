@@ -6,12 +6,14 @@ class Padding:
     LABEL = 4
     BLOCK = 6
     SEARCH_POPUP = 100
-    
+    POPUP_WINDOW_FRAME = 4
+
 class Spacing:
     TOOLBAR_BUTTON_GAP = 24
 
 class Sizing:
     TOOLBAR_BUTTON = 32
+    POPUP_WINDOW_FRAME_BUTTON = 16
 
 class FontSizer:
     MIN_FONT_SIZE_IN_POINTS = 8

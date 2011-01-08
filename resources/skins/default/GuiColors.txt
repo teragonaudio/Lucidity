@@ -8,3 +8,4 @@ Toolbar Text: #000000
 Toolbar Widget Border Color: #000000
 Toolbar Status Background: #CFCFCF
 Popup Background: #FAFAFA
+Popup Foreground: #EAEAEA
