@@ -151,9 +151,9 @@ class MainWindow(MediaRequestDelegate):
         self.sequence.addItem(item)
 
     def onRequestComplete(self, request:MediaRequest, args):
-        if request.type == MediaRequest.RESCAN:
+        if request.type == MediaRequest.Operations.RESCAN:
             self.setStatusText(args[0])
-        elif request.type == MediaRequest.SEARCH:
+        elif request.type == MediaRequest.Operations.SEARCH:
             pass
 
     def setStatusText(self, text):
