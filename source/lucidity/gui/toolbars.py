@@ -11,7 +11,7 @@ class TopToolbar(Toolbar, StatusDelegate):
 
         placeholderUp = skin.images["Placeholder-Up"]
         placeholderDown = skin.images["Placeholder-Down"]
-        borderColor = skin.guiColor("Toolbar Widget Border Color")
+        borderColor = None #skin.guiColor("Toolbar Widget Border Color")
 
         firstButtonRect = pygame.Rect(rect.left + Padding.TOOLBAR,
                                       rect.top + Padding.TOOLBAR, 0, 0)
