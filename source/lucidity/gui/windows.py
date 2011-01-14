@@ -36,7 +36,6 @@ class MainWindow(MediaRequestDelegate):
         # Initialize display
         pygame.display.init()
         pygame.display.set_caption("Lucidity")
-        pygame.display.set_icon(pygame.image.load(os.path.join(".", "icon.png")))
 
         # Variables related to display
         self.surface = None
