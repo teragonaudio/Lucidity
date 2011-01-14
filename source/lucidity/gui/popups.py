@@ -44,6 +44,8 @@ class Popup(DirtySprite):
         self.visible = False
 
     def getPopupSurface(self, rect:pygame.Rect): pass
+    def onMouseDown(self, position): pass
+    def onMouseUp(self, position): pass
 
 class SearchPopup(Popup):
     def __init__(self, parentSurface:pygame.Surface, rect:pygame.Rect, skin:Skin):
@@ -53,3 +55,6 @@ class SearchPopup(Popup):
         surface = pygame.Surface((rect.width, rect.height))
         surface.fill(self.skin.guiColor("Popup Foreground"))
         return surface
+
+    def onMouseDown(self, position): pass
+    def onMouseUp(self, position): pass

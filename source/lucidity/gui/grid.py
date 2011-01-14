@@ -36,6 +36,12 @@ class MainGrid(Container):
     def onMouseDown(self, position): pass
 
     def onMouseUp(self, position):
+        if self.activePopup is not None and self.activePopup.rect.collidepoint(position):
+            self.activePopup.onMouseUp(position)
+        else:
+            self.moveCursorToPosition(position)
+
+    def moveCursorToPosition(self, position):
         relativePosition = (position[0] - self.absRect.left, position[1] - self.absRect.top)
         nearestTrack = self.gridSprites.getNearestTrackLineAt(relativePosition)
         nearestBar = self.gridSprites.getNearestBarLineAt(relativePosition)
