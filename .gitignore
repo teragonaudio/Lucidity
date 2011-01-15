@@ -1,5 +1,7 @@
 .idea/workspace.xml
 build/*
+**/build/*
+*.build
 *.swp
 *.pyc
 *.c
@@ -8,4 +10,3 @@ build/*
 *.so
 *.perspectivev3
 *.pbxuser
-*.db
