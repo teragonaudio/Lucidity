@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
   
   NSBundle *bundle = [NSBundle mainBundle];
   NSURL *resourcesPath = [[bundle resourceURL] absoluteURL];
-  NSURL *pythonPath = [resourcesPath URLByAppendingPathComponent:@"python/bin/python3.1"];
+  NSURL *pythonPath = [resourcesPath URLByAppendingPathComponent:@"python3.1"];
   NSURL *lucidityPath = [resourcesPath URLByAppendingPathComponent:@"main.py"];
   NSArray *arguments = [NSArray arrayWithObject:[lucidityPath path]];
 
