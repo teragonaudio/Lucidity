@@ -111,8 +111,8 @@ class MainDelegate:
     def onSelect(self):
         pass
 
-    def onDelete(self):
-        """Delete the item directly under the cursor"""
+    def onCut(self):
+        """Cuts the item directly under the cursor"""
         pass
 
     def onClone(self):
