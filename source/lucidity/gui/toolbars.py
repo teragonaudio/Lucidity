@@ -16,56 +16,80 @@ class TopToolbar(Toolbar, StatusDelegate):
         firstButtonRect = pygame.Rect(rect.left + Padding.TOOLBAR,
                                       rect.top + Padding.TOOLBAR, 0, 0)
         leftButton = Button(parentSurface, firstButtonRect,
-                            placeholderUp, placeholderDown, borderColor,
+                            skin.images["Left-Button-Up"],
+                            skin.images["Left-Button-Down"],
+                            borderColor,
                             delegate.onMoveLeft)
         self.addWidget(leftButton)
         rightButton = Button(parentSurface, Positioning.rectToRight(leftButton.rect, Padding.TOOLBAR),
-                             placeholderUp, placeholderDown, borderColor,
+                             skin.images["Right-Button-Up"],
+                             skin.images["Right-Button-Down"],
+                             borderColor,
                              delegate.onMoveRight)
         self.addWidget(rightButton)
         upButton = Button(parentSurface, Positioning.rectToRight(rightButton.rect, Padding.TOOLBAR),
-                          placeholderUp, placeholderDown, borderColor,
+                          skin.images["Up-Button-Up"],
+                          skin.images["Up-Button-Down"],
+                          borderColor,
                           delegate.onMoveUp)
         self.addWidget(upButton)
         downButton = Button(parentSurface, Positioning.rectToRight(upButton.rect, Padding.TOOLBAR),
-                            placeholderUp, placeholderDown, borderColor,
+                            skin.images["Down-Button-Up"],
+                            skin.images["Down-Button-Down"],
+                            borderColor,
                             delegate.onMoveDown)
         self.addWidget(downButton)
 
         cueButton = Button(parentSurface, Positioning.rectToRight(downButton.rect, Spacing.TOOLBAR_BUTTON_GAP),
-                           placeholderUp, placeholderDown, borderColor,
+                           skin.images["Cue-Button-Up"],
+                           skin.images["Cue-Button-Down"],
+                           borderColor,
                            delegate.onCue)
         self.addWidget(cueButton)
         undoButton = Button(parentSurface, Positioning.rectToRight(cueButton.rect, Padding.TOOLBAR),
-                            placeholderUp, placeholderDown, borderColor,
+                            skin.images["Undo-Button-Up"],
+                            skin.images["Undo-Button-Down"],
+                            borderColor,
                             delegate.onUndo)
         self.addWidget(undoButton)
         redoButton = Button(parentSurface, Positioning.rectToRight(undoButton.rect, Padding.TOOLBAR),
-                            placeholderUp, placeholderDown, borderColor,
+                            skin.images["Redo-Button-Up"],
+                            skin.images["Redo-Button-Down"],
+                            borderColor,
                             delegate.onRedo)
         self.addWidget(redoButton)
 
         selectButton = Button(parentSurface, Positioning.rectToRight(redoButton.rect, Spacing.TOOLBAR_BUTTON_GAP),
-                              placeholderUp, placeholderDown, borderColor,
+                              skin.images["Select-Button-Up"],
+                              skin.images["Select-Button-Down"],
+                              borderColor,
                               delegate.onSelect)
         self.addWidget(selectButton)
-        deleteButton = Button(parentSurface, Positioning.rectToRight(selectButton.rect, Padding.TOOLBAR),
-                              placeholderUp, placeholderDown, borderColor,
-                              delegate.onDelete)
-        self.addWidget(deleteButton)
-        cloneButton = Button(parentSurface, Positioning.rectToRight(deleteButton.rect, Padding.TOOLBAR),
-                             placeholderUp, placeholderDown, borderColor,
+        cutButton = Button(parentSurface, Positioning.rectToRight(selectButton.rect, Padding.TOOLBAR),
+                           skin.images["Cut-Button-Up"],
+                           skin.images["Cut-Button-Down"],
+                           borderColor,
+                           delegate.onCut)
+        self.addWidget(cutButton)
+        cloneButton = Button(parentSurface, Positioning.rectToRight(cutButton.rect, Padding.TOOLBAR),
+                             skin.images["Clone-Button-Up"],
+                             skin.images["Clone-Button-Down"],
+                             borderColor,
                              delegate.onClone)
         self.addWidget(cloneButton)
         bounceButton = Button(parentSurface, Positioning.rectToRight(cloneButton.rect, Padding.TOOLBAR),
-                              placeholderUp, placeholderDown, borderColor,
+                              skin.images["Bounce-Button-Up"],
+                              skin.images["Bounce-Button-Down"],
+                              borderColor,
                               delegate.onBounce)
         self.addWidget(bounceButton)
 
         lastButtonRect = pygame.Rect(rect.right - Padding.TOOLBAR - Sizing.TOOLBAR_BUTTON,
                                      rect.top + Padding.TOOLBAR, 0, 0)
         settingsButton = Button(parentSurface, lastButtonRect,
-                                placeholderUp, placeholderDown, borderColor,
+                                skin.images["Settings-Button-Up"],
+                                skin.images["Settings-Button-Down"],
+                                borderColor,
                                 delegate.onSettings)
         self.addWidget(settingsButton)
 
