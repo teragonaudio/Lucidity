@@ -1,5 +1,6 @@
 import pygame
 from lucidity.gui.skinning import Skin
+from lucidity.gui.widgets import Widget
 
 class Container:
     def __init__(self, parentSurface:pygame.Surface, rect:pygame.Rect, skin:Skin):
@@ -10,7 +11,7 @@ class Container:
         self.skin = skin
         self._widgets = []
 
-    def addWidget(self, widget:"Widget"):
+    def addWidget(self, widget:Widget):
         self._widgets.append(widget)
 
     def width(self): return self.rect.width
