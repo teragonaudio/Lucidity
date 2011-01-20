@@ -1,4 +1,5 @@
 import logging
+from lucidity.system.paths import PathFinder
 from lucidity.system.status import StatusProvider
 
 class StatusHandler(logging.Handler, StatusProvider):
@@ -18,9 +19,14 @@ logger.setLevel(logging.DEBUG)
 _consoleHandler = logging.StreamHandler()
 _consoleHandler.setLevel(logging.DEBUG)
 
+_fileHandler = logging.FileHandler(PathFinder.findUserFile("log.txt"), mode='w')
+_fileHandler.setLevel(logging.DEBUG)
+
 _logFormat = logging.Formatter("%(relativeCreated)d: %(threadName)s: %(levelname)s: %(message)s")
 _consoleHandler.setFormatter(_logFormat)
+_fileHandler.setFormatter(_logFormat)
 logger.addHandler(_consoleHandler)
+logger.addHandler(_fileHandler)
 
 statusHandler = StatusHandler()
 logger.addHandler(statusHandler)
