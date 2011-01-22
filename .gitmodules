@@ -4,3 +4,6 @@
 [submodule "third-party/pygame"]
 	path = third-party/pygame
 	url = git@github.com:nikreiman/pygame.git
+[submodule "third-party/juce"]
+	path = third-party/juce
+	url = git://juce.git.sourceforge.net/gitroot/juce/juce
