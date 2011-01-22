@@ -4,6 +4,3 @@
 [submodule "third-party/pygame"]
 	path = third-party/pygame
 	url = git@github.com:nikreiman/pygame.git
-[submodule "third-party/SDL"]
-	path = third-party/SDL
-	url = git@github.com:nikreiman/SDL.git
