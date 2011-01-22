@@ -10,3 +10,4 @@ build/*
 *.so
 *.perspectivev3
 *.pbxuser
+third-party/SDL/*
