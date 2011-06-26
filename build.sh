@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# TODO: Should not be like this, heh
 LUCIDITY_ROOT=`pwd`
 BUILD_DIR=$LUCIDITY_ROOT/build
 BUILD_LOG=$BUILD_DIR/build.log
@@ -10,6 +11,7 @@ RESOURCES_INSTALL_DIR=$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH
 
 PYTHON_DEST=$RESOURCES_INSTALL_DIR/python
 PYTHONEXE=$RESOURCES_INSTALL_DIR/python3.1
+CMAKE_DIR=$BUILT_PRODUCTS_DIR/cmake
 
 FRAMEWORKS_FOLDER_PATH=Lucidity.app/Contents/Frameworks
 FRAMEWORKS_INSTALL_DIR=$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH
@@ -93,6 +95,7 @@ function buildPythonDependencies() {
 }
 
 function buildSDLDependencies() {
+  cd $LUCIDITY_ROOT
   for x in ./third-party/SDL-deps/*.dmg ; do
     libname=`basename $x | cut -f 1 -d '-'`
     startTask "$libname"
@@ -120,6 +123,7 @@ function buildSDL() {
 }
 
 function buildPygameDependencies() {
+  cd $LUCIDITY_ROOT
   for x in ./third-party/pygame-deps/*.gz ; do
     libname=`basename $x | rev | cut -f 3- -d '.' | rev`
     startTask "$libname"
@@ -134,6 +138,7 @@ function buildPygameDependencies() {
       UNTAR_DIR=$BUILT_PRODUCTS_DIR/jpeg-8b
     fi
 
+    cd $LUCIDITY_ROOT
     if ! [ -e $UNTAR_DIR ] ; then
       startSubTask "Untarring"
       tar xz -C $BUILT_PRODUCTS_DIR -f $x
@@ -150,6 +155,95 @@ function buildPygameDependencies() {
   done
 }
 
+#function buildCMake() {
+  #cd $LUCIDITY_ROOT
+  #startTask "cmake"
+#
+  #if ! [ -e $CMAKE_DIR ] ; then
+    #startSubTask "Untarring"
+    #tar xz -C $BUILT_PRODUCTS_DIR -f ./third-party/portmidi/cmake*.gz
+    #cd $BUILT_PRODUCTS_DIR/cmake*
+    #startSubTask "Configuring"
+    #./configure --prefix=$CMAKE_DIR >> $BUILD_LOG 2>&1
+    #startSubTask "Compiling"
+    #make -j2 >> $BUILD_LOG 2>&1
+    #startSubTask "Installing"
+    #make install >> $BUILD_LOG 2>&1
+  #else
+    #skipTask "cmake"
+  #fi
+#}
+
+function buildPortMidi() {
+  #buildCMake
+  cd $LUCIDITY_ROOT
+  startTask "PortMidi"
+
+  if ! [ -e $BUILT_PRODUCTS_DIR/portmidi ] ; then
+    startSubTask "Untarring"
+    unzip -o -d $BUILT_PRODUCTS_DIR ./third-party/portmidi/portmidi*.zip >> $BUILD_LOG
+    cd $BUILT_PRODUCTS_DIR/portmidi
+    startSubTask "Cleaning"
+    rm -rf Release >> $BUILD_LOG
+    startSubTask "Compiling"
+    #PATH=$PATH:$CMAKE_DIR/bin
+    make -f pm_mac/Makefile.osx PF=$RESOURCES_INSTALL_DIR >> $BUILD_LOG 2>&1
+    startSubTask "Installing"
+    make -f pm_mac/Makefile.osx PF=$RESOURCES_INSTALL_DIR install >> $BUILD_LOG 2>&1
+    # Copy this one by hand, because cmake sucks
+    cp Release/libportmidi_s.a $RESOURCES_INSTALL_DIR/lib/libportmidi.a
+  else
+    skipTask "PortMidi"
+  fi
+}
+
+function buildPygame() {
+  startTask "Pygame"
+  if ! [ -e $PYTHON_DEST/lib/python3.1/site-packages/pygame ] ; then
+    cd $LUCIDITY_ROOT/third-party/pygame
+    startSubTask "Cleaning"
+    rm -rf Setup build >> $BUILD_LOG
+    PATH=$PATH:$RESOURCES_INSTALL_DIR/bin
+    startSubTask "Configuring"
+    $PYTHONEXE config.py $RESOURCES_INSTALL_DIR $FRAMEWORKS_INSTALL_DIR /System/Library/Frameworks >> $BUILD_LOG 2>&1
+    startSubTask "Compiling"
+    $PYTHONEXE setup.py build >> $BUILD_LOG 2>&1
+    startSubTask "Installing"
+    $PYTHONEXE setup.py install >> $BUILD_LOG 2>&1
+  else
+    skipTask "PyGame"
+  fi
+}
+
+function buildId3Reader {
+  startTask "id3reader"
+  cd $LUCIDITY_ROOT/third-party/id3reader
+
+  startSubTask "Cleaning"
+  $PYTHONEXE setup.py clean >> $BUILD_LOG
+  startSubTask "Compiling"
+  $PYTHONEXE setup.py build >> $BUILD_LOG
+  startSubTask "Installing"
+  $PYTHONEXE setup.py install >> $BUILD_LOG
+}
+
+function buildLucidityModules() {
+  startTask "Lucidity Modules"
+  cd $LUCIDITY_ROOT/source
+
+  startSubTask "Cleaning"
+  $PYTHONEXE setup.py clean >> $BUILD_LOG
+  startSubTask "Compiling"
+  $PYTHONEXE setup.py build >> $BUILD_LOG
+  startSubTask "Installing"
+  $PYTHONEXE setup.py install >> $BUILD_LOG
+}
+
+function buildLucidityResources() {
+  startTask "Resources"
+  cp -r $LUCIDITY_ROOT/resources $RESOURCES_INSTALL_DIR
+}
+
 function buildWrapper() {
   startTask "Wrapper"
   startSubTask "Compiling"
@@ -163,6 +257,11 @@ function buildAll() {
   buildSDL
   buildSDLDependencies
   buildPygameDependencies
+  buildPortMidi
+  buildPygame
+  buildId3Reader
+  buildLucidityModules
+  buildLucidityResources
 }
 
 function makeDmg() {
@@ -171,8 +270,8 @@ function makeDmg() {
 
 if [ ! -e $BUILD_DIR ] ; then
   mkdir $BUILD_DIR
-  echo -n > $BUILD_LOG
 fi
+echo -n > $BUILD_LOG
 
 if [ -z "$1" ] ; then
   time buildAll
