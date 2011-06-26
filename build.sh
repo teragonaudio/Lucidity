@@ -235,6 +235,7 @@ function buildAll() {
   buildId3Reader
   buildLucidityModules
   buildLucidityResources
+  growlnotify -a "Lucidity Builder" -m "Build successful" --image $LUCIDITY_ROOT/icon.png "Build Status"
 }
 
 function makeDmg() {
