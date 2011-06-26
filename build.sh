@@ -25,14 +25,14 @@ function startTask() {
 
 function startSubTask() {
   TASK=$1
-  echo "=== $TASK ==="
-  echo "=== $TASK ===" >> $BUILD_LOG
+  echo "--- $TASK ---"
+  echo "--- $TASK ---" >> $BUILD_LOG
 }
 
 function skipTask() {
   TASK=$1
-  echo "==== $TASK already installed, skipping ===="
-  echo "==== $TASK already installed, skipping ====" >> $BUILD_LOG
+  echo "---- $TASK already installed, skipping ----"
+  echo "---- $TASK already installed, skipping ----" >> $BUILD_LOG
 }
 
 function help() {
@@ -41,7 +41,7 @@ function help() {
 }
 
 function clean() {
-  startTask "Cleaing"
+  echo "== Cleaing =="
   rm -rf $BUILD_DIR
 }
 
