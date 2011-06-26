@@ -13,10 +13,10 @@ class Skin:
         self._fonts = self._loadFonts(skinPath, "Fonts.txt")
         self.interval = interval
 
-    def font(self, itemName:"str"):
+    def font(self, itemName:str):
         return self._fonts[itemName]
 
-    def guiColor(self, itemName:"str"):
+    def guiColor(self, itemName:str):
         return self._guiColors.findColor(itemName)
 
     def nextPaletteColor(self):
@@ -25,10 +25,10 @@ class Skin:
         else:
             return self._palette.nextColor(self.interval)
 
-    def _loadColors(self, skinPath:"str", colorFileName:"str"):
+    def _loadColors(self, skinPath:str, colorFileName:str):
         return ColorChooser.createFromDefinition(os.path.join(skinPath, colorFileName))
 
-    def _loadFonts(self, skinPath:"str", fontFileName:"str"):
+    def _loadFonts(self, skinPath:str, fontFileName:str):
         result = {}
 
         pygame.font.init()
@@ -41,7 +41,7 @@ class Skin:
 
         return result
 
-    def _loadImages(self, skinPath:"str"):
+    def _loadImages(self, skinPath:str):
         images = {}
 
         for image in os.listdir(skinPath):

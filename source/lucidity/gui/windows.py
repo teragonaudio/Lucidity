@@ -1,4 +1,3 @@
-import os
 import pygame
 import time
 import lucidity
@@ -102,7 +101,7 @@ class MainWindow(MediaRequestDelegate):
         except pygame.error as exception:
             logger.error("Error from pygame: " + str(exception))
 
-    def _initializePanels(self, resolution, skin:"Skin"):
+    def _initializePanels(self, resolution, skin:Skin):
         panelSizer = PanelSizer()
         self.mainGrid = MainGrid(self.surface,
                                  panelSizer.getMainGridRect(resolution[0], resolution[1]),
