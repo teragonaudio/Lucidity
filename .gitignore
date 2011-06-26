@@ -12,3 +12,4 @@ build/*
 *.pbxuser
 third-party/SDL/*
 xcuserdata
+.hg
