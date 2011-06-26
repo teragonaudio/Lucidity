@@ -7,3 +7,6 @@
 [submodule "third-party/pygame"]
 	path = third-party/pygame
 	url = git@github.com:nikreiman/pygame.git
+[submodule "third-party/portmidi"]
+	path = third-party/portmidi
+	url = git@github.com:nikreiman/portmidi.git
