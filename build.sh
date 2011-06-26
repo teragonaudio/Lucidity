@@ -11,7 +11,6 @@ RESOURCES_INSTALL_DIR=$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH
 
 PYTHON_DEST=$RESOURCES_INSTALL_DIR/python
 PYTHONEXE=$RESOURCES_INSTALL_DIR/python3.1
-CMAKE_DIR=$BUILT_PRODUCTS_DIR/cmake
 
 FRAMEWORKS_FOLDER_PATH=Lucidity.app/Contents/Frameworks
 FRAMEWORKS_INSTALL_DIR=$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH
@@ -155,43 +154,17 @@ function buildPygameDependencies() {
   done
 }
 
-#function buildCMake() {
-  #cd $LUCIDITY_ROOT
-  #startTask "cmake"
-#
-  #if ! [ -e $CMAKE_DIR ] ; then
-    #startSubTask "Untarring"
-    #tar xz -C $BUILT_PRODUCTS_DIR -f ./third-party/portmidi/cmake*.gz
-    #cd $BUILT_PRODUCTS_DIR/cmake*
-    #startSubTask "Configuring"
-    #./configure --prefix=$CMAKE_DIR >> $BUILD_LOG 2>&1
-    #startSubTask "Compiling"
-    #make -j2 >> $BUILD_LOG 2>&1
-    #startSubTask "Installing"
-    #make install >> $BUILD_LOG 2>&1
-  #else
-    #skipTask "cmake"
-  #fi
-#}
-
 function buildPortMidi() {
-  #buildCMake
-  cd $LUCIDITY_ROOT
+  cd $LUCIDITY_ROOT/third-party/portmidi/pm_mac
   startTask "PortMidi"
 
   if ! [ -e $BUILT_PRODUCTS_DIR/portmidi ] ; then
-    startSubTask "Untarring"
-    unzip -o -d $BUILT_PRODUCTS_DIR ./third-party/portmidi/portmidi*.zip >> $BUILD_LOG
-    cd $BUILT_PRODUCTS_DIR/portmidi
     startSubTask "Cleaning"
-    rm -rf Release >> $BUILD_LOG
+    make clean >> $BUILD_LOG 2>&1
     startSubTask "Compiling"
-    #PATH=$PATH:$CMAKE_DIR/bin
-    make -f pm_mac/Makefile.osx PF=$RESOURCES_INSTALL_DIR >> $BUILD_LOG 2>&1
+    make >> $BUILD_LOG 2>&1
     startSubTask "Installing"
-    make -f pm_mac/Makefile.osx PF=$RESOURCES_INSTALL_DIR install >> $BUILD_LOG 2>&1
-    # Copy this one by hand, because cmake sucks
-    cp Release/libportmidi_s.a $RESOURCES_INSTALL_DIR/lib/libportmidi.a
+    cp libportmidi.a $RESOURCES_INSTALL_DIR/lib/libportmidi.a
   else
     skipTask "PortMidi"
   fi
