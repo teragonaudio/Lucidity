@@ -11,3 +11,4 @@ build/*
 *.perspectivev3
 *.pbxuser
 third-party/SDL/*
+xcuserdata
