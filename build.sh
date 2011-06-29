@@ -30,6 +30,14 @@ function startSubTask() {
   echo "--- $TASK ---" >> $BUILD_LOG
 }
 
+function endSubTask() {
+  if [ $? -ne 0 ]
+  then
+    printf "*** Failed ***\n" $BUILD_LOG
+    exit $?
+  fi
+}
+
 function skipTask() {
   TASK=$1
   echo "---- $TASK already installed, skipping ----"
@@ -59,17 +67,25 @@ function buildPython() {
     startSubTask "Untarring"
     tar xj -C $BUILT_PRODUCTS_DIR -f ./third-party/python/Python-*.tar.bz2
     cd $BUILT_PRODUCTS_DIR/Python-*
+
     startSubTask "Configuring"
     ./configure --prefix=$PYTHON_DEST --with-wide-unicode >> $BUILD_LOG 2>&1
+    endSubTask
+
     startSubTask "Compiling"
     make -j2 >> $BUILD_LOG 2>&1
+    endSubTask
+
     startSubTask "Installing"
     make install >> $BUILD_LOG 2>&1
+    endSubTask
+
     # Link python here so we don't run into weird linker errors
     # Mac OSX assumes that frameworks and dylibs will all be found
     # relative to the parent directory of executables in a bundle
     startSubTask "Linking"
     ln -s $PYTHON_DEST/bin/python3.1 $PYTHONEXE
+    endSubTask
   else
     skipTask "Python"
   fi
@@ -89,11 +105,16 @@ function buildPythonDependencies() {
       cd $LUCIDITY_ROOT
       startSubTask "Untarring"
       tar xz -C $BUILT_PRODUCTS_DIR -f $x
+      endSubTask
+
       cd $BUILT_PRODUCTS_DIR/$libname
       startSubTask "Compiling"
       $PYTHONEXE setup.py build $BUILD_ARGS >> $BUILD_LOG 2>&1
+      endSubTask
+
       startSubTask "Installing"
       $PYTHONEXE setup.py install >> $BUILD_LOG 2>&1
+      endSubTask
     else
       skipTask "$libname"
     fi
@@ -108,10 +129,15 @@ function buildSDLDependencies() {
     if ! [ -e $FRAMEWORKS_INSTALL_DIR/$libname.framework ] ; then
       startSubTask "Mounting"
       hdiutil attach $x >> $BUILD_LOG
+      endSubTask
+
       startSubTask "Copying Framework"
       cp -rp /Volumes/$libname/$libname.framework $FRAMEWORKS_INSTALL_DIR
+      endSubTask
+
       startSubTask "Unmounting"
       hdiutil detach /Volumes/$libname >> $BUILD_LOG
+      endSubTask
     else
       skipTask "$libname"
     fi
@@ -120,12 +146,17 @@ function buildSDLDependencies() {
 
 function buildSDL() {
   cd $LUCIDITY_ROOT
+  startSubTask "Compiling"
   xcodebuild -workspace ./third-party/SDL/Xcode/SDL/SDL.xcodeproj/project.xcworkspace -scheme Framework -configuration Release install >> $BUILD_LOG
+  endSubTask
+
+  startSubTask "Installing"
   if ! [ -e $FRAMEWORKS_INSTALL_DIR ] ; then
     mkdir $FRAMEWORKS_INSTALL_DIR
   fi
 
   cp -rp ./third-party/SDL/Xcode/SDL/build/Frameworks/SDL.framework $FRAMEWORKS_INSTALL_DIR 
+  endSubTask
 }
 
 function buildPygameDependencies() {
@@ -148,13 +179,20 @@ function buildPygameDependencies() {
     if ! [ -e $UNTAR_DIR ] ; then
       startSubTask "Untarring"
       tar xz -C $BUILT_PRODUCTS_DIR -f $x
+      endSubTask
+
       cd $UNTAR_DIR
       startSubTask "Configuring"
       ./configure --prefix=$RESOURCES_INSTALL_DIR >> $BUILD_LOG 2>&1
+      endSubTask
+
       startSubTask "Compiling"
       make -j2 >> $BUILD_LOG 2>&1
+      endSubTask
+
       startSubTask "Installing"
       make install >> $BUILD_LOG 2>&1
+      endSubTask
     else
       skipTask "$libname"
     fi
@@ -168,10 +206,15 @@ function buildPortMidi() {
   if ! [ -e $BUILT_PRODUCTS_DIR/portmidi ] ; then
     startSubTask "Cleaning"
     make clean >> $BUILD_LOG 2>&1
+    endSubTask
+
     startSubTask "Compiling"
     make >> $BUILD_LOG 2>&1
+    endSubTask
+
     startSubTask "Installing"
     cp libportmidi.a $RESOURCES_INSTALL_DIR/lib/libportmidi.a
+    endSubTask
   else
     skipTask "PortMidi"
   fi
@@ -183,13 +226,20 @@ function buildPygame() {
     cd $LUCIDITY_ROOT/third-party/pygame
     startSubTask "Cleaning"
     rm -rf Setup build >> $BUILD_LOG
+    endSubTask
+
     PATH=$PATH:$RESOURCES_INSTALL_DIR/bin
     startSubTask "Configuring"
     $PYTHONEXE config.py $RESOURCES_INSTALL_DIR $FRAMEWORKS_INSTALL_DIR /System/Library/Frameworks >> $BUILD_LOG 2>&1
+    endSubTask
+
     startSubTask "Compiling"
     $PYTHONEXE setup.py build >> $BUILD_LOG 2>&1
+    endSubTask
+
     startSubTask "Installing"
     $PYTHONEXE setup.py install >> $BUILD_LOG 2>&1
+    endSubTask
   else
     skipTask "PyGame"
   fi
@@ -201,10 +251,15 @@ function buildId3Reader {
 
   startSubTask "Cleaning"
   $PYTHONEXE setup.py clean >> $BUILD_LOG
+  endSubTask
+
   startSubTask "Compiling"
   $PYTHONEXE setup.py build >> $BUILD_LOG
+  endSubTask
+
   startSubTask "Installing"
   $PYTHONEXE setup.py install >> $BUILD_LOG
+  endSubTask
 }
 
 function buildLucidityModules() {
@@ -213,10 +268,15 @@ function buildLucidityModules() {
 
   startSubTask "Cleaning"
   $PYTHONEXE setup.py clean >> $BUILD_LOG
+  endSubTask
+
   startSubTask "Compiling"
   $PYTHONEXE setup.py build >> $BUILD_LOG
+  endSubTask
+
   startSubTask "Installing"
   $PYTHONEXE setup.py install >> $BUILD_LOG
+  endSubTask
 }
 
 function buildLucidityResources() {
@@ -228,9 +288,12 @@ function buildWrapper() {
   startTask "Wrapper"
   startSubTask "Compiling"
   xcodebuild -configuration $BUILD_CONFIG -project ./source/wrapper/mac/Lucidity.xcodeproj >> $BUILD_LOG
+  endSubTask
 }
 
 function buildAll() {
+  [ ! -e $BUILD_DIR ] && mkdir $BUILD_DIR
+
   buildWrapper
   buildPython
   buildPythonDependencies
@@ -242,6 +305,7 @@ function buildAll() {
   buildId3Reader
   buildLucidityModules
   buildLucidityResources
+
   growlnotify -a "Lucidity Builder" -m "Build successful" --image $LUCIDITY_ROOT/icon.png "Build Status"
 }
 
