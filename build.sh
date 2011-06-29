@@ -37,8 +37,15 @@ function skipTask() {
 }
 
 function help() {
-  echo "God helps those who help themselves"
-  exit
+  printf "Options are: \n"
+  printf "  - %s: %s\n" \
+    "build" "Build the entire app" \
+    "clean" "Remove all build files" \
+    "full" "Perform a complete rebuild" \
+    "dmg" "Make a distribution disk image" \
+    "wtf" "Go to the first error in the build log" \
+    "help" "This screen"
+  exit 1
 }
 
 function clean() {
