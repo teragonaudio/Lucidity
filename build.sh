@@ -240,6 +240,7 @@ function buildAll() {
 
 function makeDmg() {
   startTask "DMG"
+  # TODO: Bah, need to get this script from Xcode
 }
 
 if [ ! -e $BUILD_DIR ] ; then
