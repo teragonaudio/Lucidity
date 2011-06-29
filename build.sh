@@ -250,23 +250,12 @@ function makeDmg() {
   # TODO: Bah, need to get this script from Xcode
 }
 
-if [ ! -e $BUILD_DIR ] ; then
-  mkdir $BUILD_DIR
-fi
-echo -n > $BUILD_LOG
-
-if [ -z "$1" ] ; then
-  time buildAll
-elif [ $1 = "clean" ] ; then
-  clean
-elif [ $1 = "build" ] ; then
-  time buildAll
-elif [ $1 = "full" ] ; then
-  clean
-  build
-  makeDmg
-elif [ $1 = "help" ] ; then
-  help
-else
-  help
-fi
+case $1 in
+  "") buildAll ;;
+  "build") buildAll ;;
+  "clean") clean ;;
+  "full") clean && buildAll ;;
+  "dmg") clean && buildAll && makeDmg ;;
+  "wtf") less -p 'error:' $BUILD_LOG ;;
+  *) help ;;
+esac
