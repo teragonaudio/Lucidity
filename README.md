@@ -47,3 +47,9 @@ content using Ableton Live for performing music at the moment, but it has a
 number of frustrations, namely when searching and browsing for music. Some of
 the ideas behind Lucidity are likely to be reborn in an add-on to make
 additional sequencers more useful.
+
+*Update*: In mid-2012, "The One" was announced. As of early 2013, it is still
+in private beta. Based on my limited experience with the software, I'm very
+happy to see that other folks have stumbled across the same idea. I will be
+eagerly watching The One's progress, as it has fundamentally the same workflow
+as Lucidity had imagined.
